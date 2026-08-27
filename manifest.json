@@ -1,0 +1,21 @@
+{
+  "name": "Sai International Couriers & Cargo",
+  "short_name": "Sai Couriers",
+  "description": "Fast, Reliable & Secure Global Delivery from Andhra Pradesh to 195+ Countries in 4–5 Days.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#FCF8F1",
+  "theme_color": "#0056B3",
+  "icons": [
+    {
+      "src": "assets/images/sai_global_3d_hero.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "assets/images/sai_global_3d_hero.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
