@@ -50,7 +50,7 @@ export default function PayOnlinePage() {
           </div>
 
           {/* Payment Method Tabs */}
-          <div className="payment-checkout-card" style={{ background: '#FFFFFF', borderRadius: 'var(--radius-lg)', padding: '2rem', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-md)' }}>
+          <div className="payment-checkout-card" style={{ background: 'var(--bg-card-tint)', borderRadius: 'var(--radius-lg)', padding: '2rem', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-md)' }}>
             
             <div className="payment-method-nav" style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem', flexWrap: 'wrap' }}>
               <button
@@ -84,7 +84,7 @@ export default function PayOnlinePage() {
               <div className="upi-qr-card-wrapper" style={{ textAlign: 'center', maxWidth: '420px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
                 <span className="eyebrow-pill" style={{ margin: 0, fontSize: '0.78rem' }}>Scan to Pay with Any UPI App</span>
 
-                <div style={{ width: '200px', height: '200px', padding: '10px', background: '#fff', border: '2px dashed var(--accent-teal)', borderRadius: '16px' }}>
+                <div style={{ width: '200px', height: '200px', padding: '10px', background: 'var(--bg-card-tint)', border: '2px dashed var(--accent-teal)', borderRadius: '16px' }}>
                   <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                     <rect width="200" height="200" fill="#FFFFFF"/>
                     <rect x="20" y="20" width="45" height="45" fill="#1E3446"/>
@@ -232,7 +232,7 @@ export default function PayOnlinePage() {
       {/* Success Modal */}
       {receiptModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(32, 54, 72, 0.65)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1.5rem' }}>
-          <div style={{ background: '#FFFFFF', border: '1px solid #DDEFF7', borderRadius: '24px', maxWidth: '540px', width: '100%', padding: '2.5rem', textAlign: 'center', color: '#203648', boxShadow: '0 25px 60px rgba(32, 54, 72, 0.22)' }}>
+          <div style={{ background: 'var(--bg-card-tint)', border: '1px solid #DDEFF7', borderRadius: '24px', maxWidth: '540px', width: '100%', padding: '2.5rem', textAlign: 'center', color: '#203648', boxShadow: '0 25px 60px rgba(32, 54, 72, 0.22)' }}>
             <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(39, 174, 96, 0.15)', color: '#27AE60', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.25rem auto' }}>
               <i className="fa-solid fa-circle-check"></i>
             </div>

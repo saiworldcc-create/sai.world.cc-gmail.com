@@ -19,6 +19,8 @@
     "imagekitio-react": "^4.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.2"
+    "react-ga4": "^3.0.1",
+    "react-router-dom": "^7.18.2",
+    "recharts": "^3.10.1"
   }
 }

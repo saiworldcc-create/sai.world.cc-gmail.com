@@ -58,7 +58,7 @@ export default function PortalPage() {
         /* Auth View */
         <div className="section section-ivory">
           <div className="container" style={{ maxWidth: '580px' }}>
-            <div className="contact-form-container" style={{ textAlign: 'center', padding: '3rem 2.5rem', background: '#fff', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border-light)' }}>
+            <div className="contact-form-container" style={{ textAlign: 'center', padding: '3rem 2.5rem', background: 'var(--bg-card-tint)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border-light)' }}>
               <div style={{ width: '68px', height: '68px', borderRadius: '50%', background: 'var(--bg-powder-blue)', color: 'var(--accent-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 1.25rem auto' }}>
                 <i className="fa-solid fa-user-lock"></i>
               </div>
@@ -217,7 +217,7 @@ export default function PortalPage() {
 
             {/* TAB 1: SHIPMENTS */}
             {activeTab === 'shipments' && (
-              <div style={{ background: '#fff', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--border-light)', overflowX: 'auto' }}>
+              <div style={{ background: 'var(--bg-card-tint)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--border-light)', overflowX: 'auto' }}>
                 <table className="food-comparison-table" style={{ width: '100%' }}>
                   <thead>
                     <tr>
@@ -264,7 +264,7 @@ export default function PortalPage() {
             {activeTab === 'addresses' && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
                 {DEMO_USER.addresses.map(a => (
-                  <div key={a.id} className="address-item-card" style={{ background: '#fff', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div key={a.id} className="address-item-card" style={{ background: 'var(--bg-card-tint)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="eyebrow-pill teal" style={{ margin: 0, fontSize: '0.72rem', padding: '0.2rem 0.6rem' }}>{a.tag}</span>
                       <i className="fa-solid fa-bookmark" style={{ color: 'var(--accent-coral)' }}></i>
@@ -284,7 +284,7 @@ export default function PortalPage() {
 
             {/* TAB 3: INVOICES */}
             {activeTab === 'invoices' && (
-              <div style={{ background: '#fff', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--border-light)', overflowX: 'auto' }}>
+              <div style={{ background: 'var(--bg-card-tint)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--border-light)', overflowX: 'auto' }}>
                 <table className="food-comparison-table" style={{ width: '100%' }}>
                   <thead>
                     <tr>

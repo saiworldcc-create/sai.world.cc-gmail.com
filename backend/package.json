@@ -9,19 +9,25 @@
     "seed": "node src/seed.js"
   },
   "dependencies": {
+    "@google/genai": "^2.22.0",
     "@imagekit/nodejs": "^7.11.0",
     "bcryptjs": "^3.0.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
     "express-validator": "^7.2.0",
     "helmet": "^7.1.0",
     "imagekit": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.5.1",
-    "nodemailer": "^9.0.5"
+    "mongoose": "^8.24.4",
+    "nodemailer": "^9.0.5",
+    "razorpay": "^2.9.8"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
 }

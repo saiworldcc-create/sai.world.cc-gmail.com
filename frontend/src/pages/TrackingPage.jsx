@@ -28,7 +28,36 @@ export default function TrackingPage() {
     setError('');
     try {
       const res = await trackShipment(awbCode.trim());
-      setTrackingData(res.data);
+      
+      const dbData = res.data;
+      
+      // Calculate current stage (last completed milestone ID)
+      const currentStage = dbData.milestones.slice().reverse().find(m => m.completed)?.id || 1;
+      
+      // Map DB object to UI expected format
+      const uiData = {
+        awb: dbData.awb,
+        status: dbData.milestones.find(m => m.id === currentStage)?.status || 'Processing',
+        destination: dbData.destination,
+        stage: currentStage,
+        sender: dbData.senderName,
+        receiver: dbData.receiverName,
+        contents: dbData.items,
+        deadWeight: dbData.weight,
+        volWeight: dbData.weight, // Simplified
+        chargeableWeight: dbData.weight,
+        carrier: 'SAI Global Network',
+        history: dbData.milestones
+          .filter(m => m.timestamp) // Only show logged events
+          .map(m => ({
+            status: m.status,
+            time: new Date(m.timestamp).toLocaleString(),
+            location: m.location,
+            active: m.id === currentStage
+          })).reverse()
+      };
+      
+      setTrackingData(uiData);
       setSearchParams({ awb: awbCode.trim() });
     } catch (err) {
       setError(err.message || 'Unable to locate tracking details.');
@@ -75,7 +104,7 @@ export default function TrackingPage() {
 
       <section className="section section-ivory">
         <div className="container">
-          <div className="unified-tracking-card" style={{ background: '#FFFFFF', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.5rem, 4vw, 2.5rem)', maxWidth: '1200px', margin: '0 auto', boxShadow: 'var(--shadow-md)' }}>
+          <div className="unified-tracking-card" style={{ background: 'var(--bg-card-tint)', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-lg)', padding: 'clamp(1.5rem, 4vw, 2.5rem)', maxWidth: '1200px', margin: '0 auto', boxShadow: 'var(--shadow-md)' }}>
             
             {/* Search Input Box */}
             <div className="tracking-search-top">

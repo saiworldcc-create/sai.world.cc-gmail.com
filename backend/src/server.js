@@ -12,6 +12,9 @@ const ratesRoutes = require('./routes/rates.routes');
 const contentRoutes = require('./routes/content.routes');
 const adminRoutes = require('./routes/admin.routes');
 const imagekitRoutes = require('./routes/imagekit.routes');
+const userRoutes = require('./routes/user.routes');
+const paymentRoutes = require('./routes/payment.routes');
+const aiRoutes = require('./routes/ai.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -50,6 +53,9 @@ app.use('/api/v1/rates', ratesRoutes);
 app.use('/api/v1/content', contentRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/imagekit', imagekitRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/payments', paymentRoutes);
+app.use('/api/v1/ai', aiRoutes);
 
 // ── 404 Handler ───────────────────────────────────────────────────────────
 app.use((req, res) => {
@@ -78,3 +84,7 @@ connectDB().then(() => {
     console.log(`   Admin:    http://localhost:${PORT}/api/v1/admin/login\n`);
   });
 });
+
+// Trigger nodemon
+
+// Trigger nodemon for Phase 2

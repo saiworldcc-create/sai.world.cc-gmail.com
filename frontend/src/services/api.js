@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getShipmentByAwb, createShipment as dbCreateShipment } from './db';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api/v1',
@@ -30,7 +31,28 @@ api.interceptors.response.use(
 );
 
 // ─── Public endpoints ──────────────────────────────────────────────────────
-export const trackShipment = (awb) => api.get(`/tracking/${encodeURIComponent(awb)}`);
+export const trackShipment = async (awb) => {
+  // Mock tracking API for Enterprise simulation
+  const shipment = getShipmentByAwb(awb);
+  if (!shipment) {
+    throw new Error('Shipment Route Not Found. Please verify your AWB.');
+  }
+  
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
+  return {
+    success: true,
+    data: shipment
+  };
+};
+
+export const createMockShipment = async (data) => {
+  const newShipment = dbCreateShipment(data);
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return { success: true, data: newShipment };
+};
+
 export const createBooking = (data) => api.post('/bookings', data);
 export const sendContact = (data) => api.post('/contact', data);
 export const getRates = (country) => api.get('/rates', { params: country ? { country } : {} });

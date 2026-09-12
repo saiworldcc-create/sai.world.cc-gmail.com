@@ -7,6 +7,7 @@ export default function CalculatorPage() {
   const { content } = usePageContent('calculator', {});
   const hero = content.hero || {};
 
+  const [step, setStep] = useState(1);
   const [country, setCountry] = useState('USA');
   const [category, setCategory] = useState('food');
   const [deadWeight, setDeadWeight] = useState(5);
@@ -47,6 +48,9 @@ export default function CalculatorPage() {
     };
   }, [country, category, deadWeight, length, width, height]);
 
+  const nextStep = () => setStep(s => Math.min(s + 1, 3));
+  const prevStep = () => setStep(s => Math.max(s - 1, 1));
+
   return (
     <main style={{ paddingTop: '80px' }}>
       <section className="page-hero-banner">
@@ -59,198 +63,167 @@ export default function CalculatorPage() {
           <div className="eyebrow-pill teal">
             <i className="fa-solid fa-calculator"></i> Transparent Tariff Engine
           </div>
-          <h1 className="page-hero-title">{hero.heading || 'Shipping Cost & Dimensional Weight Calculator'}</h1>
+          <h1 className="page-hero-title">Interactive Quote Builder</h1>
           <p className="page-hero-desc">
-            {hero.lead || 'Get transparent price estimates for international express parcel and air cargo shipments from Andhra Pradesh to 195+ countries with instant volumetric calculation.'}
+            Get an instant, transparent price estimate for your international express parcel in 3 simple steps.
           </p>
         </div>
       </section>
 
       <section className="section section-ivory">
-        <div className="container">
-          <div className="calculator-main-grid">
-            {/* Input Form */}
-            <div className="calc-input-panel">
-              <h3 style={{ fontSize: '1.35rem', color: 'var(--text-slate-dark)', marginBottom: '0.5rem' }}>Package & Destination Details</h3>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-slate-muted)', marginBottom: '1.75rem' }}>
-                Fill in your parcel specifications below. The system automatically compares dead weight and volumetric dimensions.
-              </p>
-
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="form-row-two">
-                  <div className="form-group-item">
-                    <label className="form-label-title" htmlFor="calc-dest-country">
-                      <i className="fa-solid fa-globe" style={{ color: 'var(--accent-coral)' }}></i> Destination Country
-                    </label>
-                    <select
-                      id="calc-dest-country"
-                      className="form-input-field"
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                    >
-                      <option value="USA">🇺🇸 United States (USA)</option>
-                      <option value="UK">🇬🇧 United Kingdom (UK)</option>
-                      <option value="Canada">🇨🇦 Canada</option>
-                      <option value="Australia">🇦🇺 Australia</option>
-                      <option value="UAE">🇦🇪 United Arab Emirates (Dubai)</option>
-                      <option value="Germany">🇩🇪 Germany (Europe)</option>
-                      <option value="Singapore">🇸🇬 Singapore</option>
-                      <option value="New Zealand">🇳🇿 New Zealand</option>
-                      <option value="Other">🌍 Other Global Destination</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group-item">
-                    <label className="form-label-title" htmlFor="calc-category-select">
-                      <i className="fa-solid fa-box-open" style={{ color: 'var(--accent-teal)' }}></i> Item Category
-                    </label>
-                    <select
-                      id="calc-category-select"
-                      className="form-input-field"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option value="food">NRI Homemade Food & Pickles</option>
-                      <option value="docs">University Transcripts & Documents</option>
-                      <option value="parcel">Express Personal / Gift Parcel</option>
-                      <option value="cargo">Commercial Heavy Air Cargo (50kg+)</option>
-                      <option value="baggage">Excess Relocation Baggage</option>
-                    </select>
-                  </div>
+        <div className="container" style={{ maxWidth: '800px' }}>
+          
+          {/* Stepper Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '20px', left: '10%', right: '10%', height: '2px', background: '#E2E8F0', zIndex: 0 }}></div>
+            <div style={{ position: 'absolute', top: '20px', left: '10%', width: step === 1 ? '0%' : step === 2 ? '40%' : '80%', height: '2px', background: '#3CC8C8', zIndex: 0, transition: 'width 0.4s ease' }}></div>
+            
+            {[1, 2, 3].map(num => (
+              <div key={num} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 1 }}>
+                <div style={{ 
+                  width: '40px', height: '40px', borderRadius: '50%', 
+                  background: step >= num ? '#3CC8C8' : 'var(--bg-card-tint)', 
+                  color: step >= num ? '#0B1622' : '#A0B0C0', 
+                  border: `2px solid ${step >= num ? '#3CC8C8' : '#E2E8F0'}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold',
+                  transition: 'all 0.3s ease'
+                }}>
+                  {step > num ? <i className="fa-solid fa-check"></i> : num}
                 </div>
+                <span style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: step >= num ? '#1E3446' : '#A0B0C0', fontWeight: 600 }}>
+                  {num === 1 ? 'Destination' : num === 2 ? 'Dimensions' : 'Quote'}
+                </span>
+              </div>
+            ))}
+          </div>
 
-                <div className="form-group-item" style={{ marginTop: '1rem' }}>
-                  <label className="form-label-title" htmlFor="calc-dead-weight">
-                    <i className="fa-solid fa-scale-balanced" style={{ color: 'var(--accent-coral)' }}></i> Actual Scale Weight (Dead Weight in kg)
+          <div style={{ background: '#122336', padding: '2rem', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', border: '1px solid #E2E8F0', animation: 'fadeIn 0.5s ease' }}>
+            
+            {/* Step 1: Destination */}
+            {step === 1 && (
+              <div className="animate-slide-in">
+                <h3 style={{ fontSize: '1.4rem', color: '#FFF', marginBottom: '1.5rem' }}>Where are you shipping to?</h3>
+                <div className="form-group-item">
+                  <label className="form-label-title" htmlFor="calc-dest-country">
+                    <i className="fa-solid fa-globe" style={{ color: '#E97856' }}></i> Destination Country
                   </label>
-                  <input
-                    type="number"
-                    id="calc-dead-weight"
-                    className="form-input-field"
-                    value={deadWeight}
-                    min="0.5"
-                    step="0.5"
-                    onChange={(e) => setDeadWeight(e.target.value)}
-                    placeholder="e.g. 5"
-                    required
-                  />
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-slate-light)' }}>Exact weight measured on a digital physical scale.</span>
+                  <select id="calc-dest-country" className="form-input-field" value={country} onChange={(e) => setCountry(e.target.value)}>
+                    <option value="USA">🇺🇸 United States (USA)</option>
+                    <option value="UK">🇬🇧 United Kingdom (UK)</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="UAE">🇦🇪 United Arab Emirates (Dubai)</option>
+                    <option value="Other">🌍 Other Global Destination</option>
+                  </select>
                 </div>
 
-                <div style={{ marginTop: '1.5rem', marginBottom: '0.75rem' }}>
+                <div className="form-group-item" style={{ marginTop: '1.5rem' }}>
+                  <label className="form-label-title" htmlFor="calc-category-select">
+                    <i className="fa-solid fa-box-open" style={{ color: '#3CC8C8' }}></i> Item Category
+                  </label>
+                  <select id="calc-category-select" className="form-input-field" value={category} onChange={(e) => setCategory(e.target.value)}>
+                    <option value="food">NRI Homemade Food & Pickles</option>
+                    <option value="docs">University Transcripts & Documents</option>
+                    <option value="parcel">Express Personal / Gift Parcel</option>
+                    <option value="cargo">Commercial Heavy Air Cargo (50kg+)</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Dimensions */}
+            {step === 2 && (
+              <div className="animate-slide-in">
+                <h3 style={{ fontSize: '1.4rem', color: '#FFF', marginBottom: '1.5rem' }}>Enter Parcel Dimensions</h3>
+                
+                <div className="form-group-item">
+                  <label className="form-label-title" htmlFor="calc-dead-weight">
+                    <i className="fa-solid fa-scale-balanced" style={{ color: '#E97856' }}></i> Actual Scale Weight (kg)
+                  </label>
+                  <input type="number" id="calc-dead-weight" className="form-input-field" value={deadWeight} min="0.5" step="0.5" onChange={(e) => setDeadWeight(e.target.value)} required />
+                </div>
+
+                <div style={{ marginTop: '1.5rem' }}>
                   <label className="form-label-title">
-                    <i className="fa-solid fa-cube" style={{ color: 'var(--accent-teal)' }}></i> Carton Dimensions (in Centimeters)
+                    <i className="fa-solid fa-cube" style={{ color: '#3CC8C8' }}></i> Carton Dimensions (cm)
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginTop: '0.5rem' }}>
                     <div>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-slate-muted)' }}>Length (cm)</span>
-                      <input
-                        type="number"
-                        className="form-input-field"
-                        value={length}
-                        min="1"
-                        onChange={(e) => setLength(e.target.value)}
-                        placeholder="L"
-                      />
+                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#A0B0C0' }}>Length</span>
+                      <input type="number" className="form-input-field" value={length} min="1" onChange={(e) => setLength(e.target.value)} />
                     </div>
                     <div>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-slate-muted)' }}>Width (cm)</span>
-                      <input
-                        type="number"
-                        className="form-input-field"
-                        value={width}
-                        min="1"
-                        onChange={(e) => setWidth(e.target.value)}
-                        placeholder="W"
-                      />
+                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#A0B0C0' }}>Width</span>
+                      <input type="number" className="form-input-field" value={width} min="1" onChange={(e) => setWidth(e.target.value)} />
                     </div>
                     <div>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-slate-muted)' }}>Height (cm)</span>
-                      <input
-                        type="number"
-                        className="form-input-field"
-                        value={height}
-                        min="1"
-                        onChange={(e) => setHeight(e.target.value)}
-                        placeholder="H"
-                      />
+                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#A0B0C0' }}>Height</span>
+                      <input type="number" className="form-input-field" value={height} min="1" onChange={(e) => setHeight(e.target.value)} />
                     </div>
                   </div>
                 </div>
-
-                <div className="volumetric-formula-pill">
-                  <i className="fa-solid fa-circle-info" style={{ color: 'var(--accent-teal)', marginRight: '0.35rem' }}></i>
-                  <strong>IATA International Standard:</strong> Volumetric Weight = (Length × Width × Height in cm) ÷ 5000. Air carriers bill based on whichever is higher.
-                </div>
-              </form>
-            </div>
-
-            {/* Results Card */}
-            <div className="calc-output-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="eyebrow-pill teal" style={{ margin: 0 }}>Instant Estimate</span>
-                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-coral)' }}>
-                  <i className="fa-solid fa-bolt"></i> {calcResults.transit}
-                </span>
               </div>
+            )}
 
-              <div className="chargeable-weight-display-box">
-                <div>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-slate-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Chargeable Weight</span>
-                  <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--accent-coral)' }}>{calcResults.roundChargeable} kg</div>
+            {/* Step 3: Result */}
+            {step === 3 && (
+              <div className="animate-slide-in" style={{ textAlign: 'center' }}>
+                <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--bg-powder-blue)', color: 'var(--accent-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.5rem auto' }}>
+                  <i className="fa-solid fa-file-invoice-dollar"></i>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-slate-muted)' }}>Volumetric Calc</span>
-                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-slate-dark)' }}>{calcResults.volWeight} kg</div>
+                <h3 style={{ fontSize: '1.4rem', color: '#1E3446', marginBottom: '0.5rem' }}>Your Estimated Quote</h3>
+                <p style={{ color: '#4A6B82', marginBottom: '2rem' }}>Shipping from Andhra Pradesh to {country}</p>
+                
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '0.5rem', color: '#1E3446', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '2rem', fontWeight: 700 }}>₹{calcResults.totalMin}</span>
+                  <span style={{ fontSize: '1.2rem', color: '#A0B0C0' }}>- ₹{calcResults.totalMax}</span>
                 </div>
-              </div>
-
-              <div style={{ fontSize: '0.82rem', lineHeight: 1.45, fontWeight: 600, color: calcResults.isVolGreater ? '#E97856' : 'var(--accent-teal)' }}>
-                {calcResults.explanation}
-              </div>
-
-              <div style={{ borderTop: '1.5px solid rgba(41, 70, 93, 0.1)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <div className="calc-rate-breakdown-row">
-                  <span style={{ color: 'var(--text-slate-muted)' }}>Doorstep Collection (AP)</span>
-                  <strong style={{ color: '#27AE60' }}>FREE</strong>
-                </div>
-
-                <div className="calc-rate-breakdown-row">
-                  <span style={{ color: 'var(--text-slate-muted)' }}>5-Ply Export Box & Vacuum Sealing</span>
-                  <strong style={{ color: '#27AE60' }}>FREE</strong>
-                </div>
-
-                <div className="calc-rate-breakdown-row">
-                  <span style={{ color: 'var(--text-slate-muted)' }}>Estimated Transit Time</span>
-                  <strong style={{ color: 'var(--text-slate-dark)' }}>{calcResults.transit}</strong>
-                </div>
-
-                <div className="calc-rate-breakdown-row" style={{ borderTop: '1px dashed rgba(41, 70, 93, 0.15)', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
-                  <span style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-slate-dark)' }}>Estimated Total</span>
-                  <strong style={{ fontSize: '1.45rem', color: 'var(--accent-coral)' }}>
-                    ₹{calcResults.totalMin.toLocaleString('en-IN')} – ₹{calcResults.totalMax.toLocaleString('en-IN')}
-                  </strong>
+                
+                <div style={{ background: 'var(--bg-card-tint)', padding: '1.5rem', borderRadius: '8px', textAlign: 'left', border: '1px solid var(--border-light)', marginBottom: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ color: '#7091A8', fontSize: '0.9rem' }}>Chargeable Weight:</span>
+                    <strong style={{ color: '#E97856' }}>{calcResults.roundChargeable} kg</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ color: '#7091A8', fontSize: '0.9rem' }}>Estimated Transit:</span>
+                    <strong style={{ color: '#1E3446' }}>{calcResults.transit}</strong>
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: '#A0B0C0', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed #CBD5E1' }}>
+                    <i className="fa-solid fa-circle-info"></i> {calcResults.explanation}
+                  </div>
                 </div>
               </div>
+            )}
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-                <Link to="/book-pickup" className="btn btn-coral btn-lg" style={{ flex: 1, textAlign: 'center' }}>
-                  <i className="fa-solid fa-truck-fast"></i> Book Pickup Now
+            {/* Navigation Buttons */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0' }}>
+              {step > 1 ? (
+                <button onClick={prevStep} className="btn btn-outline-slate">
+                  <i className="fa-solid fa-arrow-left"></i> Back
+                </button>
+              ) : <div></div>}
+              
+              {step < 3 ? (
+                <button onClick={nextStep} className="btn btn-teal">
+                  Next Step <i className="fa-solid fa-arrow-right"></i>
+                </button>
+              ) : (
+                <Link to="/book-pickup" className="btn btn-coral">
+                  Book Pickup Now <i className="fa-solid fa-truck-fast"></i>
                 </Link>
-                <a
-                  href={`https://wa.me/919059949365?text=${encodeURIComponent(`Hello Sai Couriers, I calculated an estimate for ${country} (${calcResults.roundChargeable} kg ${category}): ₹${calcResults.totalMin} - ₹${calcResults.totalMax}. Please confirm pickup.`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-teal btn-lg"
-                  style={{ flex: 1, textAlign: 'center' }}
-                >
-                  <i className="fa-brands fa-whatsapp"></i> Confirm Rate
-                </a>
-              </div>
+              )}
             </div>
+
           </div>
         </div>
       </section>
+      <style>{`
+        .animate-slide-in { animation: slideIn 0.4s ease forwards; }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
     </main>
   );
 }

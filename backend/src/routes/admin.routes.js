@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const Admin = require('../models/Admin');
 const { protect } = require('../middleware/auth');
+const Booking = require('../models/Booking');
+const Shipment = require('../models/Shipment');
+const ContactMessage = require('../models/ContactMessage');
 
 function signToken(id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
@@ -60,6 +63,33 @@ router.post(
 // GET /api/v1/admin/me — get current admin profile
 router.get('/me', protect, (req, res) => {
   res.json({ success: true, admin: req.admin });
+});
+
+// GET /api/v1/admin/stats — get dashboard statistics
+router.get('/stats', protect, async (req, res) => {
+  try {
+    const totalBookings = await Booking.countDocuments();
+    const activeShipments = await Shipment.countDocuments({ status: { $ne: 'Delivered' } });
+    const totalShipments = await Shipment.countDocuments();
+    const unreadMessages = await ContactMessage.countDocuments({ isRead: false });
+
+    // Fetch recent 5 bookings
+    const recentBookings = await Booking.find().sort({ createdAt: -1 }).limit(5);
+
+    res.json({
+      success: true,
+      stats: {
+        totalBookings,
+        activeShipments,
+        totalShipments,
+        unreadMessages,
+        recentBookings
+      }
+    });
+  } catch (err) {
+    console.error('Stats error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching stats.' });
+  }
 });
 
 // POST /api/v1/admin/change-password

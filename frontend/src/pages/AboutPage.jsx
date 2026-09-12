@@ -156,7 +156,7 @@ export default function AboutPage() {
               <div 
                 key={item.label} 
                 style={{ 
-                  background: '#fff', 
+                  background: 'var(--bg-card-tint)', 
                   borderRadius: 'var(--radius-md)', 
                   padding: '1.75rem 1.5rem', 
                   border: '1px solid var(--border-light)', 

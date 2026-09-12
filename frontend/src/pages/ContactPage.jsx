@@ -346,7 +346,7 @@ export default function ContactPage() {
       {/* Success Modal */}
       {successModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(32, 54, 72, 0.65)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1.5rem' }}>
-          <div style={{ background: '#FFFFFF', border: '1px solid #DDEFF7', borderRadius: '24px', maxWidth: '540px', width: '100%', padding: '2.5rem', textAlign: 'center', color: '#203648', boxShadow: '0 25px 60px rgba(32, 54, 72, 0.22)' }}>
+          <div style={{ background: 'var(--bg-card-tint)', border: '1px solid #DDEFF7', borderRadius: '24px', maxWidth: '540px', width: '100%', padding: '2.5rem', textAlign: 'center', color: '#203648', boxShadow: '0 25px 60px rgba(32, 54, 72, 0.22)' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(60, 146, 144, 0.15)', color: '#3C9290', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 1.25rem auto' }}>
               <i className="fa-solid fa-circle-check"></i>
             </div>

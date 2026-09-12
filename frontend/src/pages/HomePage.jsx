@@ -7,20 +7,59 @@ import VideoPlayer, { VideoModal } from '../components/common/VideoPlayer';
 import { trackShipment } from '../services/api';
 import { TESTIMONIALS, BRANCH_MAP_DATA, SERVICE_HUB_LINKS } from '../constants/appData';
 
+/* ══════════════════════════════════════════════════════════════════════════════
+   DATA ARRAYS — All repeated elements use loops, no hardcoded DOM duplication
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+const ORBITAL_NODES = [
+  { icon: 'fa-plane',          colorClass: 'node-teal',   label: 'Air Cargo' },
+  { icon: 'fa-box',            colorClass: 'node-purple', label: 'Packaging' },
+  { icon: 'fa-truck-fast',     colorClass: 'node-green',  label: 'Delivery' },
+  { icon: 'fa-satellite-dish', colorClass: 'node-coral',  label: 'Tracking' },
+];
+
+const ORBITAL_PARTICLES = [
+  { cls: 'p1' }, { cls: 'p2' }, { cls: 'p3' },
+  { cls: 'p4' }, { cls: 'p5' }, { cls: 'p6' },
+  { cls: 'p7' }, { cls: 'p8' },
+];
+
+const HERO_STATS = [
+  { value: '195+',  label: 'Countries Served',    icon: 'fa-earth-americas' },
+  { value: '50K+',  label: 'Parcels Delivered',    icon: 'fa-boxes-packing' },
+  { value: '4-5',   label: 'Days Express Delivery', icon: 'fa-clock' },
+  { value: '24/7',  label: 'Live GPS Tracking',    icon: 'fa-satellite-dish' },
+];
+
+const BRAND_FEATURES = [
+  { icon: 'fa-plane-departure', text: 'Direct Air Cargo Flights' },
+  { icon: 'fa-house-chimney',   text: 'Free Doorstep Collection' },
+  { icon: 'fa-shield-check',    text: 'End-to-End Customs Support' },
+  { icon: 'fa-location-crosshairs', text: 'Live Satellite GPS Tracking' },
+];
+
+const WHY_CHOOSE_US = [
+  { icon: 'fa-gauge-high',     title: 'Express Speed',        desc: '4–5 day guaranteed delivery to 195+ countries worldwide.' },
+  { icon: 'fa-shield-halved',  title: 'Secure Packaging',     desc: 'Multi-layer vacuum sealing for food, documents & valuables.' },
+  { icon: 'fa-indian-rupee-sign', title: 'Transparent Pricing', desc: 'No hidden charges. Real-time rate calculator available online.' },
+  { icon: 'fa-headset',        title: '24/7 Support',         desc: 'Dedicated logistics managers reachable via call & WhatsApp.' },
+  { icon: 'fa-file-shield',    title: 'Customs Clearance',    desc: 'Complete KYC, export documentation & restricted goods support.' },
+  { icon: 'fa-hand-holding-heart', title: 'NRI Special Care', desc: 'Homemade pickles, sweets & traditional food shipped with love.' },
+];
+
 /* ── Hero Tracking Widget ── */
 function HeroTrackingCard() {
   const [awb, setAwb] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleTrack = async (e) => {
     e?.preventDefault();
     if (!awb.trim()) { setError('Please enter an AWB / Tracking Number.'); return; }
-    setLoading(true); setError(''); setResult(null);
+    setLoading(true); setError('');
     try {
-      const res = await trackShipment(awb.trim());
+      await trackShipment(awb.trim());
       navigate(`/tracking?awb=${encodeURIComponent(awb.trim())}`);
     } catch {
       navigate(`/tracking?awb=${encodeURIComponent(awb.trim())}`);
@@ -78,6 +117,114 @@ function HeroTrackingCard() {
   );
 }
 
+/* ── Animated Counter ── */
+function AnimatedCounter({ value, label, icon }) {
+  const [count, setCount] = useState('0');
+  const ref = useRef(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !hasAnimated.current) {
+        hasAnimated.current = true;
+        
+        // Only animate simple numbers with optional letter/symbol suffixes (e.g., 195+, 50K+)
+        const isSimpleNumber = /^[0-9]+[a-zA-Z+]*$/.test(value);
+        if (!isSimpleNumber) {
+          setCount(value);
+          return;
+        }
+
+        const numericPart = value.replace(/[^0-9]/g, '');
+        const suffix = value.replace(/[0-9]/g, '');
+        const target = parseInt(numericPart, 10);
+        if (isNaN(target)) { setCount(value); return; }
+        
+        const duration = 2000;
+        const startTime = performance.now();
+        const animate = (now) => {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCount(Math.floor(eased * target) + suffix);
+          if (progress < 1) requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+      }
+    }, { threshold: 0.5 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return (
+    <div className="hero-stat-item" ref={ref}>
+      <i className={`fa-solid ${icon} hero-stat-icon`}></i>
+      <span className="hero-stat-value">{count}</span>
+      <span className="hero-stat-label">{label}</span>
+    </div>
+  );
+}
+
+/* ── Global Network SVG Map ── */
+function GlobalNetworkMap() {
+  return (
+    <section className="section" style={{ background: '#0B1622', overflow: 'hidden', padding: '5rem 0', position: 'relative' }}>
+      <div className="container" style={{ textAlign: 'center', zIndex: 2, position: 'relative' }}>
+        <h2 style={{ color: '#FFF', fontSize: '2.5rem', marginBottom: '1rem' }}>Our Global Reach</h2>
+        <p style={{ color: '#A0B0C0', maxWidth: '600px', margin: '0 auto 4rem auto' }}>Seamlessly connecting Andhra Pradesh to 195+ countries through our established international air cargo network.</p>
+      </div>
+
+      <div style={{ position: 'relative', width: '100%', maxWidth: '1200px', margin: '0 auto', height: '500px' }}>
+        {/* Simplified SVG World Map Background */}
+        <svg viewBox="0 0 1000 500" style={{ width: '100%', height: '100%', opacity: 0.15, position: 'absolute', top: 0, left: 0 }}>
+          <path fill="#3CC8C8" d="M140 180c10-20 30-30 50-20s30 40 10 60-50-10-60-40z M280 150c20-10 50 0 60 20s-10 40-30 30-40-30-30-50z M500 120c30-10 70 10 60 40s-40 20-60 0-20-30 0-40z M680 200c20-10 40 10 30 30s-30 10-40-10-10-20 10-20z M820 160c20 0 30 20 20 40s-30 10-40-10 0-30 20-30z M720 350c10-20 40-10 30 10s-30 20-40 0 0-20 10-10z M220 320c20-10 40 0 30 20s-30 10-40-10 0-20 10-10z" />
+          <path fill="#FFF" d="M150 190 Q170 160 200 180 T250 170 T300 200 T350 180 T400 220 T450 190 T500 210 T550 180 T600 230 T650 200 T700 220 T750 180 T800 210" stroke="#FFF" strokeWidth="1" fillOpacity="0.2"/>
+        </svg>
+
+        {/* Animated Flight Paths */}
+        <svg viewBox="0 0 1000 500" style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1 }}>
+          <defs>
+            <linearGradient id="pathGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#3CC8C8" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#3CC8C8" stopOpacity="1" />
+            </linearGradient>
+            <linearGradient id="pathGrad2" x1="100%" y1="0%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#E97856" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#E97856" stopOpacity="1" />
+            </linearGradient>
+          </defs>
+          
+          {/* India to USA */}
+          <path className="flight-path" d="M 680,220 Q 400,100 180,180" fill="transparent" stroke="url(#pathGrad2)" strokeWidth="3" strokeDasharray="5, 10" />
+          {/* India to UK */}
+          <path className="flight-path" d="M 680,220 Q 580,120 520,150" fill="transparent" stroke="url(#pathGrad)" strokeWidth="3" strokeDasharray="5, 10" />
+          {/* India to UAE */}
+          <path className="flight-path" d="M 680,220 Q 640,200 620,230" fill="transparent" stroke="url(#pathGrad)" strokeWidth="3" strokeDasharray="5, 10" />
+          {/* India to AUS */}
+          <path className="flight-path" d="M 680,220 Q 750,280 800,350" fill="transparent" stroke="url(#pathGrad)" strokeWidth="3" strokeDasharray="5, 10" />
+        </svg>
+
+        {/* Hub Dots */}
+        <div className="hub-dot" style={{ top: '44%', left: '68%' }} title="India (Origin)">
+          <div className="pulse-ring coral"></div><div className="dot coral"></div><span className="hub-label">Andhra Pradesh</span>
+        </div>
+        <div className="hub-dot" style={{ top: '36%', left: '18%' }} title="USA">
+          <div className="pulse-ring"></div><div className="dot"></div><span className="hub-label">USA</span>
+        </div>
+        <div className="hub-dot" style={{ top: '30%', left: '52%' }} title="UK">
+          <div className="pulse-ring"></div><div className="dot"></div><span className="hub-label">UK</span>
+        </div>
+        <div className="hub-dot" style={{ top: '46%', left: '62%' }} title="UAE">
+          <div className="pulse-ring"></div><div className="dot"></div><span className="hub-label">UAE</span>
+        </div>
+        <div className="hub-dot" style={{ top: '70%', left: '80%' }} title="Australia">
+          <div className="pulse-ring"></div><div className="dot"></div><span className="hub-label">Australia</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Testimonials Carousel ── */
 function TestimonialsCarousel({ items }) {
   const [idx, setIdx] = useState(0);
@@ -95,13 +242,13 @@ function TestimonialsCarousel({ items }) {
   return (
     <div className="testimonial-editorial-box">
       <div className="testimonial-slide-item" style={{ display: 'block' }}>
-        <div className="stars-row">★★★★★</div>
+        <div className="stars-row">{'★'.repeat(item.rating || 5)}</div>
         <p className="testimonial-quote-text">"{item.text}"</p>
         <div className="testimonial-client-row">
           <div className="client-avatar-badge">{item.initials || item.name?.[0]}</div>
           <div style={{ textAlign: 'left' }}>
             <div style={{ fontWeight: 700, color: 'var(--text-slate-dark)' }}>{item.name}</div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-slate-muted)' }}>{item.role}</div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-slate-muted)' }}>{item.location || item.role}</div>
           </div>
         </div>
       </div>
@@ -152,7 +299,9 @@ function BranchMapSwitcher() {
   );
 }
 
-/* ── HomePage ── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   MAIN HOMEPAGE — All sections unified, dynamic, loop-driven
+   ══════════════════════════════════════════════════════════════════════════════ */
 export default function HomePage() {
   const { content } = usePageContent('home', {});
   const h = content.hero || {};
@@ -171,6 +320,8 @@ export default function HomePage() {
   const videoRef = useScrollReveal();
   const testimonialsRef = useScrollReveal();
   const branchMapRef = useScrollReveal();
+  const whyUsRef = useScrollReveal();
+  const orbitalRef = useScrollReveal();
 
   const scrollToServicesHub = (e) => {
     if (e) e.preventDefault();
@@ -179,59 +330,47 @@ export default function HomePage() {
     const startY = window.pageYOffset;
     const targetY = target.getBoundingClientRect().top + startY - 75;
     const distance = targetY - startY;
-    const duration = 500; // 0.5s slow smooth scroll
+    const duration = 500;
     let startTimestamp = null;
-
     const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
     const step = (timestamp) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const elapsed = timestamp - startTimestamp;
       const progress = Math.min(elapsed / duration, 1);
       window.scrollTo(0, startY + distance * easeInOutCubic(progress));
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        window.scrollTo(0, targetY);
-      }
+      if (progress < 1) requestAnimationFrame(step);
+      else window.scrollTo(0, targetY);
     };
     requestAnimationFrame(step);
   };
 
   return (
     <main>
-      {/* 1. Hero */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          1. HERO SECTION — Video background + headline + stats bar
+          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="hero-section-editorial" id="hero">
         <div className="hero-backdrop-layer" ref={parallaxRef}>
           <div className="hero-ambient-orb-1"></div>
           <div className="hero-ambient-orb-2"></div>
           <div className="hero-backdrop-overlay"></div>
-          {h.heroBgImage && /\.(mp4|webm|ogg|mov|m4v)($|\?)/i.test(h.heroBgImage) ? (
-            <video
-              key={`hero-vid-${h.heroBgImage}`}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className="hero-backdrop-img"
-              style={{ objectFit: 'cover', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
-            >
-              <source src={h.heroBgImage} type="video/mp4" />
-            </video>
-          ) : h.heroBgImage ? (
-            <picture key={`hero-pic-${h.heroBgImage}`} className="hero-backdrop-picture">
-              {h.heroBgMobile && <source media="(max-width: 768px)" srcSet={h.heroBgMobile} />}
-              <img
-                src={h.heroBgImage}
+          {(() => {
+            const videoSrc = (h.heroBgImage && /\.(mp4|webm|ogg|mov|m4v)($|\?)/i.test(h.heroBgImage))
+              ? h.heroBgImage
+              : '/assets/images/hero_video.mp4';
+            return (
+              <video
+                key={`hero-vid-${videoSrc}`}
+                autoPlay loop muted playsInline preload="auto"
                 className="hero-backdrop-img"
-                alt="Sai International Couriers Global"
-              />
-            </picture>
-          ) : null}
+                style={{ objectFit: 'cover', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
+              >
+                <source src={videoSrc} type="video/mp4" />
+              </video>
+            );
+          })()}
         </div>
         <div className="hero-main-container hero-sky-placement">
-          {/* 1. Upper Sky Area (Second Screenshot Position: Above the Plane) */}
           <div className="hero-sky-copy-zone">
             <div className="hero-kicker-badge">
               <span className="hero-kicker-dot"></span>
@@ -247,33 +386,31 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 2. Floating Explore Services in the Middle of Hero */}
           <div className="hero-floating-center-cta">
-            <a
-              href="#services-hub"
-              onClick={scrollToServicesHub}
-              className="btn-hero-floating-explore"
-              title="Explore Our Services"
-            >
+            <a href="#services-hub" onClick={scrollToServicesHub} className="btn-hero-floating-explore" title="Explore Our Services">
               <span>Explore Our Services</span>
               <i className="fa-solid fa-arrow-down"></i>
             </a>
             {(h.videoUrl || h.heroVideoUrl) && (
-              <button
-                type="button"
-                className="btn btn-hero-video-glass"
-                onClick={() => setActiveVideoModal(h.videoUrl || h.heroVideoUrl)}
-                title="Watch Process Video"
-              >
+              <button type="button" className="btn btn-hero-video-glass" onClick={() => setActiveVideoModal(h.videoUrl || h.heroVideoUrl)} title="Watch Process Video">
                 <i className="fa-solid fa-circle-play"></i>
                 <span>Watch Video</span>
               </button>
             )}
           </div>
         </div>
+
+        {/* Dynamic Stats Counter Bar — rendered via loop */}
+        <div className="hero-stats-bar">
+          {HERO_STATS.map((stat, i) => (
+            <AnimatedCounter key={i} value={stat.value} label={stat.label} icon={stat.icon} />
+          ))}
+        </div>
       </section>
 
-      {/* 2. Quick Services & Logistics Hub (Dedicated Section for Services, NRI Food, Tracking, Rates & Customs) */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          2. SERVICES HUB — Auto-scrolling marquee (loop-duplicated)
+          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="section section-quick-services-hub reveal-init" id="services-hub" ref={hubRef}>
         <div className="container">
           <div className="section-header-editorial center reveal-init">
@@ -282,33 +419,33 @@ export default function HomePage() {
             <p className="section-lead">Direct access to our international express courier network, authentic NRI food shipping, live satellite tracking, rate calculator, and customs documentation guide.</p>
           </div>
 
-          <div className="quick-hub-grid">
-            {SERVICE_HUB_LINKS.map((item, idx) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`quick-hub-card reveal-init stagger-${(idx % 4) + 1}`}
-              >
-                <div className="quick-hub-card-top">
-                  <div className="quick-hub-icon-box">
-                    <i className={`fa-solid ${item.icon}`}></i>
+          <div className="quick-hub-marquee-wrapper">
+            <div className="quick-hub-marquee-track">
+              {[...SERVICE_HUB_LINKS, ...SERVICE_HUB_LINKS].map((item, idx) => (
+                <Link key={`${item.to}-${idx}`} to={item.to} className="quick-hub-card">
+                  <div className="quick-hub-card-top">
+                    <div className="quick-hub-icon-box">
+                      <i className={`fa-solid ${item.icon}`}></i>
+                    </div>
+                    <span className="quick-hub-badge">{item.badge}</span>
                   </div>
-                  <span className="quick-hub-badge">{item.badge}</span>
-                </div>
-                <div className="quick-hub-eyebrow">{item.eyebrow}</div>
-                <h3 className="quick-hub-title">{item.title}</h3>
-                <p className="quick-hub-desc">{item.desc}</p>
-                <div className="quick-hub-cta">
-                  <span>{item.cta}</span>
-                  <i className="fa-solid fa-arrow-right"></i>
-                </div>
-              </Link>
-            ))}
+                  <div className="quick-hub-eyebrow">{item.eyebrow}</div>
+                  <h3 className="quick-hub-title">{item.title}</h3>
+                  <p className="quick-hub-desc">{item.desc}</p>
+                  <div className="quick-hub-cta">
+                    <span>{item.cta}</span>
+                    <i className="fa-solid fa-arrow-right"></i>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. Brand Story */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          3. BRAND STORY — Features rendered via loop
+          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="section brand-story-section reveal-init" id="about-story" ref={storyRef}>
         <div className="container">
           <div className="brand-story-grid">
@@ -321,8 +458,11 @@ export default function HomePage() {
               <p style={{ fontSize: '1.05rem', lineHeight: '1.65', margin: '1rem 0' }}>{bs.paragraph1}</p>
               <p>{bs.paragraph2}</p>
               <div className="story-features-list">
-                {(bs.features || ['Direct Air Cargo Flights', 'Free Doorstep Collection', 'End-to-End Customs Support', 'Live Satellite GPS Tracking']).map((f, i) => (
-                  <div key={f} className={`story-feature-item reveal-init stagger-${i + 1}`}><i className="fa-solid fa-plane"></i><span>{f}</span></div>
+                {(bs.features ? bs.features.map((f, i) => ({ icon: BRAND_FEATURES[i]?.icon || 'fa-check', text: f })) : BRAND_FEATURES).map((f, i) => (
+                  <div key={f.text} className={`story-feature-item reveal-init stagger-${i + 1}`}>
+                    <i className={`fa-solid ${f.icon}`}></i>
+                    <span>{f.text}</span>
+                  </div>
                 ))}
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
@@ -334,7 +474,71 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. Services */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          4. GLOBAL NETWORK (Text Left, Orbital Animation Right)
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="orbital-animation-section reveal-init" ref={orbitalRef}>
+        <div className="orbital-bg-mesh"></div>
+        <div className="container">
+          <div className="orbital-grid-layout">
+            <div className="orbital-text-content reveal-init">
+              <div className="eyebrow-pill teal">Global Logistics Network</div>
+              <h2 className="orbital-heading">Seamless Deliveries Across Continents</h2>
+              <p className="orbital-description">Our advanced satellite tracking and dedicated air cargo network ensures your shipments move swiftly and securely from our hubs in Andhra Pradesh to destinations worldwide.</p>
+              
+              <ul className="orbital-feature-list">
+                <li><i className="fa-solid fa-plane-up"></i> Direct Air Freight Partnerships</li>
+                <li><i className="fa-solid fa-truck-fast"></i> First-Mile Doorstep Collection</li>
+                <li><i className="fa-solid fa-satellite-dish"></i> 24/7 Real-Time Shipment Tracking</li>
+                <li><i className="fa-solid fa-file-shield"></i> Export Documentation & Customs</li>
+              </ul>
+              
+              <div style={{ marginTop: '2.5rem' }}>
+                <a href="#services-hub" onClick={scrollToServicesHub} className="btn btn-teal">
+                  Explore Services <i className="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+
+            <div className="orbital-visual-content">
+              <div className="orbital-container">
+                {/* Orbit rings via loop */}
+                {[1, 2].map(n => (
+                  <div key={n} className={`orbit-ring orbit-ring-${n}`}></div>
+                ))}
+      
+                {/* Central node */}
+                <div className="orbital-center-node">
+                  <i className="fa-solid fa-earth-americas"></i>
+                </div>
+      
+                {/* Orbiting nodes — dynamic via ORBITAL_NODES array */}
+                {ORBITAL_NODES.map((node, i) => (
+                  <div key={node.icon} className={`orbital-node-wrapper orbit-path-${i + 1}`}>
+                    <div className={`orbital-node ${node.colorClass}`}>
+                      <div className="node-glow-ring"></div>
+                      <i className={`fa-solid ${node.icon}`}></i>
+                    </div>
+                    <span className="orbital-node-label">{node.label}</span>
+                  </div>
+                ))}
+      
+                {/* Floating particles — dynamic via loop */}
+                {ORBITAL_PARTICLES.map((p, i) => (
+                  <div key={i} className={`orbital-particle ${p.cls}`}></div>
+                ))}
+              </div>
+              <div className="orbital-caption">
+                <span className="orbital-caption-text">Live Global Logistics Tracking Engine</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          5. SERVICES — Featured + stacked cards
+          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="section reveal-init" id="services-section" ref={servicesRef}>
         <div className="container">
           <div className="section-header-editorial reveal-init">
@@ -364,11 +568,27 @@ export default function HomePage() {
               </div>
             </div>
             <div className="service-stacked-cards">
-              {(sv.stackedServices || []).map((s, i) => (
+              {((sv.stackedServices && sv.stackedServices.length > 0) ? sv.stackedServices : [
+                {
+                  badge: 'Volume Rates',
+                  title: 'Heavy Commercial Air Cargo',
+                  description: 'Special discounted volume pricing for commercial B2B shipments, excess baggage, and 50kg+ shipments.'
+                },
+                {
+                  badge: '100% Leak-Proof',
+                  title: 'NRI Food & Pickles Special',
+                  description: 'Authentic Indian flavors shipped globally with our certified multi-layer vacuum sealing.'
+                },
+                {
+                  badge: 'Express Network',
+                  title: 'E-commerce Fulfillment',
+                  description: 'Fast, reliable logistics for local businesses selling globally, fully integrated tracking APIs.'
+                }
+              ]).map((s, i) => (
                 <div key={i} className={`service-horizontal-box reveal-init stagger-${i + 2}`} style={i === 1 ? { borderLeft: '4px solid var(--accent-coral)' } : {}}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ background: i === 1 ? 'var(--accent-coral-soft)' : 'var(--bg-powder-blue)', color: i === 1 ? 'var(--accent-coral)' : 'var(--text-slate-dark)', fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-xs)' }}>{s.badge}</span>
-                    <span style={{ color: i === 1 ? 'var(--accent-coral)' : 'var(--accent-teal)', fontWeight: 700, fontSize: '0.85rem' }}>{i === 0 ? 'Volume Rates' : '100% Leak-Proof'}</span>
+                    <span style={{ color: i === 1 ? 'var(--accent-coral)' : 'var(--accent-teal)', fontWeight: 700, fontSize: '0.85rem' }}>{i === 0 ? 'Volume Rates' : i === 1 ? '100% Leak-Proof' : 'Fast Integration'}</span>
                   </div>
                   <h3>{s.title}</h3>
                   <p style={{ fontSize: '0.92rem' }}>{s.description}</p>
@@ -379,7 +599,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Food Packaging */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          6. WHY CHOOSE US — Dynamic grid via loop
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="section section-why-choose-us reveal-init" id="why-choose-us" ref={whyUsRef}>
+        <div className="container">
+          <div className="section-header-editorial center reveal-init">
+            <div className="eyebrow-pill teal">Why SAI International?</div>
+            <h2 className="section-title">Trusted by Thousands Across the Globe</h2>
+            <p className="section-lead">From Kadapa to the world — here's why families and businesses choose us for their most precious shipments.</p>
+          </div>
+          <div className="why-choose-grid">
+            {WHY_CHOOSE_US.map((item, i) => (
+              <div key={item.title} className={`why-choose-card reveal-init stagger-${(i % 3) + 1}`}>
+                <div className="why-choose-icon-wrap">
+                  <i className={`fa-solid ${item.icon}`}></i>
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          7. FOOD PACKAGING — Items via loop
+          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="section section-peach reveal-init" id="food-packaging" ref={foodRef}>
         <div className="container">
           <div className="food-packaging-grid">
@@ -411,7 +657,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Video Showcase Section */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          8. VIDEO SHOWCASE
+          ═══════════════════════════════════════════════════════════════════════ */}
       {vs && (vs.videoUrl || vs.enabled !== false) && (
         <section className="section section-video-showcase reveal-init" id="video-showcase" ref={videoRef}>
           <div className="container">
@@ -433,7 +681,9 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* 8. Testimonials */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          9. TESTIMONIALS — Carousel with loop-rendered dots
+          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="section section-peach reveal-init" id="testimonials" ref={testimonialsRef}>
         <div className="container">
           <div className="section-header-editorial center reveal-init">
@@ -445,7 +695,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 9. Branch Map */}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          10. BRANCH MAP
+          ═══════════════════════════════════════════════════════════════════════ */}
       <section className="section reveal-init" id="regional-branches" ref={branchMapRef}>
         <div className="container">
           <div className="section-header-editorial reveal-init">

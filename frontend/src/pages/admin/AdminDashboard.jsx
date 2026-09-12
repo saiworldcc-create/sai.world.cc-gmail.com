@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { path: '/admin/branding', icon: 'fa-palette', label: 'Branding & Logo' },
   { path: '/admin/pages', icon: 'fa-file-pen', label: 'Page Editor' },
   { path: '/admin/shipments', icon: 'fa-box-archive', label: 'Shipments' },
+  { path: '/admin/create-shipment', icon: 'fa-truck-fast', label: 'Create Shipment' },
   { path: '/admin/bookings', icon: 'fa-calendar-check', label: 'Bookings' },
   { path: '/admin/messages', icon: 'fa-envelope', label: 'Messages' },
   { path: '/admin/media', icon: 'fa-images', label: 'Media Library' },

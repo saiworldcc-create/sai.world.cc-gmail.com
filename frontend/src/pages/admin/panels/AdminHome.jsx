@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { getAllContentPages } from '../../../services/api';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const STAT_CARDS = [
-  { icon: 'fa-file-pen', label: 'Editable Pages', color: '#3C9290', value: '11' },
-  { icon: 'fa-box-archive', label: 'Demo Shipments', color: '#E97856', value: '3' },
-  { icon: 'fa-images', label: 'Media Library', color: '#D5A85F', value: 'Active' },
-  { icon: 'fa-shield-check', label: 'System Status', color: '#27AE60', value: 'Live' },
+// Mock chart data (since we don't have historical data in the DB yet)
+const CHART_DATA = [
+  { name: 'Mon', bookings: 4 },
+  { name: 'Tue', bookings: 3 },
+  { name: 'Wed', bookings: 6 },
+  { name: 'Thu', bookings: 2 },
+  { name: 'Fri', bookings: 8 },
+  { name: 'Sat', bookings: 5 },
+  { name: 'Sun', bookings: 7 },
 ];
 
 const QUICK_PAGES = [
@@ -25,9 +31,31 @@ const QUICK_PAGES = [
 
 export default function AdminHome() {
   const [pages, setPages] = useState([]);
+  const [stats, setStats] = useState({
+    totalBookings: 0,
+    activeShipments: 0,
+    totalShipments: 0,
+    unreadMessages: 0,
+    recentBookings: []
+  });
 
   useEffect(() => {
     getAllContentPages().then(res => setPages(res.data || [])).catch(() => {});
+    
+    // Poll stats every 10 seconds for real-time feel
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get('/api/v1/admin/stats');
+        if (res.data.success) {
+          setStats(res.data.stats);
+        }
+      } catch (err) {
+        console.error('Failed to fetch stats', err);
+      }
+    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -45,17 +73,61 @@ export default function AdminHome() {
 
       {/* Stat Cards */}
       <div className="admin-stats-grid">
-        {STAT_CARDS.map(card => (
-          <div key={card.label} className="admin-stat-card">
-            <div className="admin-stat-icon" style={{ background: `${card.color}18`, color: card.color }}>
-              <i className={`fa-solid ${card.icon}`}></i>
-            </div>
-            <div>
-              <div className="admin-stat-value">{card.value}</div>
-              <div className="admin-stat-label">{card.label}</div>
-            </div>
+        <div className="admin-stat-card">
+          <div className="admin-stat-icon" style={{ background: '#3C929018', color: '#3C9290' }}>
+            <i className="fa-solid fa-calendar-check"></i>
           </div>
-        ))}
+          <div>
+            <div className="admin-stat-value">{stats.totalBookings}</div>
+            <div className="admin-stat-label">Total Bookings</div>
+          </div>
+        </div>
+        <div className="admin-stat-card">
+          <div className="admin-stat-icon" style={{ background: '#E9785618', color: '#E97856' }}>
+            <i className="fa-solid fa-truck-fast"></i>
+          </div>
+          <div>
+            <div className="admin-stat-value">{stats.activeShipments}</div>
+            <div className="admin-stat-label">Active Shipments</div>
+          </div>
+        </div>
+        <div className="admin-stat-card">
+          <div className="admin-stat-icon" style={{ background: '#27AE6018', color: '#27AE60' }}>
+            <i className="fa-solid fa-box-archive"></i>
+          </div>
+          <div>
+            <div className="admin-stat-value">{stats.totalShipments}</div>
+            <div className="admin-stat-label">Total Shipments</div>
+          </div>
+        </div>
+        <div className="admin-stat-card">
+          <div className="admin-stat-icon" style={{ background: '#D5A85F18', color: '#D5A85F' }}>
+            <i className="fa-solid fa-envelope"></i>
+          </div>
+          <div>
+            <div className="admin-stat-value">{stats.unreadMessages}</div>
+            <div className="admin-stat-label">Unread Messages</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Analytics Chart */}
+      <div className="admin-section-title" style={{ marginTop: '2rem' }}>
+        <i className="fa-solid fa-chart-line"></i> Analytics Overview
+      </div>
+      <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-light)', marginBottom: '2rem', height: '300px' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={CHART_DATA}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" vertical={false} />
+            <XAxis dataKey="name" stroke="var(--text-slate-muted)" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke="var(--text-slate-muted)" fontSize={12} tickLine={false} axisLine={false} />
+            <Tooltip 
+              contentStyle={{ background: 'var(--bg-card-tint)', border: '1px solid var(--border-light)', borderRadius: '8px', color: 'var(--text-slate-dark)' }} 
+              itemStyle={{ color: 'var(--accent-teal)' }}
+            />
+            <Line type="monotone" dataKey="bookings" stroke="var(--accent-teal)" strokeWidth={3} dot={{ r: 4, fill: 'var(--accent-teal)', strokeWidth: 2, stroke: 'var(--bg-card)' }} activeDot={{ r: 6 }} />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
       {/* Quick Edit Pages */}

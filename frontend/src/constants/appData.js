@@ -55,11 +55,77 @@ export const COUNTRY_RATES = {
   Other: { ratePerKg: 790, transit: '4–6 Days', minCharge: 1850, foodHandling: 250 },
 };
 
-export const NAV_LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
-  { to: '/branches', label: 'Branches' },
-  { to: '/contact', label: 'Contact' },
+export const MEGA_MENU_LINKS = [
+  {
+    id: 'ship',
+    label: 'Ship',
+    icon: 'fa-box',
+    columns: [
+      {
+        title: 'Send a Parcel',
+        links: [
+          { to: '/book-pickup', label: 'Book a Pickup', icon: 'fa-truck-fast' },
+          { to: '/calculator', label: 'Get a Quote', icon: 'fa-calculator' },
+          { to: '/branches', label: 'Find a Location', icon: 'fa-location-dot' }
+        ]
+      },
+      {
+        title: 'Specialty Shipping',
+        links: [
+          { to: '/food-shipping', label: 'NRI Food Special', icon: 'fa-bowl-food' },
+          { to: '/services', label: 'Commercial Cargo', icon: 'fa-pallet' },
+          { to: '/services', label: 'Medicine Delivery', icon: 'fa-pills' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'track',
+    label: 'Track',
+    icon: 'fa-location-crosshairs',
+    columns: [
+      {
+        title: 'Tracking Tools',
+        links: [
+          { to: '/tracking', label: 'Track Shipment', icon: 'fa-magnifying-glass' },
+          { to: '/tracking', label: 'Advanced Tracking', icon: 'fa-satellite-dish' },
+          { to: '/tracking', label: 'Tracking FAQs', icon: 'fa-circle-question' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'services',
+    label: 'Services',
+    icon: 'fa-plane-departure',
+    columns: [
+      {
+        title: 'Our Solutions',
+        links: [
+          { to: '/services', label: 'Express Courier', icon: 'fa-bolt' },
+          { to: '/services', label: 'Air Freight', icon: 'fa-plane-up' },
+          { to: '/services', label: 'Sea Freight', icon: 'fa-ship' },
+          { to: '/services', label: 'E-commerce Logistics', icon: 'fa-cart-shopping' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'support',
+    label: 'Support',
+    icon: 'fa-headset',
+    columns: [
+      {
+        title: 'Customer Service',
+        links: [
+          { to: '/contact', label: 'Contact Us', icon: 'fa-envelope' },
+          { to: '/about', label: 'About SAI', icon: 'fa-building' },
+          { to: '/customs-guide', label: 'Customs Guidelines', icon: 'fa-file-shield' },
+          { to: '/customs-guide', label: 'Prohibited Items', icon: 'fa-ban' }
+        ]
+      }
+    ]
+  }
 ];
 
 export const SERVICE_HUB_LINKS = [

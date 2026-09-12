@@ -38,7 +38,7 @@ export default function Footer() {
 
           {/* Col 1: Brand */}
           <div className="footer-col">
-            <div style={{ display: 'inline-flex', alignItems: 'center', background: '#FFFFFF', padding: '6px 12px', borderRadius: '12px', marginBottom: '0.75rem', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', background: 'var(--bg-card-tint)', padding: '6px 12px', borderRadius: '12px', marginBottom: '0.75rem', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
               <img
                 src="/assets/images/sai_logo_transparent.png"
                 alt="Sai International Couriers & Cargo"
