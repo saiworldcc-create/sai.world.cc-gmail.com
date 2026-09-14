@@ -227,9 +227,18 @@ export default function BranchesPage() {
 
           {/* Grid View */}
           {viewMode === 'grid' && (
-            <div className="regional-branches-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.75rem' }}>
-              {filteredBranches.map(branch => (
-                <div key={branch.id} className="branch-card-item" style={{ background: 'var(--bg-card-tint)', borderRadius: 'var(--radius-lg)', padding: '1.75rem', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div 
+              className={searchQuery === '' && selectedDistrict === 'all' ? "quick-hub-marquee-wrapper" : "regional-branches-grid"} 
+              style={searchQuery === '' && selectedDistrict === 'all' ? { margin: '2rem 0', padding: '1rem 0' } : { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.75rem' }}
+            >
+              <div 
+                className={searchQuery === '' && selectedDistrict === 'all' ? "quick-hub-marquee-track" : ""} 
+                style={searchQuery === '' && selectedDistrict === 'all' ? { gap: '1.75rem' } : { display: 'contents' }}
+              >
+                {(searchQuery === '' && selectedDistrict === 'all' 
+                  ? [...filteredBranches, ...filteredBranches, ...filteredBranches] 
+                  : filteredBranches).map((branch, idx) => (
+                  <div key={`${branch.id}-${idx}`} className="branch-card-item" style={{ width: (searchQuery === '' && selectedDistrict === 'all') ? '380px' : 'auto', flexShrink: 0, background: 'var(--bg-card-tint)', borderRadius: 'var(--radius-lg)', padding: '1.75rem', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <span className="eyebrow-pill teal" style={{ margin: 0, fontSize: '0.75rem' }}>{branch.tag || branch.district}</span>
                     <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-coral)' }}>PIN: {branch.pincode}</span>
@@ -278,6 +287,7 @@ export default function BranchesPage() {
                   </div>
                 </div>
               ))}
+              </div>
             </div>
           )}
 

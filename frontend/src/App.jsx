@@ -3,19 +3,24 @@ import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
 import { UserProvider, useUser } from './context/UserContext';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import CookieBanner from './components/common/CookieBanner';
 import ChatbotWidget from './components/common/ChatbotWidget';
 import PageTransition from './components/common/PageTransition';
+import AuthModal from './components/common/AuthModal';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import FoodShippingPage from './pages/FoodShippingPage';
 import BranchesPage from './pages/BranchesPage';
 import CustomsGuidePage from './pages/CustomsGuidePage';
+import ProhibitedItemsPage from './pages/ProhibitedItemsPage';
 import CalculatorPage from './pages/CalculatorPage';
 import TrackingPage from './pages/TrackingPage';
+import AdvancedTrackingPage from './pages/AdvancedTrackingPage';
+import TrackingFaqsPage from './pages/TrackingFaqsPage';
 import BookPickupPage from './pages/BookPickupPage';
 import ContactPage from './pages/ContactPage';
 import PortalPage from './pages/PortalPage';
@@ -23,9 +28,12 @@ import PayOnlinePage from './pages/PayOnlinePage';
 import NotFoundPage from './pages/NotFoundPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminCreateShipment from './pages/admin/AdminCreateShipment';
 import UserLoginPage from './pages/user/UserLoginPage';
 import UserDashboard from './pages/user/UserDashboard';
+import AirFreightPage from './pages/AirFreightPage';
+import SeaFreightPage from './pages/SeaFreightPage';
+import EcommerceLogisticsPage from './pages/EcommerceLogisticsPage';
+import ExpressCourierPage from './pages/ExpressCourierPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -63,11 +71,18 @@ function AppLayout() {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/air-freight" element={<AirFreightPage />} />
+          <Route path="/sea-freight" element={<SeaFreightPage />} />
+          <Route path="/ecommerce-logistics" element={<EcommerceLogisticsPage />} />
+          <Route path="/express-courier" element={<ExpressCourierPage />} />
           <Route path="/food-shipping" element={<FoodShippingPage />} />
           <Route path="/branches" element={<BranchesPage />} />
           <Route path="/customs-guide" element={<CustomsGuidePage />} />
+          <Route path="/prohibited-items" element={<ProhibitedItemsPage />} />
           <Route path="/calculator" element={<CalculatorPage />} />
           <Route path="/tracking" element={<TrackingPage />} />
+          <Route path="/advanced-tracking" element={<AdvancedTrackingPage />} />
+          <Route path="/tracking-faqs" element={<TrackingFaqsPage />} />
           <Route path="/book-pickup" element={<BookPickupPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/portal" element={<PortalPage />} />
@@ -79,7 +94,6 @@ function AppLayout() {
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route path="/admin/create-shipment" element={<ProtectedAdminRoute><AdminCreateShipment /></ProtectedAdminRoute>} />
           <Route path="/admin/*" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
 
           <Route path="*" element={<NotFoundPage />} />
@@ -88,6 +102,7 @@ function AppLayout() {
       {!isAdminRoute && <ChatbotWidget />}
       {!isAdminRoute && <CookieBanner />}
       {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <AuthModal />}
     </>
   );
 }
@@ -99,12 +114,14 @@ export default function App() {
   }, []);
 
   return (
-    <AdminAuthProvider>
-      <UserProvider>
-        <Router>
-          <AppLayout />
-        </Router>
-      </UserProvider>
-    </AdminAuthProvider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <AdminAuthProvider>
+        <UserProvider>
+          <Router>
+            <AppLayout />
+          </Router>
+        </UserProvider>
+      </AdminAuthProvider>
+    </GoogleOAuthProvider>
   );
 }

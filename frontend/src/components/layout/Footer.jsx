@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom';
+import useContactInfo from '../../hooks/useContactInfo';
 import useScrollReveal from '../../hooks/useScrollReveal';
 
 export default function Footer() {
+  const { data: contactData } = useContactInfo();
+  const branches = contactData?.branches || {};
+  const globalContact = contactData?.global || { email: '', phones: [] };
+  
+  // Get first two branches for footer
+  const footerBranches = Object.values(branches).slice(0, 2);
   const ctaRef = useScrollReveal();
   const footerRef = useScrollReveal();
 
@@ -89,33 +96,46 @@ export default function Footer() {
           {/* Col 4: Contact */}
           <div className="footer-col">
             <h4 className="footer-col-title">Branch Contact Info</h4>
-            <div className="footer-info-row">
-              <i className="fa-solid fa-location-dot"></i>
-              <div>
-                <strong style={{ color: '#FFFFFF' }}>Main Branch (Kadapa):</strong><br />
-                41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa.
+            
+            {footerBranches.length > 0 ? footerBranches.map((branch, i) => (
+              <div key={i} className="footer-info-row">
+                <i className="fa-solid fa-location-dot"></i>
+                <div>
+                  <strong style={{ color: '#FFFFFF' }}>{branch.title.split('(')[0]}:</strong><br />
+                  {branch.addr}
+                </div>
               </div>
-            </div>
-            <div className="footer-info-row">
-              <i className="fa-solid fa-location-dot"></i>
-              <div>
-                <strong style={{ color: '#FFFFFF' }}>Branch 2 (Kadapa):</strong><br />
-                Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.
+            )) : (
+              <div className="footer-info-row">
+                <i className="fa-solid fa-circle-notch fa-spin"></i>
+                <div>Loading branches...</div>
               </div>
-            </div>
+            )}
+
             <div className="footer-info-row">
               <i className="fa-solid fa-phone"></i>
               <div>
                 <strong>Phones:</strong><br />
-                <a href="tel:+919059949365" style={{ color: '#F7A88B' }}>+91 90599 49365</a> | <a href="tel:+919603149365" style={{ color: '#F7A88B' }}>+91 96031 49365</a><br />
-                <a href="tel:+919603049365" style={{ color: '#F7A88B' }}>+91 96030 49365</a> | <a href="tel:+919985323365" style={{ color: '#F7A88B' }}>+91 99853 23365</a>
+                {globalContact.phones.length > 0 ? globalContact.phones.map((phone, i) => (
+                  <span key={i}>
+                    <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} style={{ color: '#F7A88B' }}>{phone}</a>
+                    {i < globalContact.phones.length - 1 && ' | '}
+                    {(i + 1) % 2 === 0 && <br />}
+                  </span>
+                )) : (
+                  <>
+                    <a href="tel:+919059949365" style={{ color: '#F7A88B' }}>+91 90599 49365</a> | <a href="tel:+919603149365" style={{ color: '#F7A88B' }}>+91 96031 49365</a>
+                  </>
+                )}
               </div>
             </div>
             <div className="footer-info-row">
               <i className="fa-solid fa-envelope"></i>
               <div>
                 <strong>Email:</strong><br />
-                <a href="mailto:saiinternationalcouriers83@gmail.com" style={{ color: '#C2D5E5' }}>saiinternationalcouriers83@gmail.com</a>
+                <a href={`mailto:${globalContact.email || 'saiinternationalcouriers83@gmail.com'}`} style={{ color: '#C2D5E5' }}>
+                  {globalContact.email || 'saiinternationalcouriers83@gmail.com'}
+                </a>
               </div>
             </div>
           </div>
@@ -125,6 +145,9 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="container footer-bottom-bar">
           <div>© 2026 <strong>Sai International Couriers & Cargo</strong>. All Rights Reserved. GSTIN: 37BOPPS1122H1ZS.</div>
+          <div style={{ textAlign: 'center' }}>
+            Built by <a href="http://www.mstechhive.org" target="_blank" rel="noopener noreferrer" className="glowing-text-link">MSTechHive</a>
+          </div>
           <div style={{ display: 'flex', gap: '1.25rem' }}>
             <span style={{ color: 'var(--accent-teal)', fontWeight: '600' }}>
               <i className="fa-solid fa-lock" style={{ marginRight: '4px' }}></i> HTTPS SSL 256-Bit Protected

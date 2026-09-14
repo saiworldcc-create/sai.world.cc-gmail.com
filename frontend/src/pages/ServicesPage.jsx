@@ -6,7 +6,7 @@ export default function ServicesPage() {
   const { content } = usePageContent('services', {});
   const hero = content.hero || {};
   const catalogRef = useScrollReveal();
-  const servicesList = content.servicesList || [
+  const servicesList = [
     {
       id: 'express-courier',
       badge: 'Fastest Transit',
@@ -69,7 +69,7 @@ export default function ServicesPage() {
 
       <section className="section section-white reveal-init" ref={catalogRef}>
         <div className="container">
-          <div className="services-catalog-grid">
+          <div className="services-catalog-grid" style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
             {servicesList.map((svc, index) => {
               const isReverse = svc.reverse || index % 2 === 1;
               return (

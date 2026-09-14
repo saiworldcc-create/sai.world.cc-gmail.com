@@ -1,47 +1,3 @@
-export const BRANCH_MAP_DATA = {
-  'kadapa-main': {
-    title: "SAI INTERNATIONAL COURIER'S SERVICE'S (Kadapa Head Office)",
-    addr: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001',
-    url: "https://maps.google.com/maps?q=14.4726874,78.8323784+(SAI+INTERNATIONAL+COURIER'S+SERVICE'S)&t=&z=17&ie=UTF8&iwloc=B&output=embed",
-    externalUrl: "https://www.google.com/maps/place/SAI+INTERNATIONAL+COURIER'S+SERVICE'S/@14.4726874,78.8323784,17z",
-    phone: '+91 90599 49365',
-  },
-  'kadapa-branch-2': {
-    title: 'Kadapa Branch 2 (Visweswaraiah Circle)',
-    addr: 'Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.',
-    url: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed',
-    externalUrl: 'https://maps.google.com/?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001',
-    phone: '+91 90599 49365',
-  },
-  tirupati: {
-    title: 'Tirupati Regional Branch',
-    addr: 'Central Express Center, Tirupati, Andhra Pradesh',
-    url: 'https://maps.google.com/maps?q=Tirupati,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    externalUrl: 'https://maps.google.com/?q=Tirupati,+Andhra+Pradesh',
-    phone: '+91 90599 49365',
-  },
-  nellore: {
-    title: 'Nellore Regional Branch',
-    addr: 'Main Road Commercial Center, Nellore, Andhra Pradesh',
-    url: 'https://maps.google.com/maps?q=Nellore,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    externalUrl: 'https://maps.google.com/?q=Nellore,+Andhra+Pradesh',
-    phone: '+91 90599 49365',
-  },
-  proddutur: {
-    title: 'Proddutur Regional Branch',
-    addr: 'Textile Commercial Hub, Proddatur, Andhra Pradesh',
-    url: 'https://maps.google.com/maps?q=Proddatur,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    externalUrl: 'https://maps.google.com/?q=Proddatur,+Andhra+Pradesh',
-    phone: '+91 90599 49365',
-  },
-  rayachoty: {
-    title: 'Rayachoty Regional Branch',
-    addr: 'Main Bazar Express Hub, Rayachoty, Andhra Pradesh',
-    url: 'https://maps.google.com/maps?q=Rayachoty,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    externalUrl: 'https://maps.google.com/?q=Rayachoty,+Andhra+Pradesh',
-    phone: '+91 90599 49365',
-  },
-};
 
 export const COUNTRY_RATES = {
   USA: { ratePerKg: 780, transit: '4–5 Days', minCharge: 1800, foodHandling: 250 },
@@ -88,8 +44,8 @@ export const MEGA_MENU_LINKS = [
         title: 'Tracking Tools',
         links: [
           { to: '/tracking', label: 'Track Shipment', icon: 'fa-magnifying-glass' },
-          { to: '/tracking', label: 'Advanced Tracking', icon: 'fa-satellite-dish' },
-          { to: '/tracking', label: 'Tracking FAQs', icon: 'fa-circle-question' }
+          { to: '/advanced-tracking', label: 'Advanced Tracking', icon: 'fa-satellite-dish' },
+          { to: '/tracking-faqs', label: 'Tracking FAQs', icon: 'fa-circle-question' }
         ]
       }
     ]
@@ -102,10 +58,10 @@ export const MEGA_MENU_LINKS = [
       {
         title: 'Our Solutions',
         links: [
-          { to: '/services', label: 'Express Courier', icon: 'fa-bolt' },
-          { to: '/services', label: 'Air Freight', icon: 'fa-plane-up' },
-          { to: '/services', label: 'Sea Freight', icon: 'fa-ship' },
-          { to: '/services', label: 'E-commerce Logistics', icon: 'fa-cart-shopping' }
+          { to: '/express-courier', label: 'Express Courier', icon: 'fa-bolt' },
+          { to: '/air-freight', label: 'Air Freight', icon: 'fa-plane-up' },
+          { to: '/sea-freight', label: 'Sea Freight', icon: 'fa-ship' },
+          { to: '/ecommerce-logistics', label: 'E-commerce Logistics', icon: 'fa-cart-shopping' }
         ]
       }
     ]
@@ -121,7 +77,7 @@ export const MEGA_MENU_LINKS = [
           { to: '/contact', label: 'Contact Us', icon: 'fa-envelope' },
           { to: '/about', label: 'About SAI', icon: 'fa-building' },
           { to: '/customs-guide', label: 'Customs Guidelines', icon: 'fa-file-shield' },
-          { to: '/customs-guide', label: 'Prohibited Items', icon: 'fa-ban' }
+          { to: '/prohibited-items', label: 'Prohibited Items', icon: 'fa-ban' }
         ]
       }
     ]

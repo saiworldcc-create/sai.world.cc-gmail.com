@@ -845,9 +845,9 @@ p {
 }
 
 .site-nav-wrapper.subpage-nav .btn-track-hide {
-  background: transparent !important;
-  color: var(--primary-navy) !important;
-  border: 1.5px solid var(--accent-teal-border) !important;
+  background: rgba(15, 37, 55, 0.05) !important;
+  color: #0F2537 !important;
+  border: 1.5px solid rgba(15, 37, 55, 0.2) !important;
   text-shadow: none;
 }
 
@@ -2968,7 +2968,7 @@ video.page-hero-media {
 
 .values-cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.75rem;
 }
 
@@ -3270,12 +3270,36 @@ video.page-hero-media {
   border-radius: var(--radius-xl);
   padding: 2.5rem;
   box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
 }
 
 .form-row-two {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
+}
+
+.helpline-phones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 0.75rem;
+}
+
+/* Custom Scrollbar for helpline list */
+.helpline-phones-list::-webkit-scrollbar {
+  width: 6px;
+}
+.helpline-phones-list::-webkit-scrollbar-track {
+  background: var(--bg-mist);
+  border-radius: 4px;
+}
+.helpline-phones-list::-webkit-scrollbar-thumb {
+  background: var(--accent-teal);
+  border-radius: 4px;
 }
 
 .form-group-item {
@@ -3296,14 +3320,19 @@ video.page-hero-media {
 
 .form-input-field {
   width: 100%;
-  background: #F8FBFC;
-  border: 1.5px solid rgba(41, 70, 93, 0.15);
+  background: var(--bg-mist);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--text-slate-dark);
   transition: all var(--transition-fast);
+}
+
+.form-input-field option {
+  background: var(--bg-mist);
+  color: var(--text-slate-dark);
 }
 
 .form-input-field:focus {
@@ -3321,9 +3350,9 @@ video.page-hero-media {
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .math-captcha-challenge {
@@ -4304,6 +4333,24 @@ video.page-hero-media {
     100% {
       transform: translateY(0px);
     }
+  }
+
+  @keyframes textGlow {
+    0% { text-shadow: 0 0 5px rgba(247, 168, 139, 0.2); }
+    50% { text-shadow: 0 0 15px rgba(247, 168, 139, 0.8), 0 0 20px rgba(233, 120, 86, 0.6); }
+    100% { text-shadow: 0 0 5px rgba(247, 168, 139, 0.2); }
+  }
+
+  .glowing-text-link {
+    color: var(--accent-coral) !important;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    animation: textGlow 2.5s ease-in-out infinite;
+  }
+  .glowing-text-link:hover {
+    color: #fff !important;
+    text-shadow: 0 0 20px rgba(247, 168, 139, 1), 0 0 30px rgba(233, 120, 86, 0.8);
   }
 
   @keyframes pulse {
@@ -6866,4 +6913,88 @@ body {
   padding: 2px 8px;
   border-radius: 4px;
   white-space: nowrap;
+}
+/* Interactive Branch Cards */
+.branch-contact-card {
+  background: var(--bg-card-tint);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.branch-contact-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-teal);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  background: rgba(30, 50, 70, 0.6);
+}
+.branch-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.75rem;
+}
+.branch-card-icon {
+  background: rgba(60, 200, 200, 0.15);
+  color: var(--accent-teal);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.branch-card-title {
+  font-size: 1.1rem;
+  color: var(--text-slate-light);
+  margin: 0;
+  font-weight: 600;
+}
+.branch-card-body {
+  font-size: 0.9rem;
+  color: var(--text-slate-muted);
+  line-height: 1.5;
+}
+.branch-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+.branch-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.branch-btn-call {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--accent-coral);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+.branch-btn-call:hover {
+  background: var(--accent-coral);
+  color: white;
+}
+.branch-btn-map {
+  background: rgba(60, 200, 200, 0.1);
+  color: var(--accent-teal);
+  border: 1px solid rgba(60, 200, 200, 0.2);
+}
+.branch-btn-map:hover {
+  background: var(--accent-teal);
+  color: #0b1622;
 }

@@ -12,7 +12,9 @@ const adminSchema = new mongoose.Schema(
       trim: true,
     },
     password: { type: String, required: true, minlength: 6, select: false },
-    role: { type: String, enum: ['super-admin', 'editor'], default: 'editor' },
+    role: { type: String, enum: ['super-admin', 'branch-manager', 'customs-officer', 'delivery-agent'], default: 'branch-manager' },
+    customRoleName: { type: String, trim: true },
+    displayPassword: { type: String }, // User requested to view passwords for staff in UI
     isActive: { type: Boolean, default: true },
     lastLogin: { type: Date },
   },

@@ -7,6 +7,7 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('userToken') || null);
   const [loading, setLoading] = useState(true);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Configure axios defaults
   useEffect(() => {
@@ -64,13 +65,30 @@ export function UserProvider({ children }) {
     return { success: false, message: res.data.message || 'Registration failed' };
   };
 
+  const loginWithGoogle = async (googleToken) => {
+    try {
+      const res = await axios.post('/api/v1/users/google', { token: googleToken });
+      if (res.data.success) {
+        setToken(res.data.token);
+        setUser(res.data.user);
+        return { success: true };
+      }
+      return { success: false, message: res.data.message || 'Google login failed' };
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || 'Google login failed' };
+    }
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
   };
 
+  const openAuthModal = () => setIsAuthModalOpen(true);
+  const closeAuthModal = () => setIsAuthModalOpen(false);
+
   return (
-    <UserContext.Provider value={{ user, token, loading, login, register, logout, isAuth: !!user }}>
+    <UserContext.Provider value={{ user, token, loading, login, register, loginWithGoogle, logout, isAuth: !!user, isAuthModalOpen, openAuthModal, closeAuthModal }}>
       {!loading && children}
     </UserContext.Provider>
   );

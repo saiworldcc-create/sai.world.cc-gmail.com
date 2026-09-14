@@ -34,7 +34,7 @@ function SubpageHero({ eyebrow, heading, lead, breadcrumb, bgMedia }) {
 
   return (
     <section
-      className={`page-hero-banner${bgMedia ? ' has-bg-media' : ''} reveal-init`}
+      className={`page-hero-banner${bgMedia ? ' has-bg-media' : ''}`}
       id="about-hero"
     >
       {bgMedia && (
@@ -70,7 +70,7 @@ function SubpageHero({ eyebrow, heading, lead, breadcrumb, bgMedia }) {
         </div>
         <div className="eyebrow-pill teal"><i className="fa-solid fa-circle-info"></i> {eyebrow}</div>
         <h1 className="page-hero-title">{heading}</h1>
-        <p className="page-hero-lead">{lead}</p>
+        <p className="page-hero-desc">{lead}</p>
       </div>
     </section>
   );

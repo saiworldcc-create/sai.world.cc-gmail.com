@@ -2,21 +2,36 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import usePageContent from '../hooks/usePageContent';
 import { sendContact } from '../services/api';
+import { INDIAN_STATES } from '../constants/locations';
+import useContactInfo from '../hooks/useContactInfo';
 
 export default function ContactPage() {
   const { content } = usePageContent('contact', {});
   const hero = content.hero || {};
-  const contactInfo = content.contactInfo || {};
+  const { data: contactData, loading: contactLoading } = useContactInfo();
+  const branches = contactData?.branches || {};
+  const globalContact = contactData?.global || { email: '', phones: [], hours: '' };
 
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     branch: 'Kadapa Main (Co-operative Colony)',
+    customBranch: '',
     destCountry: 'USA',
+    customDestCountry: '',
     shipmentCategory: 'NRI Homemade Food & Pickles',
+    customShipmentCategory: '',
     parcelWeight: '5 kg to 10 kg (Standard Food Box)',
+    customParcelWeight: '',
+    email: '',
+    state: 'Andhra Pradesh',
+    customState: '',
+    district: 'YSR Kadapa',
+    customDistrict: '',
     pickupAddress: '',
   });
+
+  const selectedStateObj = INDIAN_STATES.find(s => s.name === formData.state) || INDIAN_STATES[0];
 
   // Math CAPTCHA
   const [captcha, setCaptcha] = useState({ n1: 4, n2: 5, answer: 9 });
@@ -51,16 +66,39 @@ export default function ContactPage() {
     setLoading(true);
     setError('');
     try {
-      await sendContact(formData);
+      const finalBranch = formData.branch.includes('Other') ? formData.customBranch : formData.branch;
+      const finalDestCountry = formData.destCountry.includes('Other') ? formData.customDestCountry : formData.destCountry;
+      const finalShipmentCategory = formData.shipmentCategory.includes('Other') ? formData.customShipmentCategory : formData.shipmentCategory;
+      const finalParcelWeight = formData.parcelWeight.includes('Other') ? formData.customParcelWeight : formData.parcelWeight;
+      const finalState = formData.state === 'Other State' ? formData.customState : formData.state;
+      const finalDistrict = formData.district === 'Other District' ? formData.customDistrict : formData.district;
+
+      const apiPayload = {
+        ...formData,
+        branch: finalBranch,
+        destCountry: finalDestCountry,
+        shipmentCategory: finalShipmentCategory,
+        parcelWeight: finalParcelWeight,
+        pickupAddress: `${formData.pickupAddress}, ${finalDistrict}, ${finalState}`.trim().replace(/^,\s*/, '')
+      };
+      await sendContact(apiPayload);
       setSuccessModal({ ...formData });
       setFormData({
         name: '',
         phone: '',
+        email: '',
         branch: 'Kadapa Main (Co-operative Colony)',
         destCountry: 'USA',
         shipmentCategory: 'NRI Homemade Food & Pickles',
         parcelWeight: '5 kg to 10 kg (Standard Food Box)',
-        pickupAddress: '',
+        state: 'Andhra Pradesh',
+        district: 'YSR Kadapa',
+        customBranch: '',
+        customDestCountry: '',
+        customShipmentCategory: '',
+        customParcelWeight: '',
+        customState: '',
+        customDistrict: '',
       });
       generateCaptcha();
     } catch (err) {
@@ -78,7 +116,15 @@ export default function ContactPage() {
       return;
     }
 
-    const waMsg = `Hello Sai International Couriers,\n\nI want to book a doorstep pickup:\n- *Sender:* ${formData.name}\n- *Phone:* ${formData.phone}\n- *Pickup Branch/Zone:* ${formData.branch}\n- *Destination Country:* ${formData.destCountry}\n- *Shipment Category:* ${formData.shipmentCategory}\n- *Est. Weight:* ${formData.parcelWeight}\n- *Address/Notes:* ${formData.pickupAddress || 'Doorstep Pickup'}\n\nPlease confirm rates & pickup timing.`;
+    const finalBranch = formData.branch.includes('Other') ? formData.customBranch : formData.branch;
+    const finalDestCountry = formData.destCountry.includes('Other') ? formData.customDestCountry : formData.destCountry;
+    const finalShipmentCategory = formData.shipmentCategory.includes('Other') ? formData.customShipmentCategory : formData.shipmentCategory;
+    const finalParcelWeight = formData.parcelWeight.includes('Other') ? formData.customParcelWeight : formData.parcelWeight;
+    const finalState = formData.state === 'Other State' ? formData.customState : formData.state;
+    const finalDistrict = formData.district === 'Other District' ? formData.customDistrict : formData.district;
+
+    const waAddress = `${formData.pickupAddress ? formData.pickupAddress + ', ' : ''}${finalDistrict}, ${finalState}`;
+    const waMsg = `Hello Sai International Couriers,\n\nI want to book a doorstep pickup:\n- *Sender:* ${formData.name}\n- *Phone:* ${formData.phone}\n- *Email:* ${formData.email || 'N/A'}\n- *Pickup Branch/Zone:* ${finalBranch}\n- *Destination Country:* ${finalDestCountry}\n- *Shipment Category:* ${finalShipmentCategory}\n- *Est. Weight:* ${finalParcelWeight}\n- *Address/Notes:* ${waAddress}\n\nPlease confirm rates & pickup timing.`;
     window.open(`https://wa.me/919059949365?text=${encodeURIComponent(waMsg)}`, '_blank');
   };
 
@@ -119,7 +165,7 @@ export default function ContactPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <div className="form-row-two">
                   <div className="form-group-item">
                     <label className="form-label-title" htmlFor="sender-name">
@@ -152,6 +198,20 @@ export default function ContactPage() {
                   </div>
                 </div>
 
+                <div className="form-group-item">
+                  <label className="form-label-title" htmlFor="sender-email">
+                    <i className="fa-solid fa-envelope" style={{ color: 'var(--accent-teal)' }}></i> Email Address (Optional)
+                  </label>
+                  <input
+                    type="email"
+                    id="sender-email"
+                    className="form-input-field"
+                    placeholder="For booking confirmation receipt"
+                    value={formData.email}
+                    onChange={(e) => updateField('email', e.target.value)}
+                  />
+                </div>
+
                 <div className="form-row-two">
                   <div className="form-group-item">
                     <label className="form-label-title" htmlFor="pickup-branch">
@@ -169,8 +229,19 @@ export default function ContactPage() {
                       <option value="Nellore Commercial Hub">Nellore Commercial Hub</option>
                       <option value="Proddatur Textile Center">Proddatur Textile Center</option>
                       <option value="Rayachoty Express Hub">Rayachoty Express Hub</option>
-                      <option value="Other Andhra Pradesh Location">Other Andhra Pradesh Location</option>
+                      <option value="Other (Specify)">Other (Specify)</option>
                     </select>
+                    {formData.branch.includes('Other') && (
+                      <input 
+                        type="text" 
+                        className="form-input-field" 
+                        style={{ marginTop: '0.5rem' }} 
+                        placeholder="Please specify branch/area" 
+                        value={formData.customBranch}
+                        onChange={(e) => updateField('customBranch', e.target.value)}
+                        required
+                      />
+                    )}
                   </div>
 
                   <div className="form-group-item">
@@ -191,8 +262,19 @@ export default function ContactPage() {
                       <option value="Germany / Europe">Germany / European Union</option>
                       <option value="Singapore">Singapore</option>
                       <option value="New Zealand">New Zealand</option>
-                      <option value="Other 195+ Countries">Other 195+ Countries</option>
+                      <option value="Other (Specify)">Other (Specify)</option>
                     </select>
+                    {formData.destCountry.includes('Other') && (
+                      <input 
+                        type="text" 
+                        className="form-input-field" 
+                        style={{ marginTop: '0.5rem' }} 
+                        placeholder="Please specify country" 
+                        value={formData.customDestCountry}
+                        onChange={(e) => updateField('customDestCountry', e.target.value)}
+                        required
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -212,7 +294,19 @@ export default function ContactPage() {
                       <option value="General Express Parcel">General Express Parcel</option>
                       <option value="Commercial Air Cargo / Pallet">Commercial Air Cargo / Pallet</option>
                       <option value="Student Excess Baggage">Student Excess Baggage</option>
+                      <option value="Other (Specify)">Other (Specify)</option>
                     </select>
+                    {formData.shipmentCategory.includes('Other') && (
+                      <input 
+                        type="text" 
+                        className="form-input-field" 
+                        style={{ marginTop: '0.5rem' }} 
+                        placeholder="Please specify shipment type" 
+                        value={formData.customShipmentCategory}
+                        onChange={(e) => updateField('customShipmentCategory', e.target.value)}
+                        required
+                      />
+                    )}
                   </div>
 
                   <div className="form-group-item">
@@ -230,7 +324,82 @@ export default function ContactPage() {
                       <option value="5 kg to 10 kg (Standard Food Box)">5 kg to 10 kg (Standard Food Box)</option>
                       <option value="10 kg to 20 kg">10 kg to 20 kg</option>
                       <option value="20 kg to 50 kg+ (Baggage/Cargo)">20 kg to 50 kg+ (Baggage/Cargo)</option>
+                      <option value="Other (Specify)">Other (Specify)</option>
                     </select>
+                    {formData.parcelWeight.includes('Other') && (
+                      <input 
+                        type="text" 
+                        className="form-input-field" 
+                        style={{ marginTop: '0.5rem' }} 
+                        placeholder="Please specify weight" 
+                        value={formData.customParcelWeight}
+                        onChange={(e) => updateField('customParcelWeight', e.target.value)}
+                        required
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <div className="form-row-two">
+                  <div className="form-group-item">
+                    <label className="form-label-title" htmlFor="pickup-state">
+                      <i className="fa-solid fa-map" style={{ color: 'var(--accent-teal)' }}></i> State *
+                    </label>
+                    <select
+                      id="pickup-state"
+                      className="form-input-field"
+                      value={formData.state}
+                      onChange={(e) => {
+                        const newState = e.target.value;
+                        updateField('state', newState);
+                        const stateData = INDIAN_STATES.find(s => s.name === newState);
+                        if (stateData && stateData.districts.length > 0) {
+                          updateField('district', stateData.districts[0]);
+                        }
+                      }}
+                    >
+                      {INDIAN_STATES.map(s => (
+                        <option key={s.name} value={s.name}>{s.name}</option>
+                      ))}
+                    </select>
+                    {formData.state === 'Other State' && (
+                      <input 
+                        type="text" 
+                        className="form-input-field" 
+                        style={{ marginTop: '0.5rem' }} 
+                        placeholder="Please specify state" 
+                        value={formData.customState}
+                        onChange={(e) => updateField('customState', e.target.value)}
+                        required
+                      />
+                    )}
+                  </div>
+
+                  <div className="form-group-item">
+                    <label className="form-label-title" htmlFor="pickup-district">
+                      <i className="fa-solid fa-location-arrow" style={{ color: 'var(--accent-coral)' }}></i> District *
+                    </label>
+                    <select
+                      id="pickup-district"
+                      className="form-input-field"
+                      value={formData.district}
+                      onChange={(e) => updateField('district', e.target.value)}
+                    >
+                      {selectedStateObj.districts.map(d => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
+                    </select>
+                    {formData.district === 'Other District' && (
+                      <input 
+                        type="text" 
+                        className="form-input-field" 
+                        style={{ marginTop: '0.5rem' }} 
+                        placeholder="Please specify district" 
+                        value={formData.customDistrict}
+                        onChange={(e) => updateField('customDistrict', e.target.value)}
+                        required
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -271,7 +440,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="contact-form-actions-grid" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <div className="contact-form-actions-grid" style={{ marginTop: 'auto', paddingTop: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   <button type="submit" className="btn btn-coral btn-lg" style={{ flex: 1 }} disabled={loading}>
                     {loading ? <><i className="fa-solid fa-circle-notch fa-spin"></i> Submitting…</> : <><i className="fa-solid fa-paper-plane"></i> Book Pickup Inquiry</>}
                   </button>
@@ -293,48 +462,70 @@ export default function ContactPage() {
                 </p>
 
                 <div className="helpline-phones-list">
-                  <div className="phone-contact-item">
-                    <div className="phone-icon-box"><i className="fa-solid fa-phone"></i></div>
-                    <div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-slate-muted)', fontWeight: 700 }}>Kadapa Head Office (MD Chandra Babu)</div>
-                      <a href="tel:+919059949365" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--accent-coral)' }}>+91 90599 49365</a>
+                  {contactLoading ? (
+                    <div className="skeleton-box" style={{ height: '300px' }}></div>
+                  ) : (
+                    Object.values(branches).map((branch, index) => (
+                      <div key={index} className="branch-contact-card">
+                        <div className="branch-card-header">
+                          <div className="branch-card-icon">
+                            <i className="fa-solid fa-building-flag"></i>
+                          </div>
+                          <h4 className="branch-card-title">{branch.title}</h4>
+                        </div>
+                      <div className="branch-card-body">
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                          <i className="fa-solid fa-location-dot" style={{ color: 'var(--accent-coral)', marginTop: '0.2rem' }}></i>
+                          <span>{branch.addr}</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <i className="fa-solid fa-phone" style={{ color: 'var(--accent-teal)' }}></i>
+                          <a href={`tel:${branch.phone.replace(/[^0-9+]/g, '')}`} style={{ color: 'var(--text-slate-light)', fontWeight: 'bold' }}>{branch.phone}</a>
+                        </div>
+                      </div>
+                      <div className="branch-card-actions">
+                        <a href={`tel:${branch.phone.replace(/[^0-9+]/g, '')}`} className="branch-btn branch-btn-call">
+                          <i className="fa-solid fa-phone"></i> Call
+                        </a>
+                        <a href={branch.externalUrl} target="_blank" rel="noreferrer" className="branch-btn branch-btn-map">
+                          <i className="fa-solid fa-map-location-dot"></i> Map
+                        </a>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="phone-contact-item">
-                    <div className="phone-icon-box" style={{ background: 'var(--accent-teal-soft)', color: 'var(--accent-teal)' }}><i className="fa-solid fa-phone"></i></div>
-                    <div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-slate-muted)', fontWeight: 700 }}>Kadapa Branch 2 (Nagarajupeta)</div>
-                      <a href="tel:+919603049365" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-slate-dark)' }}>+91 96030 49365</a>
-                    </div>
-                  </div>
-
-                  <div className="phone-contact-item">
-                    <div className="phone-icon-box"><i className="fa-solid fa-phone"></i></div>
-                    <div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-slate-muted)', fontWeight: 700 }}>Tirupati Regional Center</div>
-                      <a href="tel:+919985323365" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-slate-dark)' }}>+91 99853 23365</a>
-                    </div>
-                  </div>
-
-                  <div className="phone-contact-item">
-                    <div className="phone-icon-box" style={{ background: 'var(--accent-teal-soft)', color: 'var(--accent-teal)' }}><i className="fa-solid fa-phone"></i></div>
-                    <div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-slate-muted)', fontWeight: 700 }}>Nellore Regional Center</div>
-                      <a href="tel:+919603149365" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-slate-dark)' }}>+91 96031 49365</a>
-                    </div>
-                  </div>
+                  ))
+                  )}
                 </div>
 
                 <div style={{ borderTop: '1.5px solid var(--border-subtle)', paddingTop: '1.25rem', marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-slate-dark)' }}>
                     <i className="fa-solid fa-envelope" style={{ color: 'var(--accent-coral)' }}></i>
-                    <span>saiinternationalcouriers83@gmail.com</span>
+                    <span>{globalContact.email || 'saiinternationalcouriers83@gmail.com'}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--text-slate-dark)' }}>
                     <i className="fa-solid fa-clock" style={{ color: 'var(--accent-teal)' }}></i>
-                    <span>09:00 AM – 09:30 PM (All 7 Days Open)</span>
+                    <span>{globalContact.hours || '09:00 AM – 09:30 PM (All 7 Days Open)'}</span>
                   </div>
+                </div>
+
+                {/* Contact Us Lottie Animation */}
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center', 
+                  marginTop: '1.5rem',
+                  padding: '1.25rem',
+                  borderRadius: 'var(--radius-xl)',
+                  background: 'linear-gradient(135deg, rgba(60, 146, 144, 0.06) 0%, rgba(233, 120, 86, 0.06) 100%)',
+                  border: '1px dashed var(--border-light)'
+                }}>
+                  <lottie-player 
+                    src="/assets/contact-us-lottie.json"
+                    background="transparent" 
+                    speed="1" 
+                    style={{ width: '100%', maxWidth: '300px', height: '280px' }}
+                    loop 
+                    autoplay
+                  ></lottie-player>
                 </div>
               </div>
             </div>

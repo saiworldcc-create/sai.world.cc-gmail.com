@@ -10,7 +10,7 @@ export default function FoodShippingPage() {
 
   return (
     <main style={{ paddingTop: '80px' }}>
-      <section className="page-hero-banner reveal-init">
+      <section className="page-hero-banner">
         <div className="container">
           <div className="breadcrumb-trail">
             <Link to="/">Home</Link>
@@ -147,7 +147,7 @@ export default function FoodShippingPage() {
             <p className="section-lead">We handle all required documentation and declarations so your food parcel clears foreign customs smoothly.</p>
           </div>
 
-          <div className="values-cards-grid">
+          <div className="values-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
             <div className="value-item-card">
               <div className="value-icon-box">🇺🇸</div>
               <h3>USA (US FDA Compliance)</h3>

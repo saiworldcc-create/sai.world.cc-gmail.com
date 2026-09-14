@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import usePageContent from '../hooks/usePageContent';
+import { COUNTRIES } from '../constants/countries';
+import SearchableSelect from '../components/common/SearchableSelect';
 import { COUNTRY_RATES } from '../constants/appData';
 
 export default function CalculatorPage() {
@@ -10,6 +12,7 @@ export default function CalculatorPage() {
   const [step, setStep] = useState(1);
   const [country, setCountry] = useState('USA');
   const [category, setCategory] = useState('food');
+  const [customCategory, setCustomCategory] = useState('');
   const [deadWeight, setDeadWeight] = useState(5);
   const [length, setLength] = useState(35);
   const [width, setWidth] = useState(25);
@@ -107,26 +110,76 @@ export default function CalculatorPage() {
                   <label className="form-label-title" htmlFor="calc-dest-country">
                     <i className="fa-solid fa-globe" style={{ color: '#E97856' }}></i> Destination Country
                   </label>
-                  <select id="calc-dest-country" className="form-input-field" value={country} onChange={(e) => setCountry(e.target.value)}>
-                    <option value="USA">🇺🇸 United States (USA)</option>
-                    <option value="UK">🇬🇧 United Kingdom (UK)</option>
-                    <option value="Canada">🇨🇦 Canada</option>
-                    <option value="Australia">🇦🇺 Australia</option>
-                    <option value="UAE">🇦🇪 United Arab Emirates (Dubai)</option>
-                    <option value="Other">🌍 Other Global Destination</option>
-                  </select>
+                  <SearchableSelect 
+                    id="calc-dest-country"
+                    value={country}
+                    onChange={setCountry}
+                    options={COUNTRIES}
+                    placeholder="Search country..."
+                  />
                 </div>
 
-                <div className="form-group-item" style={{ marginTop: '1.5rem' }}>
-                  <label className="form-label-title" htmlFor="calc-category-select">
-                    <i className="fa-solid fa-box-open" style={{ color: '#3CC8C8' }}></i> Item Category
+                <div className="form-group-item" style={{ marginTop: '2rem' }}>
+                  <label className="form-label-title" style={{ marginBottom: '1rem', display: 'block' }}>
+                    <i className="fa-solid fa-box-open" style={{ color: '#3CC8C8' }}></i> Select Item Category
                   </label>
-                  <select id="calc-category-select" className="form-input-field" value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value="food">NRI Homemade Food & Pickles</option>
-                    <option value="docs">University Transcripts & Documents</option>
-                    <option value="parcel">Express Personal / Gift Parcel</option>
-                    <option value="cargo">Commercial Heavy Air Cargo (50kg+)</option>
-                  </select>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                    {[
+                      { id: 'food', icon: 'fa-bowl-food', title: 'Food & Pickles', desc: 'NRI Homemade items' },
+                      { id: 'docs', icon: 'fa-file-signature', title: 'Documents', desc: 'Transcripts & files' },
+                      { id: 'parcel', icon: 'fa-gift', title: 'Express Parcel', desc: 'Gifts & personal items' },
+                      { id: 'cargo', icon: 'fa-pallet', title: 'Heavy Cargo', desc: 'Commercial 50kg+' },
+                      { id: 'custom', icon: 'fa-pen-to-square', title: 'Custom Item', desc: 'Enter manually' }
+                    ].map(cat => (
+                      <div 
+                        key={cat.id}
+                        onClick={() => setCategory(cat.id)}
+                        style={{
+                          background: category === cat.id ? 'rgba(60, 200, 200, 0.1)' : 'rgba(255,255,255,0.02)',
+                          border: `2px solid ${category === cat.id ? '#3CC8C8' : 'rgba(255,255,255,0.1)'}`,
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem'
+                        }}
+                        onMouseEnter={(e) => { if(category !== cat.id) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
+                        onMouseLeave={(e) => { if(category !== cat.id) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; }}
+                      >
+                        <div style={{ 
+                          width: '40px', height: '40px', borderRadius: '50%', 
+                          background: category === cat.id ? '#3CC8C8' : 'rgba(255,255,255,0.05)',
+                          color: category === cat.id ? '#122336' : '#A0B0C0',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem'
+                        }}>
+                          <i className={`fa-solid ${cat.icon}`}></i>
+                        </div>
+                        <div>
+                          <strong style={{ color: '#FFF', display: 'block', fontSize: '0.95rem' }}>{cat.title}</strong>
+                          <span style={{ color: '#7091A8', fontSize: '0.8rem' }}>{cat.desc}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {category === 'custom' && (
+                    <div className="animate-slide-in" style={{ marginTop: '1.5rem' }}>
+                      <label className="form-label-title" htmlFor="calc-custom-category">
+                        <i className="fa-solid fa-keyboard" style={{ color: '#E97856' }}></i> Specify Your Item
+                      </label>
+                      <input 
+                        type="text" 
+                        id="calc-custom-category" 
+                        className="form-input-field" 
+                        value={customCategory} 
+                        onChange={(e) => setCustomCategory(e.target.value)} 
+                        placeholder="e.g., Electronics, Handicrafts, Medicines..." 
+                        style={{ marginTop: '0.5rem' }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -174,9 +227,9 @@ export default function CalculatorPage() {
                 <h3 style={{ fontSize: '1.4rem', color: '#1E3446', marginBottom: '0.5rem' }}>Your Estimated Quote</h3>
                 <p style={{ color: '#4A6B82', marginBottom: '2rem' }}>Shipping from Andhra Pradesh to {country}</p>
                 
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '0.5rem', color: '#1E3446', marginBottom: '1.5rem' }}>
-                  <span style={{ fontSize: '2rem', fontWeight: 700 }}>₹{calcResults.totalMin}</span>
-                  <span style={{ fontSize: '1.2rem', color: '#A0B0C0' }}>- ₹{calcResults.totalMax}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1E3446', lineHeight: 1 }}>₹{calcResults.totalMin.toLocaleString('en-IN')}</span>
+                  <span style={{ fontSize: '0.85rem', color: '#7091A8', marginTop: '0.5rem' }}>*Exclusive of GST, fuel & remote area surcharges</span>
                 </div>
                 
                 <div style={{ background: 'var(--bg-card-tint)', padding: '1.5rem', borderRadius: '8px', textAlign: 'left', border: '1px solid var(--border-light)', marginBottom: '2rem' }}>

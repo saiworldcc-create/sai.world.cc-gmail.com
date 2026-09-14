@@ -147,6 +147,11 @@ const DEFAULT_PAGE_CONTENT = [
             title: 'Pickles, Sweets & Snacks Shipping',
             description: 'Specialized vacuum sealing and moisture-proof packing for homemade food items, sweets, snacks, and traditional attire sent to USA, UK, Canada & Gulf.',
           },
+          {
+            badge: 'Global Supply Chain',
+            title: 'E-commerce & B2B Logistics',
+            description: 'Fast, reliable fulfillment for local businesses selling globally. Complete API integrations for bulk shipping and real-time order tracking.',
+          }
         ],
       },
       foodPackaging: {
@@ -342,6 +347,60 @@ const DEFAULT_PAGE_CONTENT = [
         ],
       },
     },
+  },
+  {
+    page: 'contact',
+    sections: {
+      branches: {
+        'kadapa-main': {
+          title: "SAI INTERNATIONAL COURIER'S SERVICE'S (Kadapa Head Office)",
+          addr: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001',
+          url: "https://maps.google.com/maps?q=14.4726874,78.8323784+(SAI+INTERNATIONAL+COURIER'S+SERVICE'S)&t=&z=17&ie=UTF8&iwloc=B&output=embed",
+          externalUrl: "https://www.google.com/maps/place/SAI+INTERNATIONAL+COURIER'S+SERVICE'S/@14.4726874,78.8323784,17z",
+          phone: '+91 90599 49365',
+        },
+        'kadapa-branch-2': {
+          title: 'Kadapa Branch 2 (Visweswaraiah Circle)',
+          addr: 'Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.',
+          url: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.google.com/?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001',
+          phone: '+91 90599 49365',
+        },
+        tirupati: {
+          title: 'Tirupati Regional Branch',
+          addr: 'Tirupati, Andhra Pradesh',
+          url: 'https://maps.google.com/maps?q=13.6175501,79.4218504&t=&z=17&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.app.goo.gl/WU9xbU97gPxXBBKG7',
+          phone: '+91 90599 49365',
+        },
+        nellore: {
+          title: 'Nellore Regional Branch',
+          addr: 'Nellore, Andhra Pradesh',
+          url: 'https://maps.google.com/maps?q=14.4493,79.9874&t=&z=14&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.google.com/?q=Nellore,+Andhra+Pradesh',
+          phone: '+91 90599 49365',
+        },
+        proddutur: {
+          title: 'Proddutur Drop-off Center',
+          addr: 'Proddutur, Andhra Pradesh',
+          url: 'https://maps.google.com/maps?q=14.7523,78.5539&t=&z=14&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.google.com/?q=Proddutur,+Andhra+Pradesh',
+          phone: '+91 90599 49365',
+        },
+        rayachoty: {
+          title: 'Rayachoty Service Point',
+          addr: 'Rayachoty, Andhra Pradesh',
+          url: 'https://maps.google.com/maps?q=14.0558,78.7526&t=&z=14&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.google.com/?q=Rayachoty,+Andhra+Pradesh',
+          phone: '+91 90599 49365',
+        }
+      },
+      global: {
+        email: 'saiinternationalcouriers83@gmail.com',
+        phones: ['+91 90599 49365', '+91 96031 49365', '+91 96030 49365', '+91 99853 23365'],
+        hours: '09:00 AM – 09:30 PM (All 7 Days Open)'
+      }
+    }
   },
 ];
 

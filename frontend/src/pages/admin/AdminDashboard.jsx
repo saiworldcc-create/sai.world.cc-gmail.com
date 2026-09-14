@@ -8,20 +8,29 @@ import BookingsManager from './panels/BookingsManager';
 import MessagesManager from './panels/MessagesManager';
 import MediaLibrary from './panels/MediaLibrary';
 import BrandingManager from './panels/BrandingManager';
+import ContactManager from './panels/ContactManager';
 import AdminSettings from './panels/AdminSettings';
+import StaffManager from './panels/StaffManager';
+import CustomersManager from './panels/CustomersManager';
+import AdminCreateShipment from './AdminCreateShipment';
 
-const NAV_ITEMS = [
-  { path: '/admin/dashboard', icon: 'fa-gauge-high', label: 'Dashboard' },
-  { path: '/admin/branding', icon: 'fa-palette', label: 'Branding & Logo' },
-  { path: '/admin/pages', icon: 'fa-file-pen', label: 'Page Editor' },
-  { path: '/admin/shipments', icon: 'fa-box-archive', label: 'Shipments' },
-  { path: '/admin/create-shipment', icon: 'fa-truck-fast', label: 'Create Shipment' },
-  { path: '/admin/bookings', icon: 'fa-calendar-check', label: 'Bookings' },
-  { path: '/admin/messages', icon: 'fa-envelope', label: 'Messages' },
-  { path: '/admin/media', icon: 'fa-images', label: 'Media Library' },
-  { path: '/admin/settings', icon: 'fa-gear', label: 'Settings' },
-];
-
+const getNavItems = (role) => {
+  const isSuper = role === 'super-admin';
+  return [
+    { path: '/admin/dashboard', icon: 'fa-gauge-high', label: 'Dashboard' },
+    ...(isSuper ? [{ path: '/admin/branding', icon: 'fa-palette', label: 'Branding & Logo' }] : []),
+    ...(isSuper ? [{ path: '/admin/pages', icon: 'fa-file-pen', label: 'Page Editor' }] : []),
+    ...(isSuper ? [{ path: '/admin/customers', icon: 'fa-users', label: 'Customers Data' }] : []),
+    { path: '/admin/shipments', icon: 'fa-box-archive', label: 'Shipments' },
+    { path: '/admin/create-shipment', icon: 'fa-truck-fast', label: 'Create Shipment' },
+    { path: '/admin/bookings', icon: 'fa-calendar-check', label: 'Bookings' },
+    { path: '/admin/messages', icon: 'fa-envelope', label: 'Messages' },
+    ...(isSuper ? [{ path: '/admin/media', icon: 'fa-images', label: 'Media Library' }] : []),
+    ...(isSuper ? [{ path: '/admin/contact-settings', icon: 'fa-address-book', label: 'Contact & Branches' }] : []),
+    ...(isSuper ? [{ path: '/admin/staff', icon: 'fa-users-gear', label: 'Staff Management' }] : []),
+    { path: '/admin/settings', icon: 'fa-gear', label: 'Settings' },
+  ];
+};
 export default function AdminDashboard() {
   const { admin, logout } = useAdminAuth();
   const location = useLocation();
@@ -66,7 +75,7 @@ export default function AdminDashboard() {
         </div>
 
         <nav className="admin-sidebar-nav">
-          {NAV_ITEMS.map(item => (
+          {getNavItems(admin?.role).map(item => (
             <Link
               key={item.path}
               to={item.path}
@@ -105,7 +114,7 @@ export default function AdminDashboard() {
               <i className="fa-solid fa-bars"></i>
             </button>
             <h2 className="admin-page-title">
-              {NAV_ITEMS.find(n => location.pathname.startsWith(n.path))?.label || 'Admin'}
+              {getNavItems(admin?.role).find(n => location.pathname.startsWith(n.path))?.label || 'Admin'}
             </h2>
           </div>
           <div className="admin-topbar-right" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -136,10 +145,14 @@ export default function AdminDashboard() {
             <Route path="pages" element={<PageEditor />} />
             <Route path="pages/:page" element={<PageEditor />} />
             <Route path="shipments" element={<ShipmentsManager />} />
+            <Route path="create-shipment" element={<AdminCreateShipment />} />
             <Route path="bookings" element={<BookingsManager />} />
             <Route path="messages" element={<MessagesManager />} />
             <Route path="media" element={<MediaLibrary />} />
             <Route path="branding" element={<BrandingManager />} />
+            <Route path="contact-settings" element={<ContactManager />} />
+            <Route path="customers" element={<CustomersManager />} />
+            <Route path="staff" element={<StaffManager />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Routes>

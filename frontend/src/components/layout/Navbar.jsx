@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { MEGA_MENU_LINKS } from '../../constants/appData';
 import usePageContent from '../../hooks/usePageContent';
+import { useUser } from '../../context/UserContext';
+import api from '../../services/api';
 
 const DEFAULT_BRANDING = {
   logo: {
@@ -24,6 +26,8 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [regionOpen, setRegionOpen] = useState(false);
+  const { user, openAuthModal } = useUser();
+  const navigate = useNavigate();
   
   // Read current language from cookie or default to English
   const getCookie = (name) => {
@@ -59,7 +63,6 @@ export default function Navbar() {
     window.location.reload(); // Reload to apply translation
   };
   
-  const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
 
@@ -155,7 +158,17 @@ export default function Navbar() {
               <a href="tel:+919059949365" className="utility-item"><i className="fa-solid fa-phone"></i> +91 90599 49365</a>
               <Link to="/contact" className="utility-item"><i className="fa-solid fa-circle-info"></i> Help Center</Link>
               <div className="utility-divider"></div>
-              <Link to="/portal" className="utility-item login-btn"><i className="fa-regular fa-user"></i> Customer Portal</Link>
+              {user ? (
+                <Link to="/dashboard" className="utility-item login-btn"><i className="fa-regular fa-user"></i> My Dashboard</Link>
+              ) : (
+                <button 
+                  onClick={openAuthModal} 
+                  className="utility-item login-btn" 
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
+                >
+                  <i className="fa-regular fa-user"></i> Log In
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -220,7 +233,22 @@ export default function Navbar() {
                         <ul className="mega-link-list">
                           {col.links.map(link => (
                             <li key={link.to}>
-                              <Link to={link.to} onClick={() => { setMenuOpen(false); setActiveDropdown(null); }}>
+                              <Link 
+                                to={link.to} 
+                                onClick={() => { 
+                                  setMenuOpen(false); 
+                                  setActiveDropdown(null); 
+                                  const [path, hash] = link.to.split('#');
+                                  if (location.pathname === path) {
+                                    if (!hash) {
+                                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    } else {
+                                      const el = document.getElementById(hash);
+                                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                                    }
+                                  }
+                                }}
+                              >
                                 <i className={`fa-solid ${link.icon}`}></i> {link.label}
                               </Link>
                             </li>
@@ -236,9 +264,7 @@ export default function Navbar() {
 
           {/* Right Actions */}
           <div className="nav-actions">
-            <button className="btn btn-ghost nav-search-btn" aria-label="Search">
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </button>
+
             <Link to="/tracking" className="btn btn-soft-cream btn-sm btn-track-hide">
                Track
             </Link>

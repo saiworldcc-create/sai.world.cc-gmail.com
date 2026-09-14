@@ -25,6 +25,12 @@ const UserSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+    googleId: {
+      type: String,
+    },
+    avatar: {
+      type: String,
+    },
     savedAddresses: [
       {
         label: String,

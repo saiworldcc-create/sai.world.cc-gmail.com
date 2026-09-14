@@ -6,7 +6,7 @@ export default function InvoiceGenerator({ shipment }) {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Commercial Invoice - ${shipment.awb}</title>
+          <title>Payment Receipt & Invoice - ${shipment.awb}</title>
           <style>
             body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 40px; }
             .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); font-size: 16px; line-height: 24px; }
@@ -38,9 +38,10 @@ export default function InvoiceGenerator({ shipment }) {
                         <span style="font-size: 14px; color: #777;">International Couriers & Cargo</span>
                       </td>
                       <td style="text-align: right;">
+                        <h2 style="margin: 0; color: #1E3446; text-transform: uppercase; font-size: 22px;">Payment Receipt</h2>
                         Invoice #: INV-${Math.floor(Math.random() * 100000)}<br>
-                        Created: ${new Date(shipment.createdAt).toLocaleDateString()}<br>
-                        <strong>AWB: ${shipment.awb}</strong>
+                        Date: ${new Date(shipment.createdAt).toLocaleDateString()}<br>
+                        <strong>Tracking AWB: ${shipment.awb}</strong>
                         <div class="barcode">*${shipment.awb}*</div>
                       </td>
                     </tr>
@@ -67,26 +68,27 @@ export default function InvoiceGenerator({ shipment }) {
                 </td>
               </tr>
               <tr class="heading">
-                <td>Item Description</td>
-                <td style="text-align: right;">Details</td>
+                <td>Payment Summary</td>
+                <td style="text-align: right;">Amount</td>
               </tr>
               <tr class="item">
-                <td>Declared Contents</td>
-                <td style="text-align: right;">${shipment.items}</td>
-              </tr>
-              <tr class="item">
-                <td>Total Chargeable Weight</td>
-                <td style="text-align: right;">${shipment.weight}</td>
+                <td>Total Price Quoted</td>
+                <td style="text-align: right; font-weight: bold; font-size: 1.1rem; color: #1E3446;">${shipment.price}</td>
               </tr>
               <tr class="item last">
-                <td>Service Type</td>
-                <td style="text-align: right;">Express International Freight</td>
-              </tr>
-              <tr class="total">
-                <td></td>
-                <td style="text-align: right;">Total Paid: ${shipment.price}</td>
+                <td>Payment Status</td>
+                <td style="text-align: right; color: #27AE60; font-weight: bold;">PAID</td>
               </tr>
             </table>
+
+            ${shipment.images && shipment.images.length > 0 ? `
+              <div style="margin-top: 40px; page-break-inside: avoid;">
+                <h3 style="border-bottom: 2px solid #eee; padding-bottom: 8px; color: #1E3446; font-size: 16px;">Stock / Contents Visual Proof</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+                  ${shipment.images.map(img => `<img src="${img}" style="width: 160px; height: 160px; object-fit: cover; border: 1px solid #ccc; border-radius: 6px;" />`).join('')}
+                </div>
+              </div>
+            ` : ''}
             
             <div style="margin-top: 50px; font-size: 12px; color: #888; text-align: center;">
               This is a computer generated commercial invoice. <br>

@@ -5,7 +5,8 @@ import useScrollReveal from '../hooks/useScrollReveal';
 import useMouseParallax from '../hooks/useMouseParallax';
 import VideoPlayer, { VideoModal } from '../components/common/VideoPlayer';
 import { trackShipment } from '../services/api';
-import { TESTIMONIALS, BRANCH_MAP_DATA, SERVICE_HUB_LINKS } from '../constants/appData';
+import { TESTIMONIALS, SERVICE_HUB_LINKS } from '../constants/appData';
+import useContactInfo from '../hooks/useContactInfo';
 
 /* ══════════════════════════════════════════════════════════════════════════════
    DATA ARRAYS — All repeated elements use loops, no hardcoded DOM duplication
@@ -265,15 +266,20 @@ function TestimonialsCarousel({ items }) {
   );
 }
 
-/* ── Branch Map Switcher ── */
 function BranchMapSwitcher() {
+  const { data: contactData, loading } = useContactInfo();
+  const branches = contactData?.branches || {};
   const [activeBranch, setActiveBranch] = useState('kadapa-main');
-  const data = BRANCH_MAP_DATA[activeBranch];
+  
+  if (loading || Object.keys(branches).length === 0) return <div className="skeleton-box" style={{ height: '400px' }}></div>;
+  
+  const data = branches[activeBranch] || Object.values(branches)[0];
+
   return (
     <div className="google-maps-card-wrapper">
       <div className="maps-interactive-header">
         <div className="maps-branch-selector-pills">
-          {Object.entries(BRANCH_MAP_DATA).map(([key, b]) => (
+          {Object.entries(branches).map(([key, b]) => (
             <button key={key} className={`map-branch-pill-btn${activeBranch === key ? ' active' : ''}`} onClick={() => setActiveBranch(key)}>
               <i className="fa-solid fa-location-dot"></i> {b.title.split('(')[0].trim().replace("SAI INTERNATIONAL COURIER'S SERVICE'S", 'Kadapa Main')}
             </button>
@@ -450,7 +456,7 @@ export default function HomePage() {
         <div className="container">
           <div className="brand-story-grid">
             <div className="story-img-frame reveal-init stagger-1">
-              <img src={bs.image || '/assets/images/express_doorstep_pickup.jpg'} alt="Sai Couriers Doorstep Pickup" loading="lazy" />
+              <img src={'/assets/images/brand_story_dark_ui.jpg'} alt="Sai Couriers Global Network" loading="lazy" />
             </div>
             <div className="reveal-init stagger-2">
               <div className="eyebrow-pill teal">{bs.eyebrow || 'Our Heritage & Commitment'}</div>
@@ -549,7 +555,7 @@ export default function HomePage() {
           <div className="services-editorial-grid">
             <div className="service-featured-card reveal-init stagger-1">
               <div className="service-featured-img">
-                <img src={sv.featuredService?.image || '/assets/images/courier_delivery_service.jpg'} alt="Express Courier" loading="lazy" />
+                <img src={'/assets/images/services_warehouse_dark_ui.jpg'} alt="Express Courier" loading="lazy" />
               </div>
               <div className="service-featured-body">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -630,7 +636,7 @@ export default function HomePage() {
         <div className="container">
           <div className="food-packaging-grid">
             <div className="food-packaging-img-frame reveal-init stagger-1">
-              <img src={fp.image || '/assets/images/special_food_packaging.jpg'} alt="Food Packaging" loading="lazy" />
+              <img src={'/assets/images/food_packaging_dark_ui.jpg'} alt="Premium Vacuum Sealed Food Packaging" loading="lazy" />
             </div>
             <div className="reveal-init stagger-2">
               <div className="eyebrow-pill">{fp.eyebrow || 'Specialized Packaging Standards'}</div>

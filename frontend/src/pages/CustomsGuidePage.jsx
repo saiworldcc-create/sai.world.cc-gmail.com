@@ -59,69 +59,6 @@ export default function CustomsGuidePage() {
         </div>
       </section>
 
-      {/* Prohibited Items */}
-      <section className="section section-ivory">
-        <div className="container">
-          <div className="section-header-editorial center">
-            <div className="eyebrow-pill" style={{ background: 'rgba(233, 120, 86, 0.15)', color: 'var(--accent-coral)', borderColor: 'rgba(233, 120, 86, 0.3)' }}>
-              Aviation Safety Rules
-            </div>
-            <h2 className="section-title">Prohibited & Restricted Items</h2>
-            <p className="section-lead">The following items are strictly banned from international air cargo transport under IATA regulations.</p>
-          </div>
-
-          <div className="prohibited-categories-grid">
-            <div className="prohibited-category-card">
-              <div className="prohibited-icon-danger"><i className="fa-solid fa-fire-flame-curved"></i></div>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-slate-dark)', margin: 0 }}>Flammable Liquids & Aerosols</h3>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-slate-muted)', lineHeight: 1.55, margin: 0 }}>
-                Perfumes, deodorants, nail polish, paints, thinner, lighters, matchboxes, alcohol, and pressurized gas spray cans.
-              </p>
-            </div>
-
-            <div className="prohibited-category-card">
-              <div className="prohibited-icon-danger"><i className="fa-solid fa-coins"></i></div>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-slate-dark)', margin: 0 }}>Currency & Precious Bullion</h3>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-slate-muted)', lineHeight: 1.55, margin: 0 }}>
-                Currency notes (Indian Rupees or foreign cash), coins, gold coins/bars, raw silver, and bearer negotiable bonds.
-              </p>
-            </div>
-
-            <div className="prohibited-category-card">
-              <div className="prohibited-icon-danger"><i className="fa-solid fa-battery-half"></i></div>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-slate-dark)', margin: 0 }}>Loose Lithium Batteries</h3>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-slate-muted)', lineHeight: 1.55, margin: 0 }}>
-                Standalone power banks, loose lithium-ion battery cells, or uninstalled batteries without equipment.
-              </p>
-            </div>
-
-            <div className="prohibited-category-card">
-              <div className="prohibited-icon-danger"><i className="fa-solid fa-skull-crossbones"></i></div>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-slate-dark)', margin: 0 }}>Dangerous Chemicals & Narcotics</h3>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-slate-muted)', lineHeight: 1.55, margin: 0 }}>
-                Bleaches, corrosive acids, toxic pesticides, narcotics, illegal substances, and chemical reagents.
-              </p>
-            </div>
-
-            <div className="prohibited-category-card">
-              <div className="prohibited-icon-danger"><i className="fa-solid fa-gun"></i></div>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-slate-dark)', margin: 0 }}>Weapons & Replica Arms</h3>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-slate-muted)', lineHeight: 1.55, margin: 0 }}>
-                Firearms, ammunition, knives, swords, tactical gear, toy replica guns, fireworks, and explosives.
-              </p>
-            </div>
-
-            <div className="prohibited-category-card">
-              <div className="prohibited-icon-danger"><i className="fa-solid fa-seedling"></i></div>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-slate-dark)', margin: 0 }}>Raw Seeds, Plants & Live Organisms</h3>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-slate-muted)', lineHeight: 1.55, margin: 0 }}>
-                Live plants, fertile agricultural seeds, soil samples, insects, live pets, and fresh raw meat cuts.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Proforma Invoice / Packaging Tips */}
       <section className="section section-white">
         <div className="container">

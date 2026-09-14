@@ -56,27 +56,42 @@ export default function ChatbotWidget() {
         className="chatbot-fab"
         style={{
           position: 'fixed',
-          bottom: '2rem',
-          right: '2rem',
-          width: '60px',
-          height: '60px',
+          bottom: isOpen ? '2rem' : '1.5rem',
+          right: isOpen ? '2rem' : '1.5rem',
+          width: isOpen ? '60px' : '150px',
+          height: isOpen ? '60px' : '150px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #3CC8C8 0%, #1E3446 100%)',
+          background: isOpen ? 'linear-gradient(135deg, #E97856 0%, #D66746 100%)' : 'transparent',
           color: '#FFF',
           border: 'none',
-          boxShadow: '0 10px 25px rgba(30,52,70,0.4)',
+          boxShadow: isOpen ? '0 10px 25px rgba(233,120,86,0.4)' : 'none',
           cursor: 'pointer',
           zIndex: 9998,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '1.8rem',
-          transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+          transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
         }}
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
         onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
       >
-        <i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-headset'}`}></i>
+        {isOpen ? (
+          <i className="fa-solid fa-xmark"></i>
+        ) : (
+          <lottie-player 
+            src="/assets/chatbot-lottie.json"
+            background="transparent" 
+            speed="1" 
+            style={{ 
+              width: '180px', 
+              height: '180px', 
+              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))' 
+            }}
+            loop 
+            autoplay
+          ></lottie-player>
+        )}
       </button>
 
       {/* Chat Window */}

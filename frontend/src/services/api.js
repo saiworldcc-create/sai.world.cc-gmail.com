@@ -7,10 +7,18 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Auto-attach admin token if present
+// Auto-attach tokens if present
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('sai_admin_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const adminToken = localStorage.getItem('sai_admin_token');
+  const userToken = localStorage.getItem('userToken');
+  
+  if (adminToken && config.url.includes('/admin')) {
+    config.headers.Authorization = `Bearer ${adminToken}`;
+  } else if (userToken) {
+    config.headers.Authorization = `Bearer ${userToken}`;
+  } else if (adminToken) {
+    config.headers.Authorization = `Bearer ${adminToken}`;
+  }
   return config;
 });
 
@@ -31,21 +39,7 @@ api.interceptors.response.use(
 );
 
 // ─── Public endpoints ──────────────────────────────────────────────────────
-export const trackShipment = async (awb) => {
-  // Mock tracking API for Enterprise simulation
-  const shipment = getShipmentByAwb(awb);
-  if (!shipment) {
-    throw new Error('Shipment Route Not Found. Please verify your AWB.');
-  }
-  
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  return {
-    success: true,
-    data: shipment
-  };
-};
+export const trackShipment = (awb) => api.get(`/tracking/${encodeURIComponent(awb)}`);
 
 export const createMockShipment = async (data) => {
   const newShipment = dbCreateShipment(data);
@@ -54,14 +48,35 @@ export const createMockShipment = async (data) => {
 };
 
 export const createBooking = (data) => api.post('/bookings', data);
+export const sendBookingInvoice = (data) => api.post('/bookings/email-invoice', data);
+export const userLogin = (data) => api.post('/users/login', data);
+export const userRegister = (data) => api.post('/users/register', data);
+export const googleLogin = (token) => api.post('/users/google', { token });
+export const getUserMe = () => api.get('/users/me');
+export const getUserShipments = () => api.get('/users/shipments');
 export const sendContact = (data) => api.post('/contact', data);
 export const getRates = (country) => api.get('/rates', { params: country ? { country } : {} });
 export const getPageContent = (page) => api.get(`/content/${page}`);
 
+// Admin Contact Messages endpoints
+export const getMessages = () => api.get('/contact');
+export const updateMessageStatus = (id, readStatus) => api.patch(`/contact/${id}`, { read: readStatus });
+export const deleteMessage = (id) => api.delete(`/contact/${id}`);
+
 // ─── Admin Auth ────────────────────────────────────────────────────────────
 export const adminLogin = (data) => api.post('/admin/login', data);
 export const getAdminMe = () => api.get('/admin/me');
+export const getAdminStats = () => api.get('/admin/stats');
+export const getCustomers = () => api.get('/admin/customers');
 export const changeAdminPassword = (data) => api.post('/admin/change-password', data);
+export const getAdminStaff = () => api.get('/admin/staff');
+export const createAdminStaff = (data) => api.post('/admin/staff', data);
+export const updateAdminStaff = (id, data) => api.put(`/admin/staff/${id}`, data);
+export const deleteAdminStaff = (id) => api.delete(`/admin/staff/${id}`);
+
+// ─── Admin Bookings ────────────────────────────────────────────────────────
+export const getAdminBookings = () => api.get('/bookings');
+export const updateAdminBooking = (id, data) => api.patch(`/bookings/${id}`, data);
 
 // ─── Admin Content CMS ─────────────────────────────────────────────────────
 export const getAllContentPages = () => api.get('/content');

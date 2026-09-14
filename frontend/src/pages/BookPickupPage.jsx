@@ -1,22 +1,37 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import usePageContent from '../hooks/usePageContent';
-import { createBooking } from '../services/api';
+import { createBooking, sendBookingInvoice } from '../services/api';
+import { useUser } from '../context/UserContext';
+import { COUNTRIES } from '../constants/countries';
+import SearchableSelect from '../components/common/SearchableSelect';
 
 export default function BookPickupPage() {
   const { content } = usePageContent('book-pickup', {});
   const hero = content.hero || {};
+  const { user, isAuth, openAuthModal } = useUser();
+  const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     senderName: '',
+    senderCountryCode: '+91',
     senderPhone: '',
-    branchZone: 'Kadapa Head Office (Co-operative Colony)',
-    pickupDate: new Date().toISOString().split('T')[0],
-    senderAddress: '',
+    pickupDate: (() => {
+      const d = new Date();
+      if (d.getHours() >= 20) d.setDate(d.getDate() + 1);
+      return d.toISOString().split('T')[0];
+    })(),
+    senderDoorNo: '',
+    senderStreet: '',
+    senderCity: '',
+    senderPincode: '',
+    locationLat: null,
+    locationLng: null,
     pickupTimeSlot: 'Morning (09:00 AM - 12:00 PM)',
     destCountry: 'USA',
     receiverName: '',
+    receiverCountryCode: '+1',
     receiverPhone: '',
     itemCategory: 'NRI Food & Pickles',
     estimatedWeight: '5–10 kg',
@@ -24,26 +39,172 @@ export default function BookPickupPage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [locating, setLocating] = useState(false);
   const [error, setError] = useState('');
   const [confirmedBooking, setConfirmedBooking] = useState(null);
+  
+  // Email invoice states
+  const [emailAddress, setEmailAddress] = useState(user?.email || '');
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+
+  // Auto-update email if user logs in while on page
+  useEffect(() => {
+    if (user?.email) setEmailAddress(user.email);
+  }, [user]);
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleNextStep1 = () => {
-    if (!formData.senderName.trim() || !formData.senderPhone.trim() || !formData.senderAddress.trim()) {
-      setError('Please fill in your Name, Phone Number, and Pickup Address to continue.');
+  const getMaxPhoneLength = (code) => {
+    if (['+91', '+1', '+44'].includes(code)) return 10;
+    if (['+61', '+971'].includes(code)) return 9;
+    return 15;
+  };
+
+  const getMinMaxDates = () => {
+    const today = new Date();
+    // If past 8 PM, today is no longer an option for pickup
+    if (today.getHours() >= 20) {
+      today.setDate(today.getDate() + 1);
+    }
+    const minDate = today.toISOString().split('T')[0];
+    const max = new Date(today);
+    max.setDate(today.getDate() + 15);
+    const maxDate = max.toISOString().split('T')[0];
+    return { minDate, maxDate };
+  };
+  const { minDate, maxDate } = getMinMaxDates();
+
+  const getAvailableSlots = () => {
+    const today = new Date();
+    const isToday = formData.pickupDate === today.toISOString().split('T')[0];
+    const currentHour = today.getHours();
+
+    return [
+      { slot: 'Morning (09:00 AM - 12:00 PM)', title: '🌅 Morning', sub: '09:00 AM – 12:00 PM', disabled: isToday && currentHour >= 12 },
+      { slot: 'Afternoon (12:00 PM - 04:00 PM)', title: '☀️ Afternoon', sub: '12:00 PM – 04:00 PM', disabled: isToday && currentHour >= 16 },
+      { slot: 'Evening (04:00 PM - 08:00 PM)', title: '🌆 Evening', sub: '04:00 PM – 08:00 PM', disabled: isToday && currentHour >= 20 },
+    ];
+  };
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser.');
       return;
     }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        try {
+          // OpenStreetMap Reverse Geocoding with address details
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`);
+          const data = await response.json();
+          if (data && (data.address || data.display_name)) {
+            let house = '';
+            let streetArea = data.display_name;
+            let city = '';
+            let postcode = '';
+            
+            // Try to construct a cleaner, more accurate address prioritizing local details
+            if (data.address) {
+              const { address } = data;
+              house = address.house_number || address.house_name || address.building || '';
+              const road = address.road || address.pedestrian || '';
+              const area = address.neighbourhood || address.suburb || address.residential || '';
+              city = address.city || address.town || address.village || address.county || '';
+              postcode = address.postcode || '';
+              
+              streetArea = [road, area].filter(Boolean).join(', ') || data.display_name;
+            }
+
+            setFormData(prev => ({ 
+              ...prev, 
+              senderDoorNo: house,
+              senderStreet: streetArea,
+              senderCity: city,
+              senderPincode: postcode,
+              locationLat: lat,
+              locationLng: lng
+            }));
+          } else {
+            setError('Could not auto-fill address. Please enter it manually.');
+          }
+        } catch (err) {
+          setError('Failed to fetch address details. Please enter manually.');
+        } finally {
+          setLocating(false);
+        }
+      },
+      (err) => {
+        setError('Location access denied or unavailable. Please enter address manually.');
+        setLocating(false);
+      }
+    );
+  };
+
+  const handleNextStep1 = () => {
+    if (!isAuth) {
+      setError('Please login or create an account first to continue your booking.');
+      openAuthModal();
+      return;
+    }
+    if (!formData.senderName.trim() || !formData.senderPhone.trim()) {
+      setError('Please fill in your Name and Phone Number to continue.');
+      return;
+    }
+    if (!formData.senderDoorNo.trim() || !formData.senderStreet.trim() || !formData.senderCity.trim()) {
+      setError('Please provide your complete pickup address including Door No, Street, and City.');
+      return;
+    }
+    const cleanPhone = formData.senderPhone.replace(/\D/g, '');
+    if (formData.senderCountryCode === '+91' && cleanPhone.length !== 10) {
+      setError('Indian mobile numbers must be exactly 10 digits.');
+      return;
+    }
+    if ((formData.senderCountryCode === '+1' || formData.senderCountryCode === '+44') && cleanPhone.length !== 10) {
+      setError('This country code requires exactly 10 digits.');
+      return;
+    }
+    if ((formData.senderCountryCode === '+61' || formData.senderCountryCode === '+971') && cleanPhone.length !== 9) {
+      setError('This country code requires exactly 9 digits.');
+      return;
+    }
+    const availableSlots = getAvailableSlots();
+    const selectedSlot = availableSlots.find(s => s.slot === formData.pickupTimeSlot);
+    if (selectedSlot && selectedSlot.disabled) {
+      setError('The selected time slot has already passed for today. Please select a later slot or change the date.');
+      return;
+    }
+
     setError('');
     setCurrentStep(2);
     window.scrollTo({ top: 220, behavior: 'smooth' });
   };
 
   const handleNextStep2 = () => {
+    if (!isAuth) {
+      openAuthModal();
+      return;
+    }
     if (!formData.destCountry || !formData.receiverName.trim() || !formData.receiverPhone.trim()) {
       setError('Please enter Destination Country, Receiver Name, and Receiver Contact Number.');
+      return;
+    }
+    const cleanPhone = formData.receiverPhone.replace(/\D/g, '');
+    if (formData.receiverCountryCode === '+91' && cleanPhone.length !== 10) {
+      setError('Indian mobile numbers must be exactly 10 digits.');
+      return;
+    }
+    if ((formData.receiverCountryCode === '+1' || formData.receiverCountryCode === '+44') && cleanPhone.length !== 10) {
+      setError('This country code requires exactly 10 digits.');
+      return;
+    }
+    if ((formData.receiverCountryCode === '+61' || formData.receiverCountryCode === '+971') && cleanPhone.length !== 9) {
+      setError('This country code requires exactly 9 digits.');
       return;
     }
     setError('');
@@ -53,11 +214,39 @@ export default function BookPickupPage() {
 
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
+    if (!isAuth) {
+      openAuthModal();
+      return;
+    }
+    
     setLoading(true);
     setError('');
+    
+    // Construct payload for API
+    const payload = { ...formData };
+    // Combine separated address fields into one string for the backend
+    payload.senderAddress = `${formData.senderDoorNo}, ${formData.senderStreet}, ${formData.senderCity} - ${formData.senderPincode}`;
+    
+    if (formData.locationLat && formData.locationLng) {
+      payload.location = {
+        lat: formData.locationLat,
+        lng: formData.locationLng
+      };
+    }
+    
     try {
-      const res = await createBooking(formData);
+      const res = await createBooking(payload);
       setConfirmedBooking(res.data);
+      // If user is logged in, backend auto-sends invoice to their email
+      if (user?.email) {
+        setEmailAddress(user.email);
+        setEmailSent(true);  // Already sent by backend automatically
+        setEmailSending(false);
+      } else {
+        setEmailAddress('');
+        setEmailSent(false);
+        setEmailSending(false);
+      }
     } catch (err) {
       // Fallback AWB in case backend has a temporary connection glitch
       const fallbackAwb = `SAI-${Math.floor(10000 + Math.random() * 90000)}-${(formData.destCountry || 'EXP').substring(0, 3).toUpperCase()}`;
@@ -68,6 +257,9 @@ export default function BookPickupPage() {
         branchZone: formData.branchZone,
         destCountry: formData.destCountry
       });
+      setEmailAddress('');
+      setEmailSent(false);
+      setEmailSending(false);
     } finally {
       setLoading(false);
     }
@@ -163,15 +355,34 @@ export default function BookPickupPage() {
                       <label className="form-label-title" htmlFor="sender-phone">
                         <i className="fa-solid fa-phone" style={{ color: 'var(--accent-teal)' }}></i> Mobile Number (WhatsApp) *
                       </label>
-                      <input
-                        type="tel"
-                        id="sender-phone"
-                        className="form-input-field"
-                        placeholder="e.g. 9059949365"
-                        value={formData.senderPhone}
-                        onChange={(e) => updateField('senderPhone', e.target.value)}
-                        required
-                      />
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <select
+                          className="form-input-field"
+                          style={{ width: '100px', padding: '0.8rem 0.5rem' }}
+                          value={formData.senderCountryCode}
+                          onChange={(e) => updateField('senderCountryCode', e.target.value)}
+                        >
+                          <option value="+91">🇮🇳 +91</option>
+                          <option value="+1">🇺🇸 +1</option>
+                          <option value="+44">🇬🇧 +44</option>
+                          <option value="+61">🇦🇺 +61</option>
+                          <option value="+971">🇦🇪 +971</option>
+                        </select>
+                        <input
+                          type="tel"
+                          id="sender-phone"
+                          className="form-input-field"
+                          style={{ flex: 1 }}
+                          placeholder="e.g. 9059949365"
+                          value={formData.senderPhone}
+                          maxLength={getMaxPhoneLength(formData.senderCountryCode)}
+                          onChange={(e) => {
+                            const onlyNums = e.target.value.replace(/\D/g, '');
+                            updateField('senderPhone', onlyNums);
+                          }}
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -204,25 +415,95 @@ export default function BookPickupPage() {
                         id="pickup-date"
                         className="form-input-field"
                         value={formData.pickupDate}
+                        min={minDate}
+                        max={maxDate}
                         onChange={(e) => updateField('pickupDate', e.target.value)}
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="form-group-item" style={{ marginTop: '1rem' }}>
-                    <label className="form-label-title" htmlFor="sender-address">
-                      <i className="fa-solid fa-house-chimney" style={{ color: 'var(--accent-coral)' }}></i> Complete Pickup Address (House / Landmark) *
-                    </label>
-                    <textarea
-                      id="sender-address"
-                      className="form-input-field"
-                      rows="3"
-                      placeholder="Door No, Street Name, Landmark, City & Pincode"
-                      value={formData.senderAddress}
-                      onChange={(e) => updateField('senderAddress', e.target.value)}
-                      required
-                    ></textarea>
+                  <div className="form-group-item" style={{ marginTop: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <label className="form-label-title" style={{ margin: 0 }}>
+                        <i className="fa-solid fa-location-dot" style={{ color: 'var(--accent-coral)' }}></i> Complete Pickup Address *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleGetLocation}
+                        disabled={locating}
+                        style={{
+                          background: 'var(--accent-teal-soft)', color: 'var(--accent-teal)',
+                          border: 'none', borderRadius: '4px', padding: '0.4rem 0.8rem',
+                          fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', gap: '6px', transition: '0.2s'
+                        }}
+                      >
+                        {locating ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-solid fa-location-crosshairs"></i>}
+                        {locating ? 'Locating...' : 'Auto-Fill Location'}
+                      </button>
+                    </div>
+
+                    <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                      <div className="form-row-two" style={{ marginBottom: '1rem' }}>
+                        <div>
+                          <label className="form-label-title" style={{ fontSize: '0.8rem' }}>Flat / Door No. *</label>
+                          <input
+                            type="text"
+                            className="form-input-field"
+                            placeholder="e.g. Flat 302 / Door 4-12"
+                            value={formData.senderDoorNo}
+                            onChange={(e) => updateField('senderDoorNo', e.target.value)}
+                            required
+                            style={{ background: 'var(--bg-body)' }}
+                          />
+                        </div>
+                        <div>
+                          <label className="form-label-title" style={{ fontSize: '0.8rem' }}>City *</label>
+                          <input
+                            type="text"
+                            className="form-input-field"
+                            placeholder="e.g. Kadapa"
+                            value={formData.senderCity}
+                            onChange={(e) => updateField('senderCity', e.target.value)}
+                            required
+                            style={{ background: 'var(--bg-body)' }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-row-two">
+                        <div style={{ flex: 2 }}>
+                          <label className="form-label-title" style={{ fontSize: '0.8rem' }}>Street / Area / Landmark *</label>
+                          <input
+                            type="text"
+                            className="form-input-field"
+                            placeholder="e.g. Balaji Nagar, Near Water Tank"
+                            value={formData.senderStreet}
+                            onChange={(e) => updateField('senderStreet', e.target.value)}
+                            required
+                            style={{ background: 'var(--bg-body)' }}
+                          />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <label className="form-label-title" style={{ fontSize: '0.8rem' }}>Pincode</label>
+                          <input
+                            type="text"
+                            className="form-input-field"
+                            placeholder="e.g. 516001"
+                            value={formData.senderPincode}
+                            onChange={(e) => updateField('senderPincode', e.target.value)}
+                            style={{ background: 'var(--bg-body)' }}
+                          />
+                        </div>
+                      </div>
+
+                      {formData.locationLat && (
+                        <div style={{ fontSize: '0.75rem', color: 'var(--accent-teal)', marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <i className="fa-solid fa-circle-check"></i> GPS Location captured successfully!
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="form-group-item" style={{ marginTop: '1.25rem' }}>
@@ -230,18 +511,19 @@ export default function BookPickupPage() {
                       <i className="fa-solid fa-clock" style={{ color: 'var(--accent-teal)' }}></i> Preferred Arrival Slot
                     </label>
                     <div className="time-slot-grid">
-                      {[
-                        { slot: 'Morning (09:00 AM - 12:00 PM)', title: '🌅 Morning', sub: '09:00 AM – 12:00 PM' },
-                        { slot: 'Afternoon (12:00 PM - 04:00 PM)', title: '☀️ Afternoon', sub: '12:00 PM – 04:00 PM' },
-                        { slot: 'Evening (04:00 PM - 08:00 PM)', title: '🌆 Evening', sub: '04:00 PM – 08:00 PM' },
-                      ].map(t => (
-                        <div
+                      {getAvailableSlots().map(t => (
+                        <button
+                          type="button"
                           key={t.slot}
                           className={`time-slot-btn${formData.pickupTimeSlot === t.slot ? ' active' : ''}`}
-                          onClick={() => updateField('pickupTimeSlot', t.slot)}
+                          disabled={t.disabled}
+                          onClick={() => {
+                            if (!t.disabled) updateField('pickupTimeSlot', t.slot);
+                          }}
+                          style={t.disabled ? { opacity: 0.4, cursor: 'not-allowed', background: 'var(--bg-body)' } : {}}
                         >
                           {t.title}<br /><span style={{ fontSize: '0.72rem', fontWeight: 500 }}>{t.sub}</span>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -270,23 +552,13 @@ export default function BookPickupPage() {
                       <label className="form-label-title" htmlFor="dest-country">
                         <i className="fa-solid fa-earth-americas" style={{ color: 'var(--accent-coral)' }}></i> Destination Country *
                       </label>
-                      <select
+                      <SearchableSelect
                         id="dest-country"
-                        className="form-input-field"
                         value={formData.destCountry}
-                        onChange={(e) => updateField('destCountry', e.target.value)}
-                        required
-                      >
-                        <option value="USA">🇺🇸 United States (USA)</option>
-                        <option value="UK">🇬🇧 United Kingdom (UK)</option>
-                        <option value="Canada">🇨🇦 Canada</option>
-                        <option value="Australia">🇦🇺 Australia</option>
-                        <option value="UAE">🇦🇪 United Arab Emirates (Dubai)</option>
-                        <option value="Germany">🇩🇪 Germany (Europe)</option>
-                        <option value="Singapore">🇸🇬 Singapore</option>
-                        <option value="New Zealand">🇳🇿 New Zealand</option>
-                        <option value="Other">🌍 Other Global Destination</option>
-                      </select>
+                        onChange={(val) => updateField('destCountry', val)}
+                        options={COUNTRIES}
+                        placeholder="Search country..."
+                      />
                     </div>
 
                     <div className="form-group-item">
@@ -310,15 +582,34 @@ export default function BookPickupPage() {
                       <label className="form-label-title" htmlFor="receiver-phone">
                         <i className="fa-solid fa-phone-volume" style={{ color: 'var(--accent-coral)' }}></i> Receiver Phone Number *
                       </label>
-                      <input
-                        type="tel"
-                        id="receiver-phone"
-                        className="form-input-field"
-                        placeholder="e.g. +1 (469) 555-0192"
-                        value={formData.receiverPhone}
-                        onChange={(e) => updateField('receiverPhone', e.target.value)}
-                        required
-                      />
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <select
+                          className="form-input-field"
+                          style={{ width: '100px', padding: '0.8rem 0.5rem' }}
+                          value={formData.receiverCountryCode}
+                          onChange={(e) => updateField('receiverCountryCode', e.target.value)}
+                        >
+                          <option value="+1">🇺🇸 +1</option>
+                          <option value="+91">🇮🇳 +91</option>
+                          <option value="+44">🇬🇧 +44</option>
+                          <option value="+61">🇦🇺 +61</option>
+                          <option value="+971">🇦🇪 +971</option>
+                        </select>
+                        <input
+                          type="tel"
+                          id="receiver-phone"
+                          className="form-input-field"
+                          style={{ flex: 1 }}
+                          placeholder="e.g. 4695550192"
+                          value={formData.receiverPhone}
+                          maxLength={getMaxPhoneLength(formData.receiverCountryCode)}
+                          onChange={(e) => {
+                            const onlyNums = e.target.value.replace(/\D/g, '');
+                            updateField('receiverPhone', onlyNums);
+                          }}
+                          required
+                        />
+                      </div>
                     </div>
 
                     <div className="form-group-item">
@@ -403,8 +694,8 @@ export default function BookPickupPage() {
                       <div>
                         <span className="eyebrow-pill teal" style={{ margin: '0 0 0.5rem 0', fontSize: '0.75rem' }}>Sender & Pickup</span>
                         <div style={{ fontSize: '0.92rem', color: 'var(--text-slate-dark)', lineHeight: 1.6 }}>
-                          <strong>{formData.senderName}</strong> ({formData.senderPhone})<br />
-                          {formData.senderAddress}<br />
+                          <strong>{formData.senderName}</strong> ({formData.senderCountryCode} {formData.senderPhone})<br />
+                          {formData.senderDoorNo}, {formData.senderStreet}, {formData.senderCity} - {formData.senderPincode}<br />
                           <span style={{ color: 'var(--accent-teal)' }}>Branch:</span> {formData.branchZone}<br />
                           <span style={{ color: 'var(--accent-coral)' }}>Slot:</span> {formData.pickupDate} • {formData.pickupTimeSlot}
                         </div>
@@ -414,10 +705,13 @@ export default function BookPickupPage() {
                         <span className="eyebrow-pill" style={{ margin: '0 0 0.5rem 0', fontSize: '0.75rem' }}>Destination & Consignee</span>
                         <div style={{ fontSize: '0.92rem', color: 'var(--text-slate-dark)', lineHeight: 1.6 }}>
                           <strong>{formData.receiverName}</strong> ({formData.destCountry})<br />
-                          Contact: {formData.receiverPhone}<br />
+                          Contact: {formData.receiverCountryCode} {formData.receiverPhone}<br />
                           <span style={{ color: 'var(--accent-teal)' }}>Category:</span> {formData.itemCategory}<br />
                           <span style={{ color: 'var(--accent-teal)' }}>Estimated Weight:</span> {formData.estimatedWeight}<br />
-                          <span style={{ color: '#27AE60' }}>Packaging:</span> Free 5-Ply Export Box + Vacuum Sealing
+                          <span style={{ color: '#27AE60' }}>Packaging:</span> Free 5-Ply Export Box + Vacuum Sealing<br />
+                          {formData.specialInstructions && (
+                            <><span style={{ color: 'var(--accent-coral)' }}>Special Notes:</span> <em>{formData.specialInstructions}</em></>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -442,7 +736,7 @@ export default function BookPickupPage() {
       {/* Confirmation Success Modal */}
       {confirmedBooking && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(32, 54, 72, 0.65)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1.5rem' }}>
-          <div style={{ background: 'var(--bg-card-tint)', border: '1px solid #DDEFF7', borderRadius: '24px', maxWidth: '560px', width: '100%', padding: '2.5rem', textAlign: 'center', color: '#203648', boxShadow: '0 25px 60px rgba(32, 54, 72, 0.22)' }}>
+          <div className="print-modal" style={{ background: 'var(--bg-card-tint)', border: '1px solid #DDEFF7', borderRadius: '24px', maxWidth: '560px', width: '100%', padding: '2.5rem', textAlign: 'center', color: '#203648', boxShadow: '0 25px 60px rgba(32, 54, 72, 0.22)' }}>
             <div style={{ width: '68px', height: '68px', borderRadius: '50%', background: 'rgba(60, 146, 144, 0.15)', color: '#3C9290', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem', margin: '0 auto 1.25rem auto' }}>
               <i className="fa-solid fa-truck-fast"></i>
             </div>
@@ -469,18 +763,80 @@ export default function BookPickupPage() {
                 className="btn btn-teal btn-sm"
                 style={{ padding: '0.75rem 1.5rem' }}
               >
-                <i className="fa-brands fa-whatsapp"></i> Notify via WhatsApp
+                <i className="fa-brands fa-whatsapp"></i> Notify WhatsApp
               </a>
+              <button 
+                onClick={() => window.print()} 
+                className="btn btn-soft-cream btn-sm" 
+                style={{ padding: '0.75rem 1.5rem', background: '#E2E8F0', color: '#1E293B' }}
+              >
+                <i className="fa-solid fa-print"></i> Print Receipt
+              </button>
             </div>
 
-            <div style={{ marginTop: '1.5rem' }}>
-              <button onClick={() => setConfirmedBooking(null)} style={{ background: 'none', border: 'none', color: 'var(--text-slate-muted)', cursor: 'pointer', fontSize: '0.85rem' }}>
+            {/* Email Invoice */}
+            {user?.email ? (
+              /* Logged-in user: auto-sent, just show confirmation */
+              <div className="no-print" style={{ marginTop: '1.5rem', padding: '1rem', background: '#F0FDF4', color: '#166534', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600, border: '1px solid #BBF7D0' }}>
+                <i className="fa-solid fa-check-circle"></i> Invoice PDF automatically sent to <strong>{user.email}</strong>
+              </div>
+            ) : !emailSent ? (
+              /* Guest user: show email input */
+              <div className="no-print" style={{ marginTop: '1.5rem', background: '#F8FAFC', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0', textAlign: 'left' }}>
+                <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#4A6B82', fontWeight: 600 }}>
+                  <i className="fa-solid fa-envelope" style={{ color: 'var(--accent-teal)' }}></i> Get Invoice PDF via Email:
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input 
+                    type="email" 
+                    placeholder="Enter your email address" 
+                    value={emailAddress}
+                    onChange={(e) => setEmailAddress(e.target.value)}
+                    style={{ flex: 1, padding: '0.6rem', border: '1px solid #CBD5E1', borderRadius: '4px', fontSize: '0.9rem', outline: 'none', background: '#FFFFFF', color: '#0F172A' }}
+                  />
+                  <button 
+                    disabled={emailSending || !emailAddress.includes('@')}
+                    onClick={async () => {
+                      setEmailSending(true);
+                      try {
+                        await sendBookingInvoice({ awb: confirmedBooking.awb, email: emailAddress });
+                        setEmailSent(true);
+                      } catch (err) {
+                        alert(err.message || 'Failed to send email. Please try again.');
+                        setEmailSending(false);
+                      }
+                    }}
+                    className="btn btn-teal btn-sm"
+                    style={{ padding: '0 1rem' }}
+                  >
+                    {emailSending ? <><i className="fa-solid fa-spinner fa-spin"></i> Sending...</> : 'Send PDF'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="no-print" style={{ marginTop: '1.5rem', padding: '1rem', background: '#F0FDF4', color: '#166534', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600, border: '1px solid #BBF7D0' }}>
+                <i className="fa-solid fa-check-circle"></i> Invoice PDF sent successfully to {emailAddress}!
+              </div>
+            )}
+
+            <div className="no-print" style={{ marginTop: '1.5rem' }}>
+              <button onClick={() => setConfirmedBooking(null)} style={{ background: 'none', border: 'none', color: 'var(--text-slate-muted)', cursor: 'pointer', fontSize: '0.85rem', textDecoration: 'underline' }}>
                 Close Window
               </button>
             </div>
           </div>
         </div>
       )}
+      
+      {/* CSS for printing just the modal */}
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          .print-modal, .print-modal * { visibility: visible; }
+          .print-modal { position: absolute; left: 0; top: 0; margin: 0; padding: 0; width: 100%; box-shadow: none; border: none; }
+          .print-modal button, .print-modal a, .no-print { display: none !important; }
+        }
+      `}</style>
     </main>
   );
 }

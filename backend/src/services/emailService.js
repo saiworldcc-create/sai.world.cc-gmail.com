@@ -1,17 +1,18 @@
 const nodemailer = require('nodemailer');
+const { generateBookingInvoicePDF } = require('./pdfService');
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '465', 10),
   secure: process.env.SMTP_SECURE === 'true' || true,
   auth: {
-    user: process.env.SMTP_USER || 'sai.internationals156@gmail.com',
-    pass: process.env.SMTP_PASS || 'arxiqeenougribkf',
+    user: process.env.SMTP_USER || 'sai.world.cc@gmail.com',
+    pass: process.env.SMTP_PASS || 'YOUR_APP_PASSWORD_HERE',
   },
 });
 
-const DEFAULT_FROM = process.env.EMAIL_FROM || '"Sai International Couriers & Cargo" <sai.internationals156@gmail.com>';
-const ALERT_RECIPIENT = process.env.ALERT_EMAIL || 'sai.internationals156@gmail.com';
+const DEFAULT_FROM = process.env.EMAIL_FROM || '"Sai International Couriers & Cargo" <sai.world.cc@gmail.com>';
+const ALERT_RECIPIENT = process.env.ALERT_EMAIL || 'sai.world.cc@gmail.com';
 
 /**
  * Verify SMTP connection
@@ -19,7 +20,7 @@ const ALERT_RECIPIENT = process.env.ALERT_EMAIL || 'sai.internationals156@gmail.
 async function verifySMTP() {
   try {
     await transporter.verify();
-    console.log('✅ SMTP Mailer connected successfully (sai.internationals156@gmail.com)');
+    console.log('✅ SMTP Mailer connected successfully (sai.world.cc@gmail.com)');
     return true;
   } catch (err) {
     console.error('⚠️ SMTP Verification failed:', err.message);
@@ -206,9 +207,121 @@ async function sendContactAlert(contact) {
   }
 }
 
+/**
+ * Send Booking Invoice Email to Customer
+ */
+async function sendBookingInvoice(bookingData, customerEmail) {
+  try {
+    const {
+      awb,
+      senderName,
+      senderPhone,
+      senderAddress,
+      branchZone,
+      pickupDate,
+      pickupTimeSlot,
+      destCountry,
+      receiverName,
+      receiverPhone,
+      itemCategory,
+      estimatedWeight,
+      specialInstructions,
+    } = bookingData;
+
+    const invoiceDate = new Date().toLocaleDateString('en-IN', {
+      day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+    const customerHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background: #1E3446; padding: 24px; text-align: center; color: #ffffff;">
+          <h2 style="margin: 0; font-size: 20px; letter-spacing: 0.5px;">SAI INTERNATIONAL COURIERS & CARGO</h2>
+          <p style="margin: 5px 0 0 0; font-size: 12px; color: #3C9290;">Worldwide Express Courier & Cargo Solutions</p>
+        </div>
+
+        <div style="padding: 24px; color: #2D3748;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <p style="font-size: 14px; color: #166534; font-weight: bold; background: #F0FDF4; display: inline-block; padding: 6px 16px; border-radius: 20px; border: 1px solid #BBF7D0;">✅ BOOKING CONFIRMED</p>
+          </div>
+
+          <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; text-align: center;">
+            <span style="font-size: 11px; color: #166534; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Your Air Waybill (AWB)</span>
+            <div style="font-size: 26px; font-weight: 800; color: #0056B3; margin-top: 6px; letter-spacing: 1px;">${awb}</div>
+          </div>
+
+          <p style="font-size: 13px; color: #64748B; margin-bottom: 20px; text-align: center;">Invoice Generated: ${invoiceDate}</p>
+
+          <h3 style="font-size: 14px; color: #1E3446; border-bottom: 2px solid #E2E8F0; padding-bottom: 6px; margin: 0 0 12px 0;">📦 Sender Details (Pickup Location)</h3>
+          <table style="width: 100%; font-size: 13px; margin-bottom: 20px; border-collapse: collapse;">
+            <tr><td style="padding: 6px 0; color: #718096; width: 140px;"><strong>Name:</strong></td><td style="padding: 6px 0; color: #1A202C;">${senderName}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Phone:</strong></td><td style="padding: 6px 0; color: #1A202C;">${senderPhone}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Pickup Address:</strong></td><td style="padding: 6px 0; color: #1A202C;">${senderAddress || 'As provided'}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Branch Zone:</strong></td><td style="padding: 6px 0; color: #1A202C;">${branchZone || 'Kadapa Main'}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Pickup Schedule:</strong></td><td style="padding: 6px 0; color: #1A202C;">${pickupDate || 'Earliest available'} (${pickupTimeSlot || 'Standard'})</td></tr>
+          </table>
+
+          <h3 style="font-size: 14px; color: #1E3446; border-bottom: 2px solid #E2E8F0; padding-bottom: 6px; margin: 0 0 12px 0;">🌍 Shipment & Destination</h3>
+          <table style="width: 100%; font-size: 13px; margin-bottom: 20px; border-collapse: collapse;">
+            <tr><td style="padding: 6px 0; color: #718096; width: 140px;"><strong>Destination:</strong></td><td style="padding: 6px 0; color: #0056B3; font-weight: bold; font-size: 14px;">${destCountry}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Receiver Name:</strong></td><td style="padding: 6px 0; color: #1A202C;">${receiverName || '-'}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Receiver Phone:</strong></td><td style="padding: 6px 0; color: #1A202C;">${receiverPhone || '-'}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Item Category:</strong></td><td style="padding: 6px 0; color: #1A202C;">${itemCategory || 'NRI Food / Courier'}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Estimated Weight:</strong></td><td style="padding: 6px 0; color: #1A202C;">${estimatedWeight || 'Standard'}</td></tr>
+            ${specialInstructions ? `<tr><td style="padding: 6px 0; color: #718096;"><strong>Special Notes:</strong></td><td style="padding: 6px 0; color: #1A202C;">${specialInstructions}</td></tr>` : ''}
+          </table>
+
+          <div style="background: #F8FAFC; border-left: 4px solid #0056B3; padding: 14px 18px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+            <strong style="font-size: 13px;">What happens next?</strong><br/>
+            <ul style="margin: 8px 0 0 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.8;">
+              <li>Our pickup executive will arrive at your address with digital weighing scales, export cartons, and vacuum sealing machine.</li>
+              <li>You will receive a WhatsApp notification with live tracking updates.</li>
+              <li>For any queries, contact us immediately on the numbers below.</li>
+            </ul>
+          </div>
+
+          <div style="background: #F8FAFC; border-radius: 8px; padding: 14px; text-align: center; margin-top: 20px;">
+            <p style="margin: 0 0 10px 0; font-size: 12px; color: #64748B;">Need help? Contact us anytime:</p>
+            <a href="tel:+919059949365" style="display: inline-block; background: #0056B3; color: #ffffff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 13px; margin-right: 6px;">📞 Call: 90599 49365</a>
+            <a href="https://wa.me/919059949365" style="display: inline-block; background: #25D366; color: #ffffff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 13px;">💬 WhatsApp</a>
+          </div>
+        </div>
+
+        <div style="background: #F1F5F9; padding: 14px 20px; text-align: center; font-size: 11px; color: #94A3B8; line-height: 1.6;">
+          Sai International Couriers & Cargo · GSTIN: 37BOPPS1121H1Z5<br/>
+          Kadapa, Andhra Pradesh · <a href="https://saiinternationalcouriers.com" style="color: #64748B;">saiinternationalcouriers.com</a>
+        </div>
+      </div>
+    `;
+
+    // Generate the PDF invoice
+    const pdfBuffer = await generateBookingInvoicePDF(bookingData);
+
+    const info = await transporter.sendMail({
+      from: DEFAULT_FROM,
+      to: customerEmail,
+      subject: `📄 Booking Invoice [${awb}] - Sai International Couriers & Cargo`,
+      html: customerHtml,
+      attachments: [
+        {
+          filename: `SAI_Invoice_${awb}.pdf`,
+          content: pdfBuffer,
+          contentType: 'application/pdf',
+        },
+      ],
+    });
+
+    console.log(`✉️ Booking invoice email sent to ${customerEmail} (MessageId: ${info.messageId})`);
+    return true;
+  } catch (err) {
+    console.error('Failed to send booking invoice email:', err.message);
+    throw err;
+  }
+}
+
 module.exports = {
   transporter,
   verifySMTP,
   sendBookingAlert,
   sendContactAlert,
+  sendBookingInvoice,
 };

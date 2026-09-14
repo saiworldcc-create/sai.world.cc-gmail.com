@@ -31,31 +31,63 @@ export default function TrackingPage() {
       
       const dbData = res.data;
       
-      // Calculate current stage (last completed milestone ID)
-      const currentStage = dbData.milestones.slice().reverse().find(m => m.completed)?.id || 1;
+      // Backend returns data that already matches the Shipment model format:
+      // { awb, status, stage, sender, receiver, contents, carrier, deadWeight, volWeight, chargeableWeight, origin, destination, eta, history[] }
+      // If the data has milestones (admin-created shipments), map them; otherwise use the data directly
+      let uiData;
       
-      // Map DB object to UI expected format
-      const uiData = {
-        awb: dbData.awb,
-        status: dbData.milestones.find(m => m.id === currentStage)?.status || 'Processing',
-        destination: dbData.destination,
-        stage: currentStage,
-        sender: dbData.senderName,
-        receiver: dbData.receiverName,
-        contents: dbData.items,
-        deadWeight: dbData.weight,
-        volWeight: dbData.weight, // Simplified
-        chargeableWeight: dbData.weight,
-        carrier: 'SAI Global Network',
-        history: dbData.milestones
-          .filter(m => m.timestamp) // Only show logged events
-          .map(m => ({
-            status: m.status,
-            time: new Date(m.timestamp).toLocaleString(),
-            location: m.location,
-            active: m.id === currentStage
-          })).reverse()
-      };
+      if (dbData.milestones) {
+        // Admin-created shipment format with milestones
+        const currentStage = dbData.milestones.slice().reverse().find(m => m.completed)?.id || 1;
+        uiData = {
+          awb: dbData.awb,
+          status: dbData.milestones.find(m => m.id === currentStage)?.status || 'Processing',
+          destination: dbData.destination,
+          stage: currentStage,
+          sender: dbData.senderName || dbData.sender,
+          receiver: dbData.receiverName || dbData.receiver,
+          contents: dbData.items || dbData.contents,
+          deadWeight: dbData.weight || dbData.deadWeight,
+          volWeight: dbData.weight || dbData.volWeight,
+          chargeableWeight: dbData.weight || dbData.chargeableWeight,
+          carrier: dbData.carrier || 'SAI Global Network',
+          origin: dbData.origin,
+          eta: dbData.eta,
+          history: dbData.milestones
+            .filter(m => m.timestamp)
+            .map(m => ({
+              status: m.status,
+              time: new Date(m.timestamp).toLocaleString(),
+              location: m.location,
+              active: m.id === currentStage,
+              completed: m.completed,
+            })).reverse()
+        };
+      } else {
+        // Standard backend format (DB shipments or generic demo data)
+        uiData = {
+          awb: dbData.awb,
+          status: dbData.status,
+          destination: dbData.destination,
+          stage: dbData.stage || 1,
+          sender: dbData.sender,
+          receiver: dbData.receiver,
+          contents: dbData.contents,
+          deadWeight: dbData.deadWeight,
+          volWeight: dbData.volWeight,
+          chargeableWeight: dbData.chargeableWeight,
+          carrier: dbData.carrier || 'SAI Global Network',
+          origin: dbData.origin,
+          eta: dbData.eta,
+          history: (dbData.history || []).map((h, i, arr) => ({
+            status: h.status,
+            time: h.time,
+            location: h.location,
+            active: h.active || false,
+            completed: h.completed !== false,
+          }))
+        };
+      }
       
       setTrackingData(uiData);
       setSearchParams({ awb: awbCode.trim() });
@@ -130,19 +162,7 @@ export default function TrackingPage() {
                 </button>
               </form>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap', marginTop: '1.25rem' }}>
-                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-slate-muted)' }}>Try Sample Numbers:</span>
-                {['SAI-88492-USA', 'SAI-77310-UK', 'SAI-55201-AUS'].map(sample => (
-                  <button
-                    key={sample}
-                    type="button"
-                    className="sample-chip-light sample-track-pill"
-                    onClick={() => handleSampleClick(sample)}
-                  >
-                    {sample}
-                  </button>
-                ))}
-              </div>
+
             </div>
 
             {error && (
@@ -217,34 +237,34 @@ export default function TrackingPage() {
                   <div className="tracking-info-table-box">
                     <h4 style={{ fontSize: '1.05rem', color: '#1E3446', marginBottom: '0.75rem' }}>Parcel Specifications</h4>
                     
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(41,70,93,0.08)' }}>
-                      <span style={{ color: '#7091A8' }}>Sender</span>
-                      <strong style={{ color: '#1E3446' }}>{trackingData.sender}</strong>
+                    <div className="tracking-spec-row">
+                      <span className="tracking-spec-label"><i className="fa-regular fa-user"></i> Sender</span>
+                      <strong className="tracking-spec-value">{trackingData.sender}</strong>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(41,70,93,0.08)' }}>
-                      <span style={{ color: '#7091A8' }}>Consignee</span>
-                      <strong style={{ color: '#1E3446' }}>{trackingData.receiver}</strong>
+                    <div className="tracking-spec-row">
+                      <span className="tracking-spec-label"><i className="fa-solid fa-user-check"></i> Consignee</span>
+                      <strong className="tracking-spec-value">{trackingData.receiver}</strong>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(41,70,93,0.08)' }}>
-                      <span style={{ color: '#7091A8' }}>Contents</span>
-                      <strong style={{ color: '#1E3446' }}>{trackingData.contents}</strong>
+                    <div className="tracking-spec-row">
+                      <span className="tracking-spec-label"><i className="fa-solid fa-box-open"></i> Contents</span>
+                      <strong className="tracking-spec-value">{trackingData.contents}</strong>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(41,70,93,0.08)' }}>
-                      <span style={{ color: '#7091A8' }}>Actual / Volumetric</span>
-                      <strong style={{ color: '#1E3446' }}>{trackingData.deadWeight} / {trackingData.volWeight}</strong>
+                    <div className="tracking-spec-row">
+                      <span className="tracking-spec-label"><i className="fa-solid fa-weight-scale"></i> Act / Vol Wt.</span>
+                      <strong className="tracking-spec-value">{trackingData.deadWeight} / {trackingData.volWeight}</strong>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(41,70,93,0.08)' }}>
-                      <span style={{ color: '#7091A8' }}>Chargeable Weight</span>
-                      <strong style={{ color: '#E97856', fontSize: '1rem' }}>{trackingData.chargeableWeight}</strong>
+                    <div className="tracking-spec-row">
+                      <span className="tracking-spec-label" style={{ color: 'var(--accent-coral)' }}><i className="fa-solid fa-file-invoice-dollar"></i> Chargeable</span>
+                      <strong className="tracking-spec-value" style={{ color: 'var(--accent-coral)', fontSize: '1rem' }}>{trackingData.chargeableWeight}</strong>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', padding: '0.5rem 0' }}>
-                      <span style={{ color: '#7091A8' }}>Carrier Network</span>
-                      <strong style={{ color: '#3C9290' }}>{trackingData.carrier}</strong>
+                    <div className="tracking-spec-row">
+                      <span className="tracking-spec-label"><i className="fa-solid fa-network-wired"></i> Carrier</span>
+                      <strong className="tracking-spec-value" style={{ color: 'var(--accent-teal)' }}>{trackingData.carrier}</strong>
                     </div>
 
                     <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
@@ -267,15 +287,12 @@ export default function TrackingPage() {
             ) : (
               <div className="tracking-result-panel" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
                 <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--bg-powder-blue)', color: 'var(--accent-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.5rem auto' }}>
-                  <i className="fa-solid fa-plane-circle-check"></i>
+                  <i className="fa-solid fa-plane-circle-check" style={{ animation: 'float 3s ease-in-out infinite' }}></i>
                 </div>
                 <h3 style={{ fontSize: '1.4rem', color: 'var(--text-slate-dark)', marginBottom: '0.5rem' }}>Ready to Track Your Parcel</h3>
                 <p style={{ color: 'var(--text-slate-muted)', maxWidth: '520px', margin: '0 auto 1.5rem auto', fontSize: '0.95rem' }}>
-                  Click on any of the sample Air Waybills above or enter your consignment code to view live stage updates, customs reports, and destination ETAs.
+                  Enter your consignment code above to view live stage updates, customs reports, and destination ETAs.
                 </p>
-                <button type="button" className="btn btn-teal btn-sm" onClick={() => handleSampleClick('SAI-88492-USA')}>
-                  <i className="fa-solid fa-bolt"></i> Load Sample Shipment (Dallas, USA)
-                </button>
               </div>
             )}
           </div>
