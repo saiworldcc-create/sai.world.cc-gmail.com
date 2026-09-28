@@ -8,6 +8,8 @@ const { protect, restrictTo } = require('../middleware/auth');
 const Booking = require('../models/Booking');
 const Shipment = require('../models/Shipment');
 const ContactMessage = require('../models/ContactMessage');
+const Notification = require('../models/Notification');
+const { sendShipmentCreatedEmail } = require('../services/emailService');
 
 function signToken(id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
@@ -90,6 +92,36 @@ router.get('/stats', protect, async (req, res) => {
   } catch (err) {
     console.error('Stats error:', err);
     res.status(500).json({ success: false, message: 'Server error fetching stats.' });
+  }
+});
+
+// GET /api/v1/admin/notifications
+router.get('/notifications', protect, async (req, res) => {
+  try {
+    let notifications = await Notification.find().sort({ createdAt: -1 }).limit(20);
+    // Map them to include an isRead property for the frontend
+    notifications = notifications.map(n => {
+      const doc = n.toObject();
+      doc.isRead = doc.readBy && doc.readBy.some(id => id.toString() === req.admin._id.toString());
+      return doc;
+    });
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+    res.json({ success: true, notifications, unreadCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/v1/admin/notifications/mark-read
+router.put('/notifications/mark-read', protect, async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { readBy: { $ne: req.admin._id } },
+      { $push: { readBy: req.admin._id } }
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
@@ -233,6 +265,218 @@ router.delete('/staff/:id', protect, restrictTo('super-admin'), async (req, res)
   } catch (err) {
     console.error('Delete staff error:', err);
     res.status(500).json({ success: false, message: 'Server error deleting staff.' });
+  }
+});
+
+const fs = require('fs');
+const path = require('path');
+
+// ==========================
+// RATES MANAGEMENT ROUTES
+// ==========================
+
+// TEMP UNPROTECTED RATES
+router.get('/temp-rates', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const ratesPath = path.join(__dirname, '../data/carrierRates.json');
+    const ratesData = fs.readFileSync(ratesPath, 'utf8');
+    res.json({ success: true, rates: JSON.parse(ratesData) });
+  } catch (err) {
+    console.error('TEMP RATES ERROR:', err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/v1/admin/rates
+router.get('/rates', protect, async (req, res) => {
+  try {
+    const ratesPath = path.join(__dirname, '../data/carrierRates.json');
+    const ratesData = fs.readFileSync(ratesPath, 'utf8');
+    res.json({ success: true, rates: JSON.parse(ratesData) });
+      } catch (err) {
+      console.error('Rates GET error:', err);
+      res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// PUT /api/v1/admin/rates
+router.put('/rates', protect, async (req, res) => {
+  try {
+    const ratesPath = path.join(__dirname, '../data/carrierRates.json');
+    fs.writeFileSync(ratesPath, JSON.stringify(req.body, null, 2), 'utf8');
+    res.json({ success: true, message: 'Rates updated successfully' });
+      } catch (err) {
+      console.error('Rates GET error:', err);
+      res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Rate file upload routes (PDF/Excel/CSV)
+const rateUploadRoutes = require('./rateUpload.routes');
+router.use('/rates', rateUploadRoutes);
+
+// ==========================
+// SETTINGS ROUTES
+// ==========================
+const AppSetting = require('../models/AppSetting');
+
+// GET /api/v1/admin/settings
+router.get('/settings', protect, async (req, res) => {
+  try {
+    const settings = await AppSetting.find();
+    res.json({ success: true, settings });
+  } catch (err) {
+    console.error('Fetch settings error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching settings.' });
+  }
+});
+
+// POST /api/v1/admin/settings
+router.post('/settings', protect, async (req, res) => {
+  try {
+    const { key, value } = req.body;
+    await AppSetting.findOneAndUpdate(
+      { key },
+      { value },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, message: 'Setting updated successfully.' });
+  } catch (err) {
+    console.error('Update settings error:', err);
+    res.status(500).json({ success: false, message: 'Server error updating settings.' });
+  }
+});
+
+// ==========================
+// SHIPMENTS ROUTES
+// ==========================
+
+// GET /api/v1/admin/shipments
+router.get('/shipments', protect, async (req, res) => {
+  try {
+    const shipments = await Shipment.find().sort({ createdAt: -1 });
+    res.json({ success: true, shipments });
+  } catch (err) {
+    console.error('Fetch shipments error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching shipments.' });
+  }
+});
+
+// POST /api/v1/admin/shipments
+router.post('/shipments', protect, async (req, res) => {
+  try {
+    const {
+      awb, senderName, senderEmail, receiverName, receiverEmail, items, carrier, 
+      weight, length, width, height, destination, originHub
+    } = req.body;
+
+    const newShipment = await Shipment.create({
+      awb,
+      status: 'In Transit',
+      stage: 1,
+      sender: senderName || 'Unknown Sender',
+      receiver: receiverName || 'Unknown Receiver',
+      contents: items || 'General Goods',
+      carrier: carrier || 'Sai Express',
+      deadWeight: weight || '0 kg',
+      volWeight: `${length || 0}x${width || 0}x${height || 0}`,
+      chargeableWeight: weight || '0 kg',
+      origin: originHub || 'Kadapa Hub (Main)',
+      destination: destination || 'Unknown Destination',
+      eta: '4-7 Business Days',
+      history: [{
+        status: 'Shipment Created',
+        time: new Date().toLocaleString(),
+        location: originHub || 'Kadapa Hub',
+        completed: true,
+        active: true
+      }]
+    });
+
+    await Notification.create({
+      type: 'order',
+      title: 'New Shipment Created',
+      message: `Shipment ${awb} was successfully created for ${senderName}.`,
+      link: '/admin/shipments'
+    });
+
+    // Send Email Notifications
+    if (senderEmail || receiverEmail) {
+      sendShipmentCreatedEmail(newShipment, senderEmail, receiverEmail);
+    }
+
+    res.status(201).json({ success: true, data: newShipment });
+  } catch (err) {
+    console.error('Create shipment error:', err);
+    res.status(500).json({ success: false, message: 'Server error creating shipment.' });
+  }
+});
+
+// PUT /api/v1/admin/shipments/:awb
+router.put('/shipments/:awb', protect, async (req, res) => {
+  try {
+    const awb = req.params.awb;
+    const { status, stage, location, newLog } = req.body;
+
+    const shipment = await Shipment.findOne({ awb });
+    if (!shipment) {
+      return res.status(404).json({ success: false, message: 'Shipment not found' });
+    }
+
+    if (status) shipment.status = status;
+    if (stage) shipment.stage = Number(stage);
+
+    if (newLog) {
+      // Deactivate previous logs
+      shipment.history.forEach(log => {
+        log.active = false;
+      });
+      // Add new log
+      shipment.history.push({
+        status: newLog,
+        time: new Date().toLocaleString(),
+        location: location || shipment.destination,
+        completed: true,
+        active: true
+      });
+    }
+
+    await shipment.save();
+
+    res.json({ success: true, message: 'Shipment updated successfully', data: shipment });
+  } catch (err) {
+    console.error('Update shipment error:', err);
+    res.status(500).json({ success: false, message: 'Server error updating shipment.' });
+  }
+});
+
+// GET /api/v1/admin/delivery-partners
+router.get('/delivery-partners', protect, async (req, res) => {
+  try {
+    const partners = await User.find({ role: 'delivery_partner' }).select('-password');
+    res.json({ success: true, data: partners });
+  } catch (err) {
+    console.error('Fetch delivery partners error:', err);
+    res.status(500).json({ success: false, message: 'Server error fetching partners.' });
+  }
+});
+
+// PUT /api/v1/admin/shipments/:id/assign
+router.put('/shipments/:id/assign', protect, async (req, res) => {
+  try {
+    const { driverId } = req.body;
+    const shipment = await Shipment.findByIdAndUpdate(
+      req.params.id, 
+      { assignedTo: driverId },
+      { new: true }
+    );
+    if (!shipment) return res.status(404).json({ success: false, message: 'Shipment not found' });
+    res.json({ success: true, data: shipment });
+  } catch (err) {
+    console.error('Assign driver error:', err);
+    res.status(500).json({ success: false, message: 'Server error assigning driver.' });
   }
 });
 

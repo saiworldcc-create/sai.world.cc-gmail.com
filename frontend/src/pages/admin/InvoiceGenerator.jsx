@@ -33,16 +33,40 @@ export default function InvoiceGenerator({ shipment }) {
                 <td colspan="2">
                   <table>
                     <tr>
-                      <td class="title">
-                        <strong style="color: #0d2840;">SAI</strong><br/>
+                      <td class="title" style="vertical-align: middle;">
+                        <img src="${window.location.origin}/assets/images/sai_logo_transparent.png" alt="SAI Logo" style="max-height: 80px; max-width: 200px;" /><br/>
                         <span style="font-size: 14px; color: #777;">International Couriers & Cargo</span>
                       </td>
-                      <td style="text-align: right;">
+                      <td style="text-align: right; vertical-align: top;">
                         <h2 style="margin: 0; color: #1E3446; text-transform: uppercase; font-size: 22px;">Payment Receipt</h2>
                         Invoice #: INV-${Math.floor(Math.random() * 100000)}<br>
                         Date: ${new Date(shipment.createdAt).toLocaleDateString()}<br>
                         <strong>Tracking AWB: ${shipment.awb}</strong>
-                        <div class="barcode">*${shipment.awb}*</div>
+                        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-top: 15px;">
+                          <div style="text-align: right;">
+                            <div class="barcode">*${shipment.awb}*</div>
+                          </div>
+                          <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(
+                            'SAI INTERNATIONAL COURIERS\n' +
+                            '========================\n' +
+                            'Tracking AWB: ' + shipment.awb + '\n' +
+                            'Date: ' + new Date(shipment.createdAt).toLocaleDateString() + '\n' +
+                            '------------------------\n' +
+                            'SENDER: ' + shipment.senderName + '\n' +
+                            'Phone: ' + (shipment.senderPhone || 'N/A') + '\n' +
+                            'From: ' + (shipment.originHub || 'Kadapa Hub') + '\n' +
+                            '------------------------\n' +
+                            'RECEIVER: ' + shipment.receiverName + '\n' +
+                            'Phone: ' + (shipment.receiverPhone || 'N/A') + '\n' +
+                            'To: ' + shipment.destination + '\n' +
+                            '------------------------\n' +
+                            'Weight: ' + (shipment.weight || 'N/A') + '\n' +
+                            'Price: ' + (shipment.price || 'N/A') + '\n' +
+                            'Payment: ' + (shipment.paymentMethod || 'Cash') + ' - ' + (shipment.paymentStatus || 'Paid') + '\n' +
+                            '========================\n' +
+                            'Track at: www.saicouriers.com/tracking'
+                          )}" alt="Tracking QR Code" style="border: 1px solid #eee; padding: 2px; border-radius: 4px;" />
+                        </div>
                       </td>
                     </tr>
                   </table>
@@ -75,9 +99,15 @@ export default function InvoiceGenerator({ shipment }) {
                 <td>Total Price Quoted</td>
                 <td style="text-align: right; font-weight: bold; font-size: 1.1rem; color: #1E3446;">${shipment.price}</td>
               </tr>
+              <tr class="item">
+                <td>Payment Method</td>
+                <td style="text-align: right; color: #555;">${shipment.paymentMethod || 'Cash'}</td>
+              </tr>
               <tr class="item last">
                 <td>Payment Status</td>
-                <td style="text-align: right; color: #27AE60; font-weight: bold;">PAID</td>
+                <td style="text-align: right; color: ${shipment.paymentStatus?.toLowerCase() === 'unpaid' ? '#E74C3C' : '#27AE60'}; font-weight: bold; text-transform: uppercase;">
+                  ${shipment.paymentStatus || 'PAID'}
+                </td>
               </tr>
             </table>
 

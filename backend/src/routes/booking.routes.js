@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const { sendBookingAlert, sendBookingInvoice } = require('../services/emailService');
 const { protect } = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
@@ -81,6 +82,14 @@ router.post(
       if (userEmail) {
         sendBookingInvoice(booking, userEmail).catch(err => console.error('User booking invoice error:', err.message));
       }
+
+      // Create Notification for admin
+      Notification.create({
+        title: 'New Pickup Booking',
+        message: `${booking.senderName} booked a pickup to ${booking.destCountry}`,
+        type: 'pickup',
+        link: '/admin/bookings'
+      }).catch(err => console.error('Failed to create notification:', err));
 
       return res.status(201).json({
         success: true,

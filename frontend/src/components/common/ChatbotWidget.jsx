@@ -53,13 +53,8 @@ export default function ChatbotWidget() {
       {/* Floating Action Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="chatbot-fab"
+        className={`chatbot-fab ${isOpen ? 'open' : ''}`}
         style={{
-          position: 'fixed',
-          bottom: isOpen ? '2rem' : '1.5rem',
-          right: isOpen ? '2rem' : '1.5rem',
-          width: isOpen ? '60px' : '150px',
-          height: isOpen ? '60px' : '150px',
           borderRadius: '50%',
           background: isOpen ? 'linear-gradient(135deg, #E97856 0%, #D66746 100%)' : 'transparent',
           color: '#FFF',
@@ -83,9 +78,8 @@ export default function ChatbotWidget() {
             src="/assets/chatbot-lottie.json"
             background="transparent" 
             speed="1" 
+            className="chatbot-lottie"
             style={{ 
-              width: '180px', 
-              height: '180px', 
               filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))' 
             }}
             loop 

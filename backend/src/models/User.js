@@ -40,6 +40,11 @@ const UserSchema = new mongoose.Schema(
         postalCode: String,
       }
     ],
+    role: {
+      type: String,
+      enum: ['customer', 'delivery_partner'],
+      default: 'customer'
+    }
   },
   { timestamps: true }
 );

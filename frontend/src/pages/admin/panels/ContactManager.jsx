@@ -12,6 +12,7 @@ export default function ContactManager() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
+  const [expandedBranch, setExpandedBranch] = useState(null);
 
   useEffect(() => {
     getPageContent('contact')
@@ -93,8 +94,8 @@ export default function ContactManager() {
       {msg && <div className="admin-save-msg success">{msg}</div>}
       {error && <div className="admin-save-msg error"><i className="fa-solid fa-triangle-exclamation"></i> {error}</div>}
 
-      <div className="admin-editor-layout">
-        <div className="admin-editor-main">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', alignItems: 'start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           
           {/* Global Contact Info */}
           <div className="admin-section-card">
@@ -142,67 +143,91 @@ export default function ContactManager() {
               </button>
             </div>
 
-            {Object.entries(data.branches).map(([key, branch], index) => (
-              <div key={key} style={{ background: 'var(--bg-powder-blue)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', border: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                  <h4 style={{ margin: 0, color: 'var(--text-slate-dark)', fontSize: '1rem' }}>Branch {index + 1}</h4>
-                  <button className="admin-btn admin-btn-sm admin-btn-danger" onClick={() => removeBranch(key)} title="Remove Branch">
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="admin-form-group">
-                    <label>Branch Title</label>
-                    <input 
-                      type="text" 
-                      className="admin-input" 
-                      value={branch.title || ''} 
-                      onChange={(e) => handleBranchChange(key, 'title', e.target.value)} 
-                    />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '1.5rem' }}>
+              {Object.entries(data.branches).map(([key, branch], index) => {
+                const isExpanded = expandedBranch === key;
+                return (
+                  <div key={key} style={{ background: '#F8FBFC', padding: '1.5rem', borderRadius: '12px', border: '1px solid #DDEFF7', display: 'flex', flexDirection: 'column' }}>
+                    <div 
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                      onClick={() => setExpandedBranch(isExpanded ? null : key)}
+                    >
+                      <h4 style={{ margin: 0, color: '#1E3446', fontSize: '1.1rem', fontWeight: 800 }}>
+                        Branch {index + 1} {branch.title ? `- ${branch.title}` : ''}
+                      </h4>
+                      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                        <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: '#7091A8' }}></i>
+                        <button 
+                          className="admin-btn admin-btn-sm admin-btn-danger" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeBranch(key);
+                          }} 
+                          title="Remove Branch"
+                        >
+                          <i className="fa-solid fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {isExpanded && (
+                      <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #E3EDF3' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                          <div className="admin-form-group" style={{ marginBottom: 0 }}>
+                            <label>Branch Title</label>
+                            <input 
+                              type="text" 
+                              className="admin-input" 
+                              value={branch.title || ''} 
+                              onChange={(e) => handleBranchChange(key, 'title', e.target.value)} 
+                            />
+                          </div>
+                          <div className="admin-form-group" style={{ marginBottom: 0 }}>
+                            <label>Phone Number</label>
+                            <input 
+                              type="text" 
+                              className="admin-input" 
+                              value={branch.phone || ''} 
+                              onChange={(e) => handleBranchChange(key, 'phone', e.target.value)} 
+                            />
+                          </div>
+                        </div>
+
+                        <div className="admin-form-group">
+                          <label>Physical Address</label>
+                          <input 
+                            type="text" 
+                            className="admin-input" 
+                            value={branch.addr || ''} 
+                            onChange={(e) => handleBranchChange(key, 'addr', e.target.value)} 
+                          />
+                        </div>
+
+                        <div className="admin-form-group">
+                          <label>Google Maps Embed URL</label>
+                          <input 
+                            type="text" 
+                            className="admin-input" 
+                            value={branch.url || ''} 
+                            onChange={(e) => handleBranchChange(key, 'url', e.target.value)} 
+                          />
+                        </div>
+
+                        <div className="admin-form-group" style={{ marginBottom: 0 }}>
+                          <label>Google Maps Share Link</label>
+                          <input 
+                            type="text" 
+                            className="admin-input" 
+                            value={branch.externalUrl || ''} 
+                            onChange={(e) => handleBranchChange(key, 'externalUrl', e.target.value)} 
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="admin-form-group">
-                    <label>Phone Number</label>
-                    <input 
-                      type="text" 
-                      className="admin-input" 
-                      value={branch.phone || ''} 
-                      onChange={(e) => handleBranchChange(key, 'phone', e.target.value)} 
-                    />
-                  </div>
-                </div>
-
-                <div className="admin-form-group">
-                  <label>Physical Address</label>
-                  <input 
-                    type="text" 
-                    className="admin-input" 
-                    value={branch.addr || ''} 
-                    onChange={(e) => handleBranchChange(key, 'addr', e.target.value)} 
-                  />
-                </div>
-
-                <div className="admin-form-group">
-                  <label>Google Maps Embed URL</label>
-                  <input 
-                    type="text" 
-                    className="admin-input" 
-                    value={branch.url || ''} 
-                    onChange={(e) => handleBranchChange(key, 'url', e.target.value)} 
-                  />
-                </div>
-
-                <div className="admin-form-group">
-                  <label>Google Maps Share Link</label>
-                  <input 
-                    type="text" 
-                    className="admin-input" 
-                    value={branch.externalUrl || ''} 
-                    onChange={(e) => handleBranchChange(key, 'externalUrl', e.target.value)} 
-                  />
-                </div>
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
 
         </div>

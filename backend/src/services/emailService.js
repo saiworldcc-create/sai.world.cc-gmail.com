@@ -318,10 +318,147 @@ async function sendBookingInvoice(bookingData, customerEmail) {
   }
 }
 
+/**
+ * Send New E-Commerce Order Alert to Admin
+ */
+async function sendOrderAlert(order) {
+  try {
+    const { orderNumber, customer, items, total, status } = order;
+
+    const itemRows = items.map(item => `
+      <tr>
+        <td style="padding: 8px 12px; border-bottom: 1px solid #E2E8F0; color: #1A202C;">${item.name}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid #E2E8F0; color: #718096; text-align: center;">${item.shopName || '-'}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid #E2E8F0; color: #1A202C; text-align: center;">${item.qty}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid #E2E8F0; color: #0056B3; text-align: right; font-weight: bold;">₹${item.price.toFixed(2)}</td>
+      </tr>
+    `).join('');
+
+    const adminHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background: #1E3446; padding: 20px; text-align: center; color: #ffffff;">
+          <h2 style="margin: 0; font-size: 20px; letter-spacing: 0.5px;">SAI INTERNATIONAL COURIERS & CARGO</h2>
+          <p style="margin: 5px 0 0 0; font-size: 13px; color: #3C9290;">🛒 New E-Commerce Order Received</p>
+        </div>
+        
+        <div style="padding: 24px; color: #2D3748;">
+          <div style="background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px;">
+            <span style="font-size: 12px; color: #92400E; font-weight: bold; text-transform: uppercase;">Order Number:</span>
+            <div style="font-size: 22px; font-weight: 800; color: #D97706; margin-top: 4px;">${orderNumber}</div>
+          </div>
+
+          <h3 style="font-size: 15px; color: #1E3446; border-bottom: 2px solid #E2E8F0; padding-bottom: 6px; margin: 0 0 14px 0;">Customer Details</h3>
+          <table style="width: 100%; font-size: 14px; margin-bottom: 20px; border-collapse: collapse;">
+            <tr><td style="padding: 6px 0; color: #718096; width: 120px;"><strong>Name:</strong></td><td style="padding: 6px 0; color: #1A202C; font-weight: bold;">${customer.name}</td></tr>
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Phone:</strong></td><td style="padding: 6px 0;"><a href="tel:${customer.phone}" style="color: #0056B3; text-decoration: none; font-weight: bold;">${customer.phone}</a></td></tr>
+            ${customer.email ? `<tr><td style="padding: 6px 0; color: #718096;"><strong>Email:</strong></td><td style="padding: 6px 0;"><a href="mailto:${customer.email}" style="color: #0056B3;">${customer.email}</a></td></tr>` : ''}
+            <tr><td style="padding: 6px 0; color: #718096;"><strong>Address:</strong></td><td style="padding: 6px 0; color: #1A202C;">${customer.address}</td></tr>
+          </table>
+
+          <h3 style="font-size: 15px; color: #1E3446; border-bottom: 2px solid #E2E8F0; padding-bottom: 6px; margin: 0 0 14px 0;">Order Items</h3>
+          <table style="width: 100%; font-size: 13px; border-collapse: collapse; margin-bottom: 16px;">
+            <thead>
+              <tr style="background: #F8FAFC;">
+                <th style="padding: 8px 12px; text-align: left; color: #64748B; border-bottom: 2px solid #E2E8F0;">Item</th>
+                <th style="padding: 8px 12px; text-align: center; color: #64748B; border-bottom: 2px solid #E2E8F0;">Shop</th>
+                <th style="padding: 8px 12px; text-align: center; color: #64748B; border-bottom: 2px solid #E2E8F0;">Qty</th>
+                <th style="padding: 8px 12px; text-align: right; color: #64748B; border-bottom: 2px solid #E2E8F0;">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemRows}
+            </tbody>
+          </table>
+
+          <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 14px 18px; text-align: right; margin-bottom: 20px;">
+            <span style="font-size: 14px; color: #166534; font-weight: bold;">Total: ₹${total.toFixed(2)}</span>
+          </div>
+
+          <div style="background: #F8FAFC; border-radius: 8px; padding: 14px; text-align: center;">
+            <p style="margin: 0 0 10px 0; font-size: 13px; color: #64748B;">Contact customer to confirm order:</p>
+            <a href="tel:${customer.phone}" style="display: inline-block; background: #0056B3; color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; margin-right: 8px;">Call Customer (${customer.phone})</a>
+            <a href="https://wa.me/${customer.phone.replace(/[^0-9]/g, '')}" style="display: inline-block; background: #25D366; color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px;">WhatsApp Customer</a>
+          </div>
+        </div>
+
+        <div style="background: #F1F5F9; padding: 12px 20px; text-align: center; font-size: 12px; color: #94A3B8;">
+          Sai International Couriers & Cargo · Kadapa, Andhra Pradesh · 24/7 Logistics Hub
+        </div>
+      </div>
+    `;
+
+    const info = await transporter.sendMail({
+      from: DEFAULT_FROM,
+      to: ALERT_RECIPIENT,
+      subject: `🛒 New E-Commerce Order [${orderNumber}] - ${customer.name} (₹${total.toFixed(2)})`,
+      html: adminHtml,
+    });
+
+    console.log(`✉️ Order alert email sent to ${ALERT_RECIPIENT} (MessageId: ${info.messageId})`);
+    return true;
+  } catch (err) {
+    console.error('Failed to send order alert email:', err.message);
+    return false;
+  }
+}
+
+/**
+ * Send Shipment Created Notification
+ */
+async function sendShipmentCreatedEmail(shipmentData, senderEmail, receiverEmail) {
+  try {
+    const { awb, sender, receiver, destination, contents, carrier, origin } = shipmentData;
+    
+    const htmlTemplate = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background: #1E3446; padding: 24px; text-align: center; color: #ffffff;">
+          <h2 style="margin: 0; font-size: 20px; letter-spacing: 0.5px;">SAI INTERNATIONAL COURIERS & CARGO</h2>
+        </div>
+        <div style="padding: 24px; color: #2D3748;">
+          <h3 style="color: #3C9290;">Your Shipment has been Created!</h3>
+          <p>Dear Customer,</p>
+          <p>Your shipment <strong>${awb}</strong> has been successfully booked and is being processed.</p>
+          <div style="background: #F1F5F9; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>AWB:</strong> ${awb}</p>
+            <p style="margin: 5px 0;"><strong>Carrier:</strong> ${carrier}</p>
+            <p style="margin: 5px 0;"><strong>Route:</strong> ${origin} &rarr; ${destination}</p>
+            <p style="margin: 5px 0;"><strong>Sender:</strong> ${sender}</p>
+            <p style="margin: 5px 0;"><strong>Receiver:</strong> ${receiver}</p>
+            <p style="margin: 5px 0;"><strong>Contents:</strong> ${contents}</p>
+          </div>
+          <p>You can track your shipment anytime on our website using the AWB number above.</p>
+          <p>Thank you for choosing Sai International Couriers & Cargo!</p>
+        </div>
+        <div style="background: #F1F5F9; padding: 12px 20px; text-align: center; font-size: 12px; color: #94A3B8;">
+          Sai International Couriers & Cargo · Kadapa, Andhra Pradesh
+        </div>
+      </div>
+    `;
+
+    const recipients = [senderEmail, receiverEmail].filter(e => e && e.trim() !== '');
+    if (recipients.length === 0) return false;
+
+    const info = await transporter.sendMail({
+      from: DEFAULT_FROM,
+      to: recipients.join(', '),
+      subject: `📦 Shipment Confirmed - Tracking AWB: ${awb}`,
+      html: htmlTemplate,
+    });
+    
+    console.log(`✉️ Shipment created email sent to ${recipients.join(', ')} (MessageId: ${info.messageId})`);
+    return true;
+  } catch (err) {
+    console.error('Failed to send shipment created email:', err.message);
+    return false;
+  }
+}
+
 module.exports = {
   transporter,
   verifySMTP,
   sendBookingAlert,
   sendContactAlert,
   sendBookingInvoice,
+  sendOrderAlert,
+  sendShipmentCreatedEmail,
 };

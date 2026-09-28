@@ -35,6 +35,12 @@ import SeaFreightPage from './pages/SeaFreightPage';
 import EcommerceLogisticsPage from './pages/EcommerceLogisticsPage';
 import ExpressCourierPage from './pages/ExpressCourierPage';
 
+// Delivery Boy App Pages
+import DeliveryLogin from './pages/delivery/DeliveryLogin';
+import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
+import DeliveryTaskDetail from './pages/delivery/DeliveryTaskDetail';
+import DeliveryScanner from './pages/delivery/DeliveryScanner';
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { 
@@ -60,11 +66,12 @@ function ProtectedUserRoute({ children }) {
 function AppLayout() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isDeliveryRoute = location.pathname.startsWith('/delivery');
 
   return (
     <>
       <ScrollToTop />
-      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && !isDeliveryRoute && <Navbar />}
       <PageTransition>
         <Routes>
           {/* Public Routes */}
@@ -96,13 +103,20 @@ function AppLayout() {
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/*" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
 
+          {/* Delivery Boy App Routes */}
+          <Route path="/delivery/login" element={<DeliveryLogin />} />
+          <Route path="/delivery" element={<DeliveryDashboard />} />
+          <Route path="/delivery/task/:awb" element={<DeliveryTaskDetail />} />
+          <Route path="/delivery/task/*" element={<DeliveryTaskDetail />} />
+          <Route path="/delivery/scan" element={<DeliveryScanner />} />
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </PageTransition>
-      {!isAdminRoute && <ChatbotWidget />}
-      {!isAdminRoute && <CookieBanner />}
-      {!isAdminRoute && <Footer />}
-      {!isAdminRoute && <AuthModal />}
+      {!isAdminRoute && !isDeliveryRoute && <ChatbotWidget />}
+      {!isAdminRoute && !isDeliveryRoute && <CookieBanner />}
+      {!isAdminRoute && !isDeliveryRoute && location.pathname !== '/ecommerce-logistics' && <Footer />}
+      {!isAdminRoute && !isDeliveryRoute && <AuthModal />}
     </>
   );
 }

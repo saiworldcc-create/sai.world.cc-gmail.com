@@ -8,30 +8,11 @@ const User = require('../models/User');
 const Booking = require('../models/Booking');
 const { protect } = require('../middleware/auth'); // Note: auth middleware currently uses 'Admin', we'll need to adapt it or create a new one for User
 
+const { protectUser } = require('../middleware/userAuth');
+
 function signToken(id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 }
-
-// Custom middleware to protect user routes
-const protectUser = async (req, res, next) => {
-  let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'Not authorized to access this route' });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id);
-    if (!req.user) {
-      return res.status(401).json({ success: false, message: 'User no longer exists' });
-    }
-    next();
-  } catch (err) {
-    return res.status(401).json({ success: false, message: 'Not authorized' });
-  }
-};
 
 // POST /api/v1/users/register
 router.post(

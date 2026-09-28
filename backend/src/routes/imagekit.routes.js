@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const ImageKit = require('imagekit');
 const { protect } = require('../middleware/auth');
+const multer = require('multer');
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
 
 const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
@@ -23,6 +26,32 @@ router.get('/auth', protect, (req, res) => {
   } catch (err) {
     console.error('ImageKit auth error:', err);
     return res.status(500).json({ success: false, message: err.message || 'Failed to generate upload credentials.' });
+  }
+});
+
+// POST /api/v1/imagekit/upload — server-side file upload to ImageKit
+router.post('/upload', protect, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file provided.' });
+    }
+    const result = await imagekit.upload({
+      file: req.file.buffer,
+      fileName: req.file.originalname || 'product-image',
+      folder: '/sai-couriers/ecommerce',
+    });
+    return res.json({
+      success: true,
+      data: {
+        url: result.url,
+        fileId: result.fileId,
+        name: result.name,
+        thumbnailUrl: result.thumbnailUrl,
+      }
+    });
+  } catch (err) {
+    console.error('ImageKit upload error:', err);
+    return res.status(500).json({ success: false, message: err.message || 'Failed to upload image.' });
   }
 });
 

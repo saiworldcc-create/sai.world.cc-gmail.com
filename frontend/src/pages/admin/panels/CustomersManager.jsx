@@ -83,22 +83,29 @@ export default function CustomersManager() {
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         {customer.avatar ? (
-                          <img src={customer.avatar} alt={customer.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
-                        ) : (
-                          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-card-tint)', color: 'var(--accent-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                            {customer.name?.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <span style={{ fontWeight: '500', color: 'var(--text-slate-dark)' }}>{customer.name}</span>
+                          <img 
+                            src={customer.avatar} 
+                            alt={customer.name} 
+                            style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} 
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div style={{ display: customer.avatar ? 'none' : 'flex', width: '40px', height: '40px', borderRadius: '50%', background: '#E3F2FD', color: '#1976D2', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                          {customer.name?.charAt(0).toUpperCase()}
+                        </div>
+                        <span style={{ fontWeight: '500', color: '#1E3446' }}>{customer.name}</span>
                       </div>
                     </td>
                     <td>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                        <span style={{ fontSize: '0.9rem', color: '#4A6B82' }}>
+                        <span style={{ fontSize: '0.9rem', color: '#1E3446' }}>
                           <i className="fa-solid fa-envelope" style={{ width: '16px', opacity: 0.7 }}></i> {customer.email}
                         </span>
                         {customer.phone && (
-                          <span style={{ fontSize: '0.85rem', color: '#7091A8' }}>
+                          <span style={{ fontSize: '0.85rem', color: '#3C5B72' }}>
                             <i className="fa-solid fa-phone" style={{ width: '16px', opacity: 0.7 }}></i> {customer.phone}
                           </span>
                         )}
@@ -110,13 +117,13 @@ export default function CustomersManager() {
                           <i className="fa-brands fa-google"></i> Google Login
                         </span>
                       ) : (
-                        <span className="admin-status-badge" style={{ background: '#F5F7FA', color: '#7091A8' }}>
+                        <span className="admin-status-badge" style={{ background: '#F5F7FA', color: '#3C5B72' }}>
                           <i className="fa-solid fa-envelope"></i> Email Auth
                         </span>
                       )}
                     </td>
                     <td>
-                      <span style={{ fontSize: '0.9rem', color: '#4A6B82' }}>
+                      <span style={{ fontSize: '0.9rem', color: '#1E3446' }}>
                         {new Date(customer.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                       </span>
                     </td>

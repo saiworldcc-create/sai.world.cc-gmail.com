@@ -305,6 +305,40 @@ function BranchMapSwitcher() {
   );
 }
 
+const useTypewriter = (text, speed = 50, delayMs = 0) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [cursorVisible, setCursorVisible] = useState(true);
+
+  useEffect(() => {
+    let i = 0;
+    setDisplayedText('');
+    let timer;
+    const startDelay = setTimeout(() => {
+      timer = setInterval(() => {
+        if (i < text.length) {
+          const char = text.charAt(i);
+          setDisplayedText((prev) => prev + char);
+          i++;
+        } else {
+          clearInterval(timer);
+        }
+      }, speed);
+    }, delayMs);
+    
+    return () => {
+      clearTimeout(startDelay);
+      clearInterval(timer);
+    };
+  }, [text, speed, delayMs]);
+
+  useEffect(() => {
+    const blinkTimer = setInterval(() => setCursorVisible(v => !v), 530);
+    return () => clearInterval(blinkTimer);
+  }, []);
+
+  return { text: displayedText, cursorVisible };
+};
+
 /* ══════════════════════════════════════════════════════════════════════════════
    MAIN HOMEPAGE — All sections unified, dynamic, loop-driven
    ══════════════════════════════════════════════════════════════════════════════ */
@@ -316,6 +350,36 @@ export default function HomePage() {
   const fp = content.foodPackaging || {};
   const tm = content.testimonials || {};
   const vs = content.videoSection || {};
+
+  // Typing animation text logic for heading
+  const headingBase = h.heading || 'From INDIA';
+  const headingHi = h.headingHighlight || 'to the WORLD';
+  const fullText = `${headingBase} ${headingHi}`.trim();
+  const { text: typedText, cursorVisible } = useTypewriter(fullText, 45, 0); // starts immediately
+  const worldIndex = headingHi ? typedText.indexOf(headingHi) : -1;
+  let prefix = typedText;
+  let worldPart = '';
+  if (worldIndex !== -1) {
+    prefix = typedText.substring(0, worldIndex);
+    worldPart = typedText.substring(worldIndex);
+  }
+
+  // Typing animation for description
+  const fullDesc = h.description || 'Worldwide Express Courier, Air Cargo & Doorstep Delivery to 195+ Countries.';
+  const { text: typedDesc, cursorVisible: descCursor } = useTypewriter(fullDesc, 35, 1200); // starts after heading finishes (~1.2s delay)
+  
+  const targetHighlight = (h.features && h.features.length > 0) ? h.features[0] : '195+ Countries';
+  const highlightIndex = typedDesc.indexOf(targetHighlight);
+  let descPrefix = typedDesc;
+  let descHighlight = '';
+  let descSuffix = '';
+  if (highlightIndex !== -1) {
+    descPrefix = typedDesc.substring(0, highlightIndex);
+    // Find if the dot is typed yet
+    const afterHighlight = typedDesc.substring(highlightIndex + targetHighlight.length); 
+    descHighlight = targetHighlight;
+    descSuffix = afterHighlight;
+  }
 
   const [activeVideoModal, setActiveVideoModal] = useState(null);
   const parallaxRef = useMouseParallax(5);
@@ -380,15 +444,34 @@ export default function HomePage() {
           <div className="hero-sky-copy-zone">
             <div className="hero-kicker-badge">
               <span className="hero-kicker-dot"></span>
-              <span>GLOBAL LOGISTICS & CARGO</span>
+              <span>{h.badge || 'GLOBAL LOGISTICS & CARGO'}</span>
             </div>
             <h1 className="hero-heading">
-              <span className="hero-heading-white">{h.heading || 'From Andhra Pradesh'}&nbsp;</span>
-              <span className="hero-heading-lead-in">to the </span>
-              <span className="animated-world-text">World.</span>
+              <span className="hero-heading-white">{prefix}</span>
+              {worldPart && <span style={{ color: '#38BDF8' }}>{worldPart}</span>}
+              <span style={{ 
+                borderRight: '0.15em solid #38BDF8', 
+                marginLeft: '2px',
+                display: 'inline-block',
+                height: '0.85em',
+                verticalAlign: 'bottom',
+                opacity: cursorVisible ? 1 : 0,
+                transition: 'opacity 0.1s'
+              }}></span>
             </h1>
             <p className="hero-description">
-              Worldwide Express Courier, Air Cargo & Doorstep Delivery to <span className="hero-highlight-countries">195+ Countries</span>.
+              {descPrefix}
+              {descHighlight && <span className="hero-highlight-countries">{descHighlight}</span>}
+              {descSuffix}
+              <span style={{ 
+                borderRight: '0.15em solid rgba(255,255,255,0.7)', 
+                marginLeft: '2px',
+                display: 'inline-block',
+                height: '0.85em',
+                verticalAlign: 'bottom',
+                opacity: descCursor ? 1 : 0,
+                transition: 'opacity 0.1s'
+              }}></span>
             </p>
           </div>
 

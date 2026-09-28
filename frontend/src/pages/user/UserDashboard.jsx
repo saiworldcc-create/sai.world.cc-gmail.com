@@ -1,19 +1,21 @@
 import { useUser } from '../../context/UserContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getUserShipments } from '../../services/api';
+import { getUserShipments, getUserEcomOrders, cancelUserEcomOrder } from '../../services/api';
 
 export default function UserDashboard() {
   const { user, logout } = useUser();
   const navigate = useNavigate();
   const [shipments, setShipments] = useState([]);
+  const [ecomOrders, setEcomOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
-      getUserShipments()
-        .then(res => {
-          if (res.success) setShipments(res.data);
+      Promise.all([getUserShipments(), getUserEcomOrders()])
+        .then(([shipmentsRes, ordersRes]) => {
+          if (shipmentsRes.success) setShipments(shipmentsRes.data);
+          if (ordersRes.success) setEcomOrders(ordersRes.data);
           setLoading(false);
         })
         .catch(err => {
@@ -25,7 +27,18 @@ export default function UserDashboard() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+    try {
+      const res = await cancelUserEcomOrder(orderId);
+      if (res.success) {
+        setEcomOrders(ecomOrders.map(o => o._id === orderId ? { ...o, status: 'cancelled' } : o));
+      }
+    } catch (err) {
+      alert("Failed to cancel order.");
+    }
   };
 
   if (!user) return null;
@@ -130,6 +143,74 @@ export default function UserDashboard() {
                           >
                             <i className="fa-solid fa-file-pdf"></i> PDF
                           </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          <div style={{ background: 'var(--bg-card-tint)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-light)', gridColumn: '1 / -1' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, color: 'var(--accent-teal)' }}><i className="fa-solid fa-cart-shopping"></i> My Store Orders</h3>
+              <button className="btn btn-primary btn-sm" onClick={() => navigate('/ecommerce-logistics')}><i className="fa-solid fa-store"></i> Browse Store</button>
+            </div>
+
+            {loading ? (
+              <p style={{ color: 'var(--text-slate-muted)' }}><i className="fa-solid fa-spinner fa-spin"></i> Loading your orders...</p>
+            ) : ecomOrders.length === 0 ? (
+              <p style={{ color: 'var(--text-slate-muted)' }}>You haven't placed any store orders yet.</p>
+            ) : (
+                            <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid var(--border-light)', textAlign: 'left', color: 'var(--text-slate-muted)' }}>
+                      <th style={{ padding: '1rem 0.5rem' }}>Order ID</th>
+                      <th style={{ padding: '1rem 0.5rem' }}>Date Placed</th>
+                      <th style={{ padding: '1rem 0.5rem' }}>Items</th>
+                      <th style={{ padding: '1rem 0.5rem' }}>Order Status</th>
+                      <th style={{ padding: '1rem 0.5rem' }}>Total Amount</th>
+                      <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ecomOrders.map((order) => (
+                      <tr key={order._id} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                        <td style={{ padding: '1rem 0.5rem', fontWeight: 'bold' }}>
+                          <Link to={`/tracking?awb=${order.orderNumber}`} style={{ color: 'var(--accent-teal)' }}>{order.orderNumber}</Link>
+                        </td>
+                        <td style={{ padding: '1rem 0.5rem', color: 'var(--text-slate-dark)' }}>
+                          {new Date(order.createdAt).toLocaleDateString('en-GB')}
+                        </td>
+                        <td style={{ padding: '1rem 0.5rem', color: 'var(--text-slate-dark)' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                            {order.items.map((item, idx) => (
+                              <span key={idx} style={{ fontSize: '0.8rem' }}>{item.qty}x {item.name}</span>
+                            ))}
+                          </div>
+                        </td>
+                        <td style={{ padding: '1rem 0.5rem' }}>
+                          <span style={{ 
+                            background: order.status === 'delivered' ? '#D1FAE5' : order.status === 'cancelled' ? '#FEE2E2' : '#DBEAFE', 
+                            color: order.status === 'delivered' ? '#065F46' : order.status === 'cancelled' ? '#991B1B' : '#1E40AF', 
+                            padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600, textTransform: 'capitalize' 
+                          }}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td style={{ padding: '1rem 0.5rem', color: 'var(--text-slate-dark)', fontWeight: 'bold' }}>
+                          ?{order.total}
+                        </td>
+                        <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
+                          {(order.status === 'pending' || order.status === 'confirmed') ? (
+                            <button onClick={() => handleCancelOrder(order._id)} className="btn btn-outline btn-sm" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', borderColor: '#EF4444', color: '#EF4444' }}>
+                              <i className="fa-solid fa-xmark"></i> Cancel
+                            </button>
+                          ) : (
+                            <span style={{ color: 'var(--text-slate-muted)', fontSize: '0.8rem' }}>-</span>
+                          )}
                         </td>
                       </tr>
                     ))}

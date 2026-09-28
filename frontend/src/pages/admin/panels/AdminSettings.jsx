@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { changeAdminPassword } from '../../../services/api';
+import { useState, useEffect } from 'react';
+import { changeAdminPassword, getAdminSettings, updateAdminSetting } from '../../../services/api';
 import { useAdminAuth } from '../../../context/AdminAuthContext';
 
 export default function AdminSettings() {
@@ -7,6 +7,31 @@ export default function AdminSettings() {
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [msg, setMsg] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const [profitMargin, setProfitMargin] = useState(15);
+  const [savingMargin, setSavingMargin] = useState(false);
+  const [marginMsg, setMarginMsg] = useState('');
+
+  useEffect(() => {
+    getAdminSettings().then(res => {
+      const pm = res.settings?.find(s => s.key === 'profitMargin');
+      if (pm) setProfitMargin(pm.value);
+    }).catch(err => console.error('Failed to load settings:', err));
+  }, []);
+
+  const handleSaveMargin = async () => {
+    setSavingMargin(true);
+    setMarginMsg('');
+    try {
+      await updateAdminSetting({ key: 'profitMargin', value: parseFloat(profitMargin) });
+      setMarginMsg('✅ Profit margin updated successfully!');
+    } catch (err) {
+      setMarginMsg(`❌ Failed to update margin.`);
+    } finally {
+      setSavingMargin(false);
+      setTimeout(() => setMarginMsg(''), 3000);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,6 +96,32 @@ export default function AdminSettings() {
             {saving ? <><i className="fa-solid fa-circle-notch fa-spin"></i> Saving…</> : <><i className="fa-solid fa-floppy-disk"></i> Update Password</>}
           </button>
         </form>
+      </div>
+
+      {/* Global Application Settings */}
+      <div className="admin-settings-card">
+        <h4><i className="fa-solid fa-sliders"></i> System Pricing Settings</h4>
+        {marginMsg && <div className={`admin-save-msg ${marginMsg.startsWith('✅') ? 'success' : 'error'}`} style={{ marginBottom: '1rem' }}>{marginMsg}</div>}
+        <div className="admin-field">
+          <label className="admin-field-label">Global Profit Margin (%)</label>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <input
+              type="number"
+              className="admin-field-input"
+              value={profitMargin}
+              onChange={e => setProfitMargin(e.target.value)}
+              min="0"
+              step="0.5"
+              style={{ maxWidth: '200px' }}
+            />
+            <button onClick={handleSaveMargin} className="admin-btn admin-btn-primary" disabled={savingMargin}>
+              {savingMargin ? 'Saving...' : 'Save Margin'}
+            </button>
+          </div>
+          <p style={{ fontSize: '0.8rem', color: '#7091A8', marginTop: '0.5rem' }}>
+            This percentage is automatically added to the base rate of DHL, UPS, and SELF services in the public calculator.
+          </p>
+        </div>
       </div>
 
       {/* Business & Support Details */}

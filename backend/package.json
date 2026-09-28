@@ -21,9 +21,13 @@
     "imagekit": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.24.4",
+    "multer": "^2.4.0",
     "nodemailer": "^9.0.5",
+    "pdf-parse": "^1.1.1",
     "pdfkit": "^0.20.2",
-    "razorpay": "^2.9.8"
+    "razorpay": "^2.9.8",
+    "socket.io": "^4.8.4",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

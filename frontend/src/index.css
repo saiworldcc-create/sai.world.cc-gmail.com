@@ -3488,6 +3488,58 @@ video.page-hero-media {
   z-index: 2;
 }
 
+/* Connecting Line Background */
+.stepper-node-box:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 22px; /* Center of the 44px dot */
+  left: 50%;
+  width: 100%;
+  height: 4px;
+  background: var(--border-light);
+  z-index: -1;
+  border-radius: 2px;
+}
+
+/* Connecting Line Fill for Completed */
+.stepper-node-box.completed:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 100%;
+  height: 4px;
+  background: var(--accent-teal);
+  z-index: 0;
+  transform-origin: left;
+  animation: lineFill 0.8s ease-in-out forwards;
+}
+
+/* Connecting Line Flow for Active */
+.stepper-node-box.active:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-teal) 0%, var(--accent-coral) 100%);
+  z-index: 0;
+  transform-origin: left;
+  background-size: 200% 100%;
+  animation: gradientFlowLine 2s linear infinite, lineFill 0.8s ease-in-out forwards;
+}
+
+@keyframes lineFill {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes gradientFlowLine {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
 .stepper-node-dot {
   width: 44px;
   height: 44px;
@@ -4532,6 +4584,50 @@ video.page-hero-media {
 /* --------------------------------------------------------------------------
    2. Tablet & Medium Screens (max-width: 1024px)
    -------------------------------------------------------------------------- */
+/* Chatbot & Header Mobile Fixes */
+.chatbot-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 150px;
+  height: 150px;
+}
+.chatbot-fab.open {
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+}
+.chatbot-lottie {
+  width: 180px;
+  height: 180px;
+}
+
+@media (max-width: 768px) {
+  .chatbot-fab:not(.open) {
+    width: 65px;
+    height: 65px;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .chatbot-fab.open {
+    width: 50px;
+    height: 50px;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .chatbot-lottie {
+    width: 80px;
+    height: 80px;
+  }
+  .nav-brand-text {
+    display: none !important;
+  }
+  .nav-action-btn {
+    display: none !important;
+  }
+}
+
 @media (max-width: 1024px) {
   .hero-section-editorial {
     min-height: unset;
@@ -5153,8 +5249,7 @@ video.page-hero-media {
 
 /* ── 1. Route Page Transitions ───────────────────────────────────────────── */
 .route-page-transition {
-  animation: routeFadeIn 320ms var(--anim-ease-out) both;
-  will-change: opacity, transform;
+  animation: routeFadeIn 320ms var(--anim-ease-out);
 }
 
 @keyframes routeFadeIn {
@@ -5165,7 +5260,7 @@ video.page-hero-media {
 
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
@@ -6997,4 +7092,29 @@ body {
 .branch-btn-map:hover {
   background: var(--accent-teal);
   color: #0b1622;
+}
+
+/* Mobile Hero Video Fix */
+@media (max-width: 768px) {
+  .hero-backdrop-img {
+    object-position: top center !important;
+    object-fit: contain !important;
+    height: 45vh !important;
+    top: 260px !important;
+    bottom: auto !important;
+    z-index: 2 !important;
+  }
+  .hero-section-editorial {
+    min-height: unset !important;
+    padding-top: 5rem !important;
+  }
+  .btn-quote-hide, .nav-actions .btn-coral {
+    display: none !important;
+  }
+}
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }

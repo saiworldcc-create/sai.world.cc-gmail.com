@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const ContactMessage = require('../models/ContactMessage');
+const Notification = require('../models/Notification');
 const { sendContactAlert } = require('../services/emailService');
 const { protect } = require('../middleware/auth');
 
@@ -39,6 +40,14 @@ router.post(
 
       // Asynchronously send email alert to admin & customer
       sendContactAlert(contactMsg).catch(err => console.error('Contact email alert error:', err.message));
+
+      // Create Notification for admin
+      Notification.create({
+        title: source === 'quote' ? 'New Quote Request' : 'New Inquiry',
+        message: `${name} (${phone}) requested information for ${destCountry || 'General'}`,
+        type: source === 'quote' ? 'quote' : 'contact',
+        link: '/admin/contacts'
+      }).catch(err => console.error('Failed to create notification:', err));
 
       return res.status(201).json({
         success: true,

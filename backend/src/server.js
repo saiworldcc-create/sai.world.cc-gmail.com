@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const connectDB = require('./config/db');
+const http = require('http');
+const { initSocket } = require('./services/socketService');
 
 // Route imports
 const trackingRoutes = require('./routes/tracking.routes');
@@ -15,8 +17,15 @@ const imagekitRoutes = require('./routes/imagekit.routes');
 const userRoutes = require('./routes/user.routes');
 const paymentRoutes = require('./routes/payment.routes');
 const aiRoutes = require('./routes/ai.routes');
+const ecommerceRoutes = require('./routes/ecommerce.routes');
+const deliveryRoutes = require('./routes/delivery.routes');
 
 const app = express();
+const server = http.createServer(app);
+
+// Initialize Socket.io
+initSocket(server);
+
 const PORT = process.env.PORT || 5000;
 
 // ── Security & Middleware ──────────────────────────────────────────────────
@@ -56,6 +65,8 @@ app.use('/api/v1/imagekit', imagekitRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/ai', aiRoutes);
+app.use('/api/v1/ecommerce', ecommerceRoutes);
+app.use('/api/v1/delivery', deliveryRoutes);
 
 // ── 404 Handler ───────────────────────────────────────────────────────────
 app.use((req, res) => {
@@ -76,7 +87,7 @@ const { verifySMTP } = require('./services/emailService');
 
 connectDB().then(() => {
   verifySMTP();
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`\n🚀 Sai Couriers API v2.0 running on http://localhost:${PORT}`);
     console.log(`   Health:   http://localhost:${PORT}/api/health`);
     console.log(`   Tracking: http://localhost:${PORT}/api/v1/tracking/:awb`);

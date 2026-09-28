@@ -83,11 +83,11 @@ export default function BookingsManager() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid var(--border-light)', textAlign: 'left', background: 'rgba(0,0,0,0.02)' }}>
-                <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>AWB / Date</th>
-                <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>Sender Details</th>
-                <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>Destination</th>
-                <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>Category / Weight</th>
-                <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>Status Update</th>
+                <th style={{ padding: '1rem', color: '#7091A8' }}>AWB / Date</th>
+                <th style={{ padding: '1rem', color: '#7091A8' }}>Sender Details</th>
+                <th style={{ padding: '1rem', color: '#7091A8' }}>Destination</th>
+                <th style={{ padding: '1rem', color: '#7091A8' }}>Category / Weight</th>
+                <th style={{ padding: '1rem', color: '#7091A8' }}>Status Update</th>
               </tr>
             </thead>
             <tbody>
@@ -97,22 +97,22 @@ export default function BookingsManager() {
                   <tr key={booking._id} style={{ borderBottom: '1px solid var(--border-light)' }}>
                     <td style={{ padding: '1rem' }}>
                       <strong style={{ color: 'var(--accent-teal)', fontSize: '1.05rem', display: 'block', marginBottom: '0.25rem' }}>{booking.awb}</strong>
-                      <span style={{ color: 'var(--text-slate-muted)', fontSize: '0.8rem' }}>
+                      <span style={{ color: '#7091A8', fontSize: '0.8rem' }}>
                         {new Date(booking.createdAt).toLocaleString()}
                       </span>
                     </td>
                     <td style={{ padding: '1rem' }}>
-                      <strong style={{ color: 'var(--text-slate-dark)' }}>{booking.senderName}</strong><br />
+                      <strong style={{ color: '#1E3446' }}>{booking.senderName}</strong><br />
                       <a href={`tel:${booking.senderPhone}`} style={{ color: '#0056B3', textDecoration: 'none' }}>{booking.senderPhone}</a><br />
-                      <span style={{ color: 'var(--text-slate-muted)', fontSize: '0.8rem' }}>{booking.branchZone}</span>
+                      <span style={{ color: '#7091A8', fontSize: '0.8rem' }}>{booking.branchZone}</span>
                     </td>
                     <td style={{ padding: '1rem' }}>
-                      <strong style={{ color: 'var(--text-slate-dark)', fontSize: '1rem' }}>{booking.destCountry}</strong><br />
-                      <span style={{ color: 'var(--text-slate-muted)' }}>To: {booking.receiverName}</span>
+                      <strong style={{ color: '#1E3446', fontSize: '1rem' }}>{booking.destCountry}</strong><br />
+                      <span style={{ color: '#7091A8' }}>To: {booking.receiverName}</span>
                     </td>
                     <td style={{ padding: '1rem' }}>
-                      <strong style={{ color: 'var(--text-slate-dark)' }}>{booking.itemCategory}</strong><br />
-                      <span style={{ color: 'var(--text-slate-muted)' }}>{booking.estimatedWeight}</span>
+                      <strong style={{ color: '#1E3446' }}>{booking.itemCategory}</strong><br />
+                      <span style={{ color: '#7091A8' }}>{booking.estimatedWeight}</span>
                     </td>
                     <td style={{ padding: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

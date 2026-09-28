@@ -46,13 +46,17 @@ export function UserProvider({ children }) {
   }, [token]);
 
   const login = async (email, password) => {
-    const res = await axios.post('/api/v1/users/login', { email, password });
-    if (res.data.success) {
-      setToken(res.data.token);
-      setUser(res.data.user);
-      return { success: true };
+    try {
+      const res = await axios.post('/api/v1/users/login', { email, password });
+      if (res.data.success) {
+        setToken(res.data.token);
+        setUser(res.data.user);
+        return { success: true, user: res.data.user };
+      }
+      return { success: false, message: res.data.message || 'Login failed' };
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || err.message || 'Login failed' };
     }
-    return { success: false, message: res.data.message || 'Login failed' };
   };
 
   const register = async (name, email, password, phone) => {
@@ -82,13 +86,14 @@ export function UserProvider({ children }) {
   const logout = () => {
     setToken(null);
     setUser(null);
+    window.location.href = '/login';
   };
 
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
   return (
-    <UserContext.Provider value={{ user, token, loading, login, register, loginWithGoogle, logout, isAuth: !!user, isAuthModalOpen, openAuthModal, closeAuthModal }}>
+    <UserContext.Provider value={{ user, token, loading, login, loginUser: login, register, loginWithGoogle, logout, isAuth: !!user, isAuthModalOpen, openAuthModal, closeAuthModal }}>
       {!loading && children}
     </UserContext.Provider>
   );

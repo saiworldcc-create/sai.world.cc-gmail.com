@@ -24,6 +24,16 @@ const shipmentSchema = new mongoose.Schema(
     destination: { type: String, required: true },
     eta: { type: String, required: true },
     history: [trackingHistorySchema],
+    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    liveLocation: {
+      lat: { type: Number },
+      lng: { type: Number },
+      timestamp: { type: Date }
+    },
+    pod: {
+      signatureUrl: { type: String },
+      photoUrl: { type: String }
+    },
   },
   { timestamps: true }
 );

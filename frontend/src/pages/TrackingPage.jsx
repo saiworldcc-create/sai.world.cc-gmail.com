@@ -2,13 +2,22 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import usePageContent from '../hooks/usePageContent';
 import { trackShipment } from '../services/api';
+import { io } from 'socket.io-client';
 
-const MILESTONE_STEPS = [
-  { num: 1, title: 'Picked Up', sub: 'Kadapa Hub', icon: 'fa-truck-ramp-box' },
+const INTERNATIONAL_STEPS = [
+  { num: 1, title: 'Picked Up', sub: 'Hub / Branch', icon: 'fa-truck-ramp-box' },
   { num: 2, title: 'KYC Verified', sub: 'Customs Ready', icon: 'fa-file-shield' },
   { num: 3, title: 'RGIA Departed', sub: 'Air Cargo Jet', icon: 'fa-plane-departure' },
   { num: 4, title: 'In Transit', sub: 'Destination Hub', icon: 'fa-earth-americas' },
   { num: 5, title: 'Delivered', sub: 'Doorstep Signed', icon: 'fa-box-open' }
+];
+
+const DOMESTIC_STEPS = [
+  { num: 1, title: 'Order Placed', sub: 'Pending / Confirmed', icon: 'fa-clipboard-check' },
+  { num: 2, title: 'Packed', sub: 'Fulfillment Center', icon: 'fa-box' },
+  { num: 3, title: 'Dispatched', sub: 'In Transit', icon: 'fa-truck-fast' },
+  { num: 4, title: 'Out for Delivery', sub: 'Local Courier', icon: 'fa-motorcycle' },
+  { num: 5, title: 'Delivered', sub: 'Doorstep Delivery', icon: 'fa-house-circle-check' }
 ];
 
 export default function TrackingPage() {
@@ -21,6 +30,10 @@ export default function TrackingPage() {
   const [trackingData, setTrackingData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  // Real-time GPS Tracking State
+  const [liveLocation, setLiveLocation] = useState(null);
+  const [socket, setSocket] = useState(null);
 
   const fetchTracking = async (awbCode) => {
     if (!awbCode?.trim()) return;
@@ -44,6 +57,7 @@ export default function TrackingPage() {
           status: dbData.milestones.find(m => m.id === currentStage)?.status || 'Processing',
           destination: dbData.destination,
           stage: currentStage,
+          type: dbData.type || 'international',
           sender: dbData.senderName || dbData.sender,
           receiver: dbData.receiverName || dbData.receiver,
           contents: dbData.items || dbData.contents,
@@ -70,6 +84,7 @@ export default function TrackingPage() {
           status: dbData.status,
           destination: dbData.destination,
           stage: dbData.stage || 1,
+          type: dbData.type || 'international',
           sender: dbData.sender,
           receiver: dbData.receiver,
           contents: dbData.contents,
@@ -104,6 +119,23 @@ export default function TrackingPage() {
       fetchTracking(awbParam);
     }
   }, [awbParam]);
+
+  // Socket.io integration for Live Tracking
+  useEffect(() => {
+    if (trackingData && trackingData.stage === 4) { // Only track if Out for Delivery
+      // In development, you might need to point this to your specific backend URL like 'http://localhost:5000'
+      const newSocket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000');
+      setSocket(newSocket);
+
+      newSocket.emit('customer_join_awb', trackingData.awb);
+
+      newSocket.on('live_location_update', (data) => {
+        setLiveLocation(data);
+      });
+
+      return () => newSocket.close();
+    }
+  }, [trackingData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -197,7 +229,7 @@ export default function TrackingPage() {
                 <div style={{ margin: '2rem 0' }}>
                   <h4 style={{ fontSize: '1rem', color: '#1E3446', marginBottom: '1rem' }}>Shipment Transit Milestones</h4>
                   <div className="tracking-stepper-row">
-                    {MILESTONE_STEPS.map(step => {
+                    {(trackingData.type === 'domestic' ? DOMESTIC_STEPS : INTERNATIONAL_STEPS).map(step => {
                       const isCompleted = step.num < trackingData.stage || (step.num === 5 && trackingData.stage === 5);
                       const isActive = step.num === trackingData.stage && trackingData.stage < 5;
                       const cls = isCompleted ? 'completed' : isActive ? 'active' : '';
@@ -213,6 +245,24 @@ export default function TrackingPage() {
                     })}
                   </div>
                 </div>
+
+                {/* Live GPS Radar UI */}
+                {liveLocation && (
+                  <div style={{ margin: '2rem 0', padding: '1.5rem', background: '#0a192f', borderRadius: '12px', color: '#fff', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    <div style={{ position: 'relative', width: '60px', height: '60px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <div style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', border: '2px solid var(--accent-coral)', animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }}></div>
+                      <i className="fa-solid fa-truck-fast" style={{ fontSize: '1.5rem', color: 'var(--accent-coral)', zIndex: 1 }}></i>
+                    </div>
+                    <div>
+                      <h4 style={{ margin: '0 0 0.25rem 0', color: 'var(--accent-teal)' }}>Live GPS Signal Active</h4>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#8892b0' }}>
+                        Driver is currently on the move. <br/>
+                        <strong>Coordinates:</strong> {liveLocation.lat.toFixed(5)}, {liveLocation.lng.toFixed(5)} <br/>
+                        <strong>Last Updated:</strong> {new Date(liveLocation.timestamp).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Split Details & Activity Log */}
                 <div className="tracking-details-split-grid">

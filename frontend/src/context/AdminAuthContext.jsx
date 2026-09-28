@@ -32,6 +32,7 @@ export function AdminAuthProvider({ children }) {
     localStorage.removeItem('sai_admin_token');
     localStorage.removeItem('sai_admin_user');
     setAdmin(null);
+    window.location.href = '/admin/login';
   };
 
   return (

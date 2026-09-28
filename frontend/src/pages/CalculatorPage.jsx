@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import usePageContent from '../hooks/usePageContent';
 import { COUNTRIES } from '../constants/countries';
 import SearchableSelect from '../components/common/SearchableSelect';
-import { COUNTRY_RATES } from '../constants/appData';
+import api from '../services/api';
 
 export default function CalculatorPage() {
   const { content } = usePageContent('calculator', {});
@@ -18,38 +18,29 @@ export default function CalculatorPage() {
   const [width, setWidth] = useState(25);
   const [height, setHeight] = useState(20);
 
-  const calcResults = useMemo(() => {
-    const l = parseFloat(length) || 0;
-    const w = parseFloat(width) || 0;
-    const h = parseFloat(height) || 0;
-    const dw = parseFloat(deadWeight) || 0;
+  const [isLoading, setIsLoading] = useState(false);
+  const [calcResults, setCalcResults] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [selectedService, setSelectedService] = useState(0);
 
-    const volWeight = (l * w * h) / 5000;
-    const rawChargeable = Math.max(dw, volWeight);
-    const roundChargeable = Math.max(0.5, Math.ceil(rawChargeable * 2) / 2);
-
-    const rateInfo = COUNTRY_RATES[country] || COUNTRY_RATES['Other'];
-    let basePrice = roundChargeable * rateInfo.ratePerKg;
-    if (basePrice < rateInfo.minCharge) basePrice = rateInfo.minCharge;
-
-    const foodHandling = category === 'food' ? rateInfo.foodHandling : 0;
-    const totalMin = Math.round(basePrice + foodHandling);
-    const totalMax = Math.round(totalMin * 1.08);
-
-    const isVolGreater = volWeight > dw;
-
-    return {
-      volWeight: volWeight.toFixed(2),
-      roundChargeable: roundChargeable.toFixed(1),
-      transit: rateInfo.transit,
-      totalMin,
-      totalMax,
-      isVolGreater,
-      explanation: isVolGreater
-        ? `Volumetric weight (${volWeight.toFixed(2)} kg) is greater than Dead weight (${dw} kg). Billing is based on Volumetric.`
-        : `Dead weight (${dw} kg) is greater than Volumetric weight (${volWeight.toFixed(2)} kg). Billing is based on Actual weight.`
-    };
-  }, [country, category, deadWeight, length, width, height]);
+  const handleCalculate = async () => {
+    setIsLoading(true);
+    setErrorMsg('');
+    try {
+      const payload = {
+        country,
+        actualWeight: deadWeight,
+        length, width, height
+      };
+      const res = await api.post('/rates/calculate', payload);
+      setCalcResults(res);
+      setStep(3);
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to fetch rates. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const nextStep = () => setStep(s => Math.min(s + 1, 3));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
@@ -189,6 +180,12 @@ export default function CalculatorPage() {
               <div className="animate-slide-in">
                 <h3 style={{ fontSize: '1.4rem', color: '#FFF', marginBottom: '1.5rem' }}>Enter Parcel Dimensions</h3>
                 
+                {errorMsg && (
+                  <div style={{ background: 'rgba(233,120,86,0.1)', color: '#E97856', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
+                    <i className="fa-solid fa-circle-exclamation"></i> {errorMsg}
+                  </div>
+                )}
+
                 <div className="form-group-item">
                   <label className="form-label-title" htmlFor="calc-dead-weight">
                     <i className="fa-solid fa-scale-balanced" style={{ color: '#E97856' }}></i> Actual Scale Weight (kg)
@@ -196,55 +193,88 @@ export default function CalculatorPage() {
                   <input type="number" id="calc-dead-weight" className="form-input-field" value={deadWeight} min="0.5" step="0.5" onChange={(e) => setDeadWeight(e.target.value)} required />
                 </div>
 
-                <div style={{ marginTop: '1.5rem' }}>
-                  <label className="form-label-title">
-                    <i className="fa-solid fa-cube" style={{ color: '#3CC8C8' }}></i> Carton Dimensions (cm)
-                  </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginTop: '0.5rem' }}>
-                    <div>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#A0B0C0' }}>Length</span>
-                      <input type="number" className="form-input-field" value={length} min="1" onChange={(e) => setLength(e.target.value)} />
-                    </div>
-                    <div>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#A0B0C0' }}>Width</span>
-                      <input type="number" className="form-input-field" value={width} min="1" onChange={(e) => setWidth(e.target.value)} />
-                    </div>
-                    <div>
-                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#A0B0C0' }}>Height</span>
-                      <input type="number" className="form-input-field" value={height} min="1" onChange={(e) => setHeight(e.target.value)} />
-                    </div>
-                  </div>
-                </div>
+
               </div>
             )}
 
             {/* Step 3: Result */}
-            {step === 3 && (
-              <div className="animate-slide-in" style={{ textAlign: 'center' }}>
-                <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--bg-powder-blue)', color: 'var(--accent-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 1.5rem auto' }}>
-                  <i className="fa-solid fa-file-invoice-dollar"></i>
+            {step === 3 && calcResults && (
+              <div className="animate-slide-in">
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                  <h3 style={{ fontSize: '1.8rem', color: '#FFF', marginBottom: '0.5rem' }}>Select Your Service Level</h3>
+                  <p style={{ color: '#A0B0C0' }}>Shipping {calcResults.actualWeight}kg from Andhra Pradesh to {country}</p>
                 </div>
-                <h3 style={{ fontSize: '1.4rem', color: '#1E3446', marginBottom: '0.5rem' }}>Your Estimated Quote</h3>
-                <p style={{ color: '#4A6B82', marginBottom: '2rem' }}>Shipping from Andhra Pradesh to {country}</p>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1E3446', lineHeight: 1 }}>₹{calcResults.totalMin.toLocaleString('en-IN')}</span>
-                  <span style={{ fontSize: '0.85rem', color: '#7091A8', marginTop: '0.5rem' }}>*Exclusive of GST, fuel & remote area surcharges</span>
-                </div>
-                
-                <div style={{ background: 'var(--bg-card-tint)', padding: '1.5rem', borderRadius: '8px', textAlign: 'left', border: '1px solid var(--border-light)', marginBottom: '2rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ color: '#7091A8', fontSize: '0.9rem' }}>Chargeable Weight:</span>
-                    <strong style={{ color: '#E97856' }}>{calcResults.roundChargeable} kg</strong>
+
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px dashed #3CC8C8', marginBottom: '2rem', display: 'flex', justifyContent: 'center', gap: '2rem', color: '#FFF' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#7091A8' }}>Chargeable Weight</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#3CC8C8' }}>{calcResults.chargeableWeight} kg</div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ color: '#7091A8', fontSize: '0.9rem' }}>Estimated Transit:</span>
-                    <strong style={{ color: '#1E3446' }}>{calcResults.transit}</strong>
-                  </div>
-                  <div style={{ fontSize: '0.8rem', color: '#A0B0C0', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed #CBD5E1' }}>
-                    <i className="fa-solid fa-circle-info"></i> {calcResults.explanation}
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#7091A8' }}>Volumetric Weight</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{calcResults.volWeight.toFixed(2)} kg</div>
                   </div>
                 </div>
+
+                {calcResults.options && calcResults.options.length > 0 ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                    {calcResults.options.map((opt, i) => {
+                      const isSelected = selectedService === i;
+                      return (
+                        <div key={i} 
+                          onClick={() => setSelectedService(i)}
+                          style={{ 
+                            background: isSelected ? 'rgba(255,255,255,0.05)' : '#0B1622', 
+                            border: `2px solid ${isSelected ? opt.color : 'rgba(255,255,255,0.1)'}`, 
+                            borderRadius: '12px', 
+                            padding: '1.5rem', 
+                            position: 'relative',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                            boxShadow: isSelected ? `0 10px 30px ${opt.color}33` : 'none'
+                          }}
+                        >
+                          {isSelected && (
+                            <div style={{ position: 'absolute', top: '10px', right: '10px', color: opt.color, fontSize: '1.2rem' }}>
+                              <i className="fa-solid fa-circle-check"></i>
+                            </div>
+                          )}
+                          {i === 0 && (
+                            <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: opt.color, color: '#FFF', padding: '2px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800 }}>
+                              BEST VALUE
+                            </div>
+                          )}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem' }}>
+                            <i className={`fa-solid ${opt.icon}`} style={{ color: opt.color, fontSize: '1.5rem' }}></i>
+                            <div>
+                              <strong style={{ color: '#FFF', display: 'block', fontSize: '1.1rem' }}>{opt.brand}</strong>
+                              <span style={{ fontSize: '0.75rem', color: '#7091A8' }}>{opt.tagline}</span>
+                            </div>
+                          </div>
+                          
+                          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '1rem 0', margin: '1rem 0', flexGrow: 1 }}>
+                            <div style={{ color: '#E2E8F0', fontSize: '0.9rem', marginBottom: '0.5rem' }}><i className="fa-regular fa-clock" style={{ width: '20px', color: '#3CC8C8' }}></i> {opt.transit}</div>
+                            <div style={{ color: '#E2E8F0', fontSize: '0.9rem' }}><i className="fa-solid fa-truck" style={{ width: '20px', color: '#3CC8C8' }}></i> {opt.poweredBy} Network</div>
+                          </div>
+
+                          <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '2rem', fontWeight: 800, color: opt.color, lineHeight: 1 }}>₹{opt.totalCost.toLocaleString('en-IN')}</div>
+                            <div style={{ fontSize: '0.7rem', color: '#7091A8', marginTop: '5px' }}>*Approx total cost</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', color: '#E97856', padding: '2rem', background: 'rgba(233,120,86,0.1)', borderRadius: '8px' }}>
+                    <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '2rem', marginBottom: '1rem' }}></i>
+                    <h4>Service Unavailable</h4>
+                    <p>We're sorry, direct rates for this destination are currently unavailable online. Please contact our support team for a manual quote.</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -257,11 +287,25 @@ export default function CalculatorPage() {
               ) : <div></div>}
               
               {step < 3 ? (
-                <button onClick={nextStep} className="btn btn-teal">
-                  Next Step <i className="fa-solid fa-arrow-right"></i>
+                <button onClick={step === 2 ? handleCalculate : nextStep} className="btn btn-teal" disabled={isLoading}>
+                  {isLoading ? 'Calculating...' : (
+                    <>Next Step <i className="fa-solid fa-arrow-right"></i></>
+                  )}
                 </button>
               ) : (
-                <Link to="/book-pickup" className="btn btn-coral">
+                <Link 
+                  to="/book-pickup" 
+                  state={{ 
+                    prefill: {
+                      destination: country,
+                      weight: calcResults?.chargeableWeight,
+                      dimensions: `${length}x${width}x${height}`,
+                      serviceBrand: calcResults?.options?.[selectedService]?.brand,
+                      estimatedCost: calcResults?.options?.[selectedService]?.totalCost
+                    }
+                  }}
+                  className="btn btn-coral"
+                >
                   Book Pickup Now <i className="fa-solid fa-truck-fast"></i>
                 </Link>
               )}

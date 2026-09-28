@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { getAllContentPages } from '../../../services/api';
+import api, { getAllContentPages } from '../../../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAdminAuth } from '../../../context/AdminAuthContext';
 
@@ -48,9 +47,9 @@ export default function AdminHome() {
     // Poll stats every 10 seconds for real-time feel
     const fetchStats = async () => {
       try {
-        const res = await axios.get('/api/v1/admin/stats');
-        if (res.data.success) {
-          setStats(res.data.stats);
+        const res = await api.get('/admin/stats');
+        if (res.success) {
+          setStats(res.stats);
         }
       } catch (err) {
         console.error('Failed to fetch stats', err);
@@ -83,8 +82,8 @@ export default function AdminHome() {
             <i className="fa-solid fa-calendar-check"></i>
           </div>
           <div>
-            <div className="admin-stat-value">{stats.totalBookings}</div>
-            <div className="admin-stat-label">Total Bookings</div>
+            <div className="admin-stat-value" style={{ color: '#1E3446' }}>{stats.totalBookings}</div>
+            <div className="admin-stat-label" style={{ color: '#3C5B72', fontWeight: 500 }}>Total Bookings</div>
           </div>
         </div>
         <div className="admin-stat-card">
@@ -92,8 +91,8 @@ export default function AdminHome() {
             <i className="fa-solid fa-truck-fast"></i>
           </div>
           <div>
-            <div className="admin-stat-value">{stats.activeShipments}</div>
-            <div className="admin-stat-label">Active Shipments</div>
+            <div className="admin-stat-value" style={{ color: '#1E3446' }}>{stats.activeShipments}</div>
+            <div className="admin-stat-label" style={{ color: '#3C5B72', fontWeight: 500 }}>Active Shipments</div>
           </div>
         </div>
         <div className="admin-stat-card">
@@ -101,8 +100,8 @@ export default function AdminHome() {
             <i className="fa-solid fa-box-archive"></i>
           </div>
           <div>
-            <div className="admin-stat-value">{stats.totalShipments}</div>
-            <div className="admin-stat-label">Total Shipments</div>
+            <div className="admin-stat-value" style={{ color: '#1E3446' }}>{stats.totalShipments}</div>
+            <div className="admin-stat-label" style={{ color: '#3C5B72', fontWeight: 500 }}>Total Shipments</div>
           </div>
         </div>
         <div className="admin-stat-card">
@@ -110,8 +109,8 @@ export default function AdminHome() {
             <i className="fa-solid fa-envelope"></i>
           </div>
           <div>
-            <div className="admin-stat-value">{stats.unreadMessages}</div>
-            <div className="admin-stat-label">Unread Messages</div>
+            <div className="admin-stat-value" style={{ color: '#1E3446' }}>{stats.unreadMessages}</div>
+            <div className="admin-stat-label" style={{ color: '#3C5B72', fontWeight: 500 }}>Unread Messages</div>
           </div>
         </div>
       </div>
@@ -139,26 +138,26 @@ export default function AdminHome() {
       <div className="admin-section-title" style={{ marginTop: '2.5rem' }}>
         <i className="fa-solid fa-location-dot"></i> Recent Pickup Hotspots
       </div>
-      <div style={{ background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-light)', overflow: 'hidden', marginBottom: '2rem' }}>
+      <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E3EDF3', overflow: 'hidden', marginBottom: '2rem' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-          <thead style={{ background: 'var(--bg-card-tint)', borderBottom: '1px solid var(--border-light)' }}>
+          <thead style={{ background: '#1E3446', color: '#FFFFFF', borderBottom: '1px solid #E3EDF3' }}>
             <tr>
-              <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>Customer</th>
-              <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>AWB / Branch</th>
-              <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>Location / Coordinates</th>
-              <th style={{ padding: '1rem', color: 'var(--text-slate-muted)' }}>Map Link</th>
+              <th style={{ padding: '1rem', fontWeight: 600 }}>Customer</th>
+              <th style={{ padding: '1rem', fontWeight: 600 }}>AWB / Branch</th>
+              <th style={{ padding: '1rem', fontWeight: 600 }}>Location / Coordinates</th>
+              <th style={{ padding: '1rem', fontWeight: 600 }}>Map Link</th>
             </tr>
           </thead>
           <tbody>
             {stats.recentBookings && stats.recentBookings.length > 0 ? (
               stats.recentBookings.map(b => (
-                <tr key={b._id} style={{ borderBottom: '1px solid var(--border-light)' }}>
-                  <td style={{ padding: '1rem', color: 'var(--text-slate-dark)' }}>{b.senderName}<br/><span style={{fontSize: '0.8rem', color: 'var(--text-slate-muted)'}}>{b.senderPhone}</span></td>
-                  <td style={{ padding: '1rem', color: 'var(--text-slate-dark)' }}>
+                <tr key={b._id} style={{ borderBottom: '1px solid #E3EDF3' }}>
+                  <td style={{ padding: '1rem', color: '#1E3446', fontWeight: 500 }}>{b.senderName}<br/><span style={{fontSize: '0.8rem', color: '#7091A8', fontWeight: 400}}>{b.senderPhone}</span></td>
+                  <td style={{ padding: '1rem', color: '#1E3446' }}>
                     <span style={{ color: 'var(--accent-teal)', fontWeight: 'bold' }}>{b.awb}</span><br/>
-                    <span style={{fontSize: '0.8rem', color: 'var(--text-slate-muted)'}}>{b.branchZone}</span>
+                    <span style={{fontSize: '0.8rem', color: '#7091A8'}}>{b.branchZone}</span>
                   </td>
-                  <td style={{ padding: '1rem', color: 'var(--text-slate-dark)' }}>
+                  <td style={{ padding: '1rem', color: '#4A6B82' }}>
                     <div style={{ maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={b.senderAddress}>{b.senderAddress}</div>
                     {b.location?.lat && (
                       <span style={{fontSize: '0.75rem', background: '#E9785615', color: '#E97856', padding: '2px 6px', borderRadius: '4px'}}>
@@ -172,14 +171,14 @@ export default function AdminHome() {
                         <i className="fa-solid fa-map-location-dot"></i> View on Map
                       </a>
                     ) : (
-                      <span style={{ color: 'var(--text-slate-muted)', fontSize: '0.85rem' }}>Manual Address</span>
+                      <span style={{ color: '#7091A8', fontSize: '0.85rem' }}>Manual Address</span>
                     )}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-slate-muted)' }}>No recent pickup requests found.</td>
+                <td colSpan="4" style={{ padding: '2rem', textAlign: 'center', color: '#7091A8' }}>No recent pickup requests found.</td>
               </tr>
             )}
           </tbody>

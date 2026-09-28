@@ -416,7 +416,7 @@ async function seed() {
     console.log(`✅ Seeded ${ships.length} shipments`);
 
     // Seed Admin
-    const existingAdmin = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
+    const existingAdmin = await Admin.findOne({ email: process.env.ADMIN_EMAIL || 'admin@sai-couriers.com' });
     if (!existingAdmin) {
       await Admin.create({
         name: 'Sai Admin',
@@ -424,9 +424,28 @@ async function seed() {
         password: process.env.ADMIN_PASSWORD || 'SaiAdmin@2026',
         role: 'super-admin',
       });
-      console.log(`✅ Admin created: ${process.env.ADMIN_EMAIL}`);
+      console.log(`✅ Admin created: ${process.env.ADMIN_EMAIL || 'admin@sai-couriers.com'}`);
     } else {
       console.log(`ℹ️  Admin already exists: ${existingAdmin.email}`);
+    }
+
+    // Seed Driver / Delivery Partner User
+    const User = require('./models/User');
+    let driverUser = await User.findOne({ email: 'driver@sai.com' });
+    if (!driverUser) {
+      await User.create({
+        name: 'Test Delivery Driver',
+        email: 'driver@sai.com',
+        password: 'Driver@2026',
+        phone: '+91 90599 49365',
+        role: 'delivery_partner',
+      });
+      console.log('✅ Driver account created: driver@sai.com');
+    } else {
+      driverUser.password = 'Driver@2026';
+      driverUser.role = 'delivery_partner';
+      await driverUser.save();
+      console.log('ℹ️ Driver account updated: driver@sai.com');
     }
 
     // Seed Page Content
@@ -438,6 +457,15 @@ async function seed() {
       );
       console.log(`✅ Seeded content for page: ${page.page}`);
     }
+
+    // Seed Settings
+    const AppSetting = require('./models/AppSetting');
+    await AppSetting.findOneAndUpdate(
+      { key: 'profitMargin' },
+      { $setOnInsert: { key: 'profitMargin', value: 15 } }, // Default 15% margin
+      { upsert: true }
+    );
+    console.log(`✅ Seeded default profit margin setting`);
 
     await mongoose.disconnect();
     console.log('\n✅ Full seed complete!');
