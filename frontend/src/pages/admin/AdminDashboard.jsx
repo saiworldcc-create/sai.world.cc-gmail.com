@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import AdminHome from './panels/AdminHome';
 import PageEditor from './panels/PageEditor';
@@ -65,18 +66,15 @@ const getNavGroups = (role) => {
 };
 
 const getNavItems = (role) => getNavGroups(role).flatMap(g => g.items);
+
 export default function AdminDashboard() {
   const { admin, logout } = useAdminAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [openGroup, setOpenGroup] = useState('');
-  const [newOrderCount, setNewOrderCount] = useState(0);
-
-  // Notifications State
-  const [notifications, setNotifications] = useState([]);
-  const [unreadNotifs, setUnreadNotifs] = useState(0);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
 
   useEffect(() => {
@@ -89,56 +87,48 @@ export default function AdminDashboard() {
     }
   }, [location.pathname, admin]);
 
-  // Poll for new order count & notifications
-  const fetchData = useCallback(async () => {
-    try {
-      if (admin?.role === 'super-admin') {
-        const orderRes = await getNewOrderCount();
-        setNewOrderCount(orderRes.count || 0);
-      }
+  // React Query: Poll for new orders every 8s
+  const { data: newOrderCount = 0 } = useQuery({
+    queryKey: ['adminNewOrderCount'],
+    queryFn: async () => {
+      const res = await getNewOrderCount();
+      return res.count || 0;
+    },
+    refetchInterval: 8000,
+    enabled: admin?.role === 'super-admin'
+  });
 
-      const notifRes = await getAdminNotifications();
-      if (notifRes.success) {
-        setNotifications(notifRes.notifications || []);
-        setUnreadNotifs(notifRes.unreadCount || 0);
-      }
-    } catch { /* silent */ }
-  }, [admin?.role]);
+  // React Query: Poll for notifications every 8s
+  const { data: notifData = { notifications: [], unreadCount: 0 } } = useQuery({
+    queryKey: ['adminNotifications'],
+    queryFn: async () => {
+      const res = await getAdminNotifications();
+      return { notifications: res.notifications || [], unreadCount: res.unreadCount || 0 };
+    },
+    refetchInterval: 8000,
+    enabled: !!admin
+  });
 
-  useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 8000); // Live notification update every 8s
-    return () => clearInterval(interval);
-  }, [fetchData]);
+  const markReadMutation = useMutation({
+    mutationFn: markNotificationsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['adminNotifications']);
+    }
+  });
 
-  const handleOpenNotifications = async () => {
+  const { notifications, unreadCount: unreadNotifs } = notifData;
+
+  const handleOpenNotifications = () => {
     const willOpen = !showNotifDropdown;
     setShowNotifDropdown(willOpen);
-    
-    if (willOpen) {
-      try {
-        // Always fetch fresh notifications when opening the dropdown
-        const notifRes = await getAdminNotifications();
-        if (notifRes.success) {
-          setNotifications(notifRes.notifications || []);
-          if (notifRes.unreadCount > 0) {
-            await markNotificationsRead();
-            setUnreadNotifs(0);
-            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-          }
-        }
-      } catch (err) { 
-        console.error('Failed to fetch/mark notifications read', err); 
-      }
+    if (willOpen && unreadNotifs > 0) {
+      markReadMutation.mutate();
     }
   };
 
-  // Close modal on Escape key press
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && showLogoutModal) {
-        setShowLogoutModal(false);
-      }
+      if (e.key === 'Escape' && showLogoutModal) setShowLogoutModal(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -147,7 +137,6 @@ export default function AdminDashboard() {
   const handleConfirmLogout = () => {
     setShowLogoutModal(false);
     logout();
-    // navigate handled by ProtectedRoute
   };
 
   return (
@@ -318,7 +307,6 @@ export default function AdminDashboard() {
                       ) : (
                         notifications.map(notif => {
                           const isUnread = !notif.isRead;
-                          // Relative time
                           const now = Date.now();
                           const created = new Date(notif.createdAt).getTime();
                           const diffSec = Math.floor((now - created) / 1000);

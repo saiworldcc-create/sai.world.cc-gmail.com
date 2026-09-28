@@ -1,0 +1,57 @@
+name: SAI Couriers CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: |
+          frontend/package-lock.json
+          backend/package-lock.json
+
+    - name: Install Frontend Dependencies
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: Build Frontend
+      working-directory: ./frontend
+      run: npm run build
+
+    - name: Install Backend Dependencies
+      working-directory: ./backend
+      run: npm ci
+
+    # Uncomment this when you add Jest tests to the backend
+    # - name: Run Backend Tests
+    #   working-directory: ./backend
+    #   run: npm test
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Deploy to Production
+      run: |
+        echo "✅ Pipeline Passed!"
+        echo "🚀 Triggering deployment to production server..."
+        # Add your production deployment script here (e.g., SSH, AWS ECS, Vercel CLI, Render webhook)

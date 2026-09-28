@@ -108,7 +108,7 @@ export default function AdminSettings() {
             <input
               type="number"
               className="admin-field-input"
-              value={profitMargin}
+              value={profitMargin ?? ''}
               onChange={e => setProfitMargin(e.target.value)}
               min="0"
               step="0.5"

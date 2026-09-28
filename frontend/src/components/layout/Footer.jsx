@@ -148,12 +148,15 @@ export default function Footer() {
           <div style={{ textAlign: 'center' }}>
             Built by <a href="http://www.mstechhive.org" target="_blank" rel="noopener noreferrer" className="glowing-text-link">MSTechHive</a>
           </div>
-          <div style={{ display: 'flex', gap: '1.25rem' }}>
+          <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
             <span style={{ color: 'var(--accent-teal)', fontWeight: '600' }}>
               <i className="fa-solid fa-lock" style={{ marginRight: '4px' }}></i> HTTPS SSL 256-Bit Protected
             </span>
             <a href="#" style={{ color: '#9FB8CC' }}>Terms & Conditions</a>
             <a href="#" style={{ color: '#9FB8CC' }}>Privacy Policy</a>
+            <span style={{ color: '#4A6B82' }}>|</span>
+            <Link to="/admin/login" style={{ color: '#9FB8CC' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-coral)'} onMouseOut={(e) => e.target.style.color = '#9FB8CC'}>Admin Portal</Link>
+            <Link to="/delivery/login" style={{ color: '#9FB8CC' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-coral)'} onMouseOut={(e) => e.target.style.color = '#9FB8CC'}>Delivery Portal</Link>
           </div>
         </div>
       </footer>

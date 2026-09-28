@@ -34,8 +34,27 @@ const shipmentSchema = new mongoose.Schema(
       signatureUrl: { type: String },
       photoUrl: { type: String }
     },
+    exception: {
+      isException: { type: Boolean, default: false },
+      reason: { type: String },
+      actionRequired: { type: String },
+      resolved: { type: Boolean, default: false }
+    },
+    documents: [{
+      title: { type: String, required: true },
+      url: { type: String, required: true },
+      uploadedAt: { type: Date, default: Date.now }
+    }],
+    deliveryPreferences: {
+      instruction: { type: String },
+      rescheduleDate: { type: String },
+      holdAtHub: { type: Boolean, default: false }
+    },
   },
   { timestamps: true }
 );
+
+shipmentSchema.index({ createdAt: -1 });
+shipmentSchema.index({ status: 1 });
 
 module.exports = mongoose.model('Shipment', shipmentSchema);

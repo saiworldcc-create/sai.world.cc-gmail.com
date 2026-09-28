@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 const connectDB = require('./config/db');
 const http = require('http');
 const { initSocket } = require('./services/socketService');
@@ -43,6 +45,12 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Data Sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data Sanitization against XSS
+app.use(xss());
 
 // ── Health Check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

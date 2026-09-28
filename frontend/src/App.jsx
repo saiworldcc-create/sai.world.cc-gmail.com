@@ -4,36 +4,37 @@ import ReactGA from 'react-ga4';
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
 import { UserProvider, useUser } from './context/UserContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import CookieBanner from './components/common/CookieBanner';
 import ChatbotWidget from './components/common/ChatbotWidget';
 import PageTransition from './components/common/PageTransition';
 import AuthModal from './components/common/AuthModal';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import ServicesPage from './pages/ServicesPage';
-import FoodShippingPage from './pages/FoodShippingPage';
-import BranchesPage from './pages/BranchesPage';
-import CustomsGuidePage from './pages/CustomsGuidePage';
-import ProhibitedItemsPage from './pages/ProhibitedItemsPage';
-import CalculatorPage from './pages/CalculatorPage';
-import TrackingPage from './pages/TrackingPage';
-import AdvancedTrackingPage from './pages/AdvancedTrackingPage';
-import TrackingFaqsPage from './pages/TrackingFaqsPage';
-import BookPickupPage from './pages/BookPickupPage';
-import ContactPage from './pages/ContactPage';
-import PortalPage from './pages/PortalPage';
-import PayOnlinePage from './pages/PayOnlinePage';
-import NotFoundPage from './pages/NotFoundPage';
+import HomePage from './pages/public/HomePage';
+import AboutPage from './pages/public/AboutPage';
+import ServicesPage from './pages/services/ServicesPage';
+import FoodShippingPage from './pages/services/FoodShippingPage';
+import BranchesPage from './pages/public/BranchesPage';
+import CustomsGuidePage from './pages/tools/CustomsGuidePage';
+import ProhibitedItemsPage from './pages/tools/ProhibitedItemsPage';
+import CalculatorPage from './pages/tools/CalculatorPage';
+import TrackingPage from './pages/tracking/TrackingPage';
+import AdvancedTrackingPage from './pages/tracking/AdvancedTrackingPage';
+import TrackingFaqsPage from './pages/tracking/TrackingFaqsPage';
+import BookPickupPage from './pages/tools/BookPickupPage';
+import ContactPage from './pages/public/ContactPage';
+import PortalPage from './pages/auth/PortalPage';
+import PayOnlinePage from './pages/payment/PayOnlinePage';
+import NotFoundPage from './pages/auth/NotFoundPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserLoginPage from './pages/user/UserLoginPage';
 import UserDashboard from './pages/user/UserDashboard';
-import AirFreightPage from './pages/AirFreightPage';
-import SeaFreightPage from './pages/SeaFreightPage';
-import EcommerceLogisticsPage from './pages/EcommerceLogisticsPage';
-import ExpressCourierPage from './pages/ExpressCourierPage';
+import AirFreightPage from './pages/services/AirFreightPage';
+import SeaFreightPage from './pages/services/SeaFreightPage';
+import EcommerceLogisticsPage from './pages/services/EcommerceLogisticsPage';
+import ExpressCourierPage from './pages/services/ExpressCourierPage';
 
 // Delivery Boy App Pages
 import DeliveryLogin from './pages/delivery/DeliveryLogin';
@@ -121,6 +122,8 @@ function AppLayout() {
   );
 }
 
+const queryClient = new QueryClient();
+
 export default function App() {
   useEffect(() => {
     // Initialize Google Analytics with Measurement ID
@@ -128,14 +131,16 @@ export default function App() {
   }, []);
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <AdminAuthProvider>
-        <UserProvider>
-          <Router>
-            <AppLayout />
-          </Router>
-        </UserProvider>
-      </AdminAuthProvider>
-    </GoogleOAuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <AdminAuthProvider>
+          <UserProvider>
+            <Router>
+              <AppLayout />
+            </Router>
+          </UserProvider>
+        </AdminAuthProvider>
+      </GoogleOAuthProvider>
+    </QueryClientProvider>
   );
 }

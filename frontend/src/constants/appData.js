@@ -29,8 +29,8 @@ export const MEGA_MENU_LINKS = [
         title: 'Specialty Shipping',
         links: [
           { to: '/food-shipping', label: 'NRI Food Special', icon: 'fa-bowl-food' },
-          { to: '/services', label: 'Commercial Cargo', icon: 'fa-pallet' },
-          { to: '/services', label: 'Medicine Delivery', icon: 'fa-pills' }
+          { to: '/air-freight', label: 'Commercial Cargo', icon: 'fa-pallet' },
+          { to: '/express-courier', label: 'Medicine Delivery', icon: 'fa-pills' }
         ]
       }
     ]

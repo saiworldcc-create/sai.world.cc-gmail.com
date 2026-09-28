@@ -232,7 +232,7 @@ export default function Navbar() {
                         <h4 className="mega-column-title">{col.title}</h4>
                         <ul className="mega-link-list">
                           {col.links.map(link => (
-                            <li key={link.to}>
+                            <li key={link.label}>
                               <Link 
                                 to={link.to} 
                                 onClick={() => { 

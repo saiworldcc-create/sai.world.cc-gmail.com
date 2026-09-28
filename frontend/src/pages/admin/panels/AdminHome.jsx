@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import api, { getAllContentPages } from '../../../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAdminAuth } from '../../../context/AdminAuthContext';
@@ -32,33 +33,31 @@ const QUICK_PAGES = [
 export default function AdminHome() {
   const { admin } = useAdminAuth();
   const isSuperAdmin = admin?.role === 'super-admin';
-  const [pages, setPages] = useState([]);
-  const [stats, setStats] = useState({
+
+  // React Query for Pages
+  const { data: pages = [] } = useQuery({
+    queryKey: ['adminPages'],
+    queryFn: async () => {
+      const res = await getAllContentPages();
+      return res.data || [];
+    }
+  });
+
+  // React Query for Real-time Stats
+  const { data: stats = {
     totalBookings: 0,
     activeShipments: 0,
     totalShipments: 0,
     unreadMessages: 0,
     recentBookings: []
+  } } = useQuery({
+    queryKey: ['adminStats'],
+    queryFn: async () => {
+      const res = await api.get('/admin/stats');
+      return res.success ? res.stats : { totalBookings: 0, activeShipments: 0, totalShipments: 0, unreadMessages: 0, recentBookings: [] };
+    },
+    refetchInterval: 10000, // Poll every 10 seconds for real-time feel
   });
-
-  useEffect(() => {
-    getAllContentPages().then(res => setPages(res.data || [])).catch(() => {});
-    
-    // Poll stats every 10 seconds for real-time feel
-    const fetchStats = async () => {
-      try {
-        const res = await api.get('/admin/stats');
-        if (res.success) {
-          setStats(res.stats);
-        }
-      } catch (err) {
-        console.error('Failed to fetch stats', err);
-      }
-    };
-    fetchStats();
-    const interval = setInterval(fetchStats, 10000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="admin-panel-content">

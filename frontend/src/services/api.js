@@ -47,6 +47,8 @@ api.interceptors.response.use(
 );
 
 export const trackShipment = (awb) => api.get(`/tracking/${encodeURIComponent(awb)}`);
+export const updateDeliveryPreferences = (awb, data) => api.put(`/tracking/preferences/${encodeURIComponent(awb)}`, data);
+export const uploadTrackingDocument = (awb, data) => api.put(`/tracking/documents/${encodeURIComponent(awb)}`, data);
 
 export const getAdminShipments = () => api.get('/admin/shipments');
 export const getDeliveryPartners = () => api.get('/admin/delivery-partners');

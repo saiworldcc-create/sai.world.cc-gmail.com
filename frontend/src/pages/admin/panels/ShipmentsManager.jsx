@@ -1,63 +1,64 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAdminShipments, createMockShipment, updateShipment } from '../../../services/api';
 
 export default function ShipmentsManager() {
-  const [shipments, setShipments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ awb: '', status: 'In Transit', stage: 1, sender: '', receiver: '', contents: '', carrier: '', origin: '', destination: '', eta: '', deadWeight: '', volWeight: '', chargeableWeight: '' });
-  const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
 
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [updateForm, setUpdateForm] = useState({ awb: '', status: '', stage: 1, location: '', newLog: '' });
 
-  const load = async () => {
-    setLoading(true);
-    try {
+  // React Query: Fetch shipments
+  const { data: shipments = [], isLoading } = useQuery({
+    queryKey: ['adminShipments'],
+    queryFn: async () => {
       const res = await getAdminShipments();
-      if (res && res.success) {
-        setShipments(res.shipments);
-      }
-    } catch (err) {
-      console.error('Failed to load shipments:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return res.success ? res.shipments : [];
+    },
+    refetchInterval: 15000, // Auto refresh every 15s
+  });
 
-  useEffect(() => { load(); }, []);
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      await createMockShipment(form);
+  // React Query: Create Shipment
+  const createMutation = useMutation({
+    mutationFn: createMockShipment,
+    onSuccess: () => {
       setMsg('✅ Shipment created successfully!');
       setShowForm(false);
-      load(); // Refresh list
-    } catch (err) {
+      queryClient.invalidateQueries(['adminShipments']);
+      setTimeout(() => setMsg(''), 4000);
+    },
+    onError: (err) => {
       setMsg(`❌ ${err.message}`);
-    } finally {
-      setSaving(false);
       setTimeout(() => setMsg(''), 4000);
     }
-  };
+  });
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      await updateShipment(updateForm.awb, updateForm);
+  // React Query: Update Shipment
+  const updateMutation = useMutation({
+    mutationFn: (data) => updateShipment(data.awb, data),
+    onSuccess: () => {
       setMsg('✅ Tracking updated successfully!');
       setShowUpdateForm(false);
-      load(); // Refresh list
-    } catch (err) {
+      queryClient.invalidateQueries(['adminShipments']);
+      setTimeout(() => setMsg(''), 4000);
+    },
+    onError: (err) => {
       setMsg(`❌ ${err.message}`);
-    } finally {
-      setSaving(false);
       setTimeout(() => setMsg(''), 4000);
     }
+  });
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    createMutation.mutate(form);
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    updateMutation.mutate(updateForm);
   };
 
   const openUpdate = (s) => {
@@ -84,7 +85,7 @@ export default function ShipmentsManager() {
 
       {msg && <div className={`admin-save-msg ${msg.startsWith('✅') ? 'success' : 'error'}`}>{msg}</div>}
 
-      {loading ? (
+      {isLoading ? (
         <div className="admin-loading"><i className="fa-solid fa-circle-notch fa-spin"></i> Loading shipments…</div>
       ) : (
         <div className="admin-table-wrapper">
@@ -153,8 +154,8 @@ export default function ShipmentsManager() {
               </div>
               <div className="admin-modal-footer">
                 <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowForm(false)}>Cancel</button>
-                <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
-                  {saving ? 'Saving…' : 'Save Shipment'}
+                <button type="submit" className="admin-btn admin-btn-primary" disabled={createMutation.isLoading}>
+                  {createMutation.isLoading ? 'Saving…' : 'Save Shipment'}
                 </button>
               </div>
             </form>
@@ -196,8 +197,8 @@ export default function ShipmentsManager() {
 
               <div className="admin-modal-footer">
                 <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowUpdateForm(false)}>Cancel</button>
-                <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
-                  {saving ? 'Updating…' : 'Update Shipment'}
+                <button type="submit" className="admin-btn admin-btn-primary" disabled={updateMutation.isLoading}>
+                  {updateMutation.isLoading ? 'Updating…' : 'Update Shipment'}
                 </button>
               </div>
             </form>
