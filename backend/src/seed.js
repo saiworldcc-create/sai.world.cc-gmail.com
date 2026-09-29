@@ -16,7 +16,7 @@ const PageContent = require('./models/PageContent');
 // ─── Demo Shipments ────────────────────────────────────────────────────────
 const DEMO_SHIPMENTS = [
   {
-    awb: 'SAI-88492-USA', status: 'In Transit', stage: 4,
+    awb: '839201948291', status: 'In Transit', stage: 4,
     sender: 'Venkata Raman (Kadapa, AP)', receiver: 'Prasad Reddy (Dallas, Texas, USA)',
     contents: 'Homemade Mango Pickles & Sweets (Vacuum Sealed)', carrier: 'DHL Express Global Network',
     deadWeight: '8.5 kg', volWeight: '9.2 kg', chargeableWeight: '9.2 kg',
@@ -31,7 +31,7 @@ const DEMO_SHIPMENTS = [
     ],
   },
   {
-    awb: 'SAI-77310-UK', status: 'Out for Delivery', stage: 5,
+    awb: '482910384928', status: 'Out for Delivery', stage: 5,
     sender: 'S. Chandra Sekhar (Tirupati, AP)', receiver: 'Ananya Sharma (London, United Kingdom)',
     contents: 'University Transcripts & Student Relocation Baggage', carrier: 'FedEx Express Worldwide',
     deadWeight: '12.0 kg', volWeight: '11.5 kg', chargeableWeight: '12.0 kg',
@@ -46,7 +46,7 @@ const DEMO_SHIPMENTS = [
     ],
   },
   {
-    awb: 'SAI-55201-AUS', status: 'Delivered', stage: 5,
+    awb: '938192039182', status: 'Delivered', stage: 5,
     sender: 'G. Lakshmi (Nellore, AP)', receiver: 'Suresh Kumar (Sydney, NSW, Australia)',
     contents: 'Traditional Andhra Snacks & Dry Groceries', carrier: 'UPS Worldwide Saver',
     deadWeight: '15.0 kg', volWeight: '16.5 kg', chargeableWeight: '16.5 kg',

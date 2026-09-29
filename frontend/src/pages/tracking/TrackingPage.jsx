@@ -28,6 +28,19 @@ export default function TrackingPage() {
   const awbParam = searchParams.get('awb') || '';
 
   const [inputAwb, setInputAwb] = useState(awbParam);
+  const [liveLocation, setLiveLocation] = useState(null);
+  const [socket, setSocket] = useState(null);
+
+  // Missing Modal and Form States
+  const [showPrefModal, setShowPrefModal] = useState(false);
+  const [prefInstruction, setPrefInstruction] = useState('');
+  const [prefReschedule, setPrefReschedule] = useState('');
+  const [prefHold, setPrefHold] = useState(false);
+  
+  const [showDocModal, setShowDocModal] = useState(false);
+  const [docTitle, setDocTitle] = useState('');
+  const [docUrl, setDocUrl] = useState('');
+
   const queryClient = useQueryClient();
 
   // Convert raw DB data to UI data

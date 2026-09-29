@@ -5,10 +5,13 @@ const Notification = require('../models/Notification');
 const { sendBookingAlert, sendBookingInvoice } = require('../services/emailService');
 const jwt = require('jsonwebtoken');
 
-function generateAWB(destCountry) {
-  const rand = Math.floor(10000 + Math.random() * 90000);
-  const code = (destCountry || 'EXP').substring(0, 3).toUpperCase().replace(/\s/g, '');
-  return `SAI-${rand}-${code}`;
+function generateAWB() {
+  // Enterprise-grade 12-digit numeric tracking number
+  let awb = '';
+  for (let i = 0; i < 12; i++) {
+    awb += Math.floor(Math.random() * 10).toString();
+  }
+  return awb;
 }
 
 exports.createBooking = async (req, res) => {
