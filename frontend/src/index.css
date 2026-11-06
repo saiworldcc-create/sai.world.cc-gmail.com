@@ -7392,10 +7392,130 @@ body {
     justify-content: center !important;
   }
 
+  /* 5. E-COMMERCE & SERVICE CATALOG MOBILE OVERHAUL */
+  .service-catalog-img {
+    min-height: 200px !important;
+    max-height: 240px !important;
+  }
+
+  .ecom-page-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ecom-page-sidebar {
+    position: static !important;
+    height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid #E8EDF2 !important;
+    padding: 1rem 0.75rem !important;
+  }
+
+  .ecom-categories-list {
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 0.5rem !important;
+    scrollbar-width: none;
+  }
+
+  .ecom-categories-list > div {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    transform: none !important;
+  }
+
+  .ecom-form-row {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  /* 6. DELIVERY & PORTALS MOBILE APPS */
+  .delivery-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem !important;
+  }
+
+  .faq-premium-card {
+    padding: 1.25rem 1rem !important;
+    gap: 1rem !important;
+  }
+
+  .contact-success-modal,
+  .payment-receipt-modal {
+    padding: 1.5rem 1.25rem !important;
+    width: calc(100vw - 24px) !important;
+    margin: 12px !important;
+    border-radius: 16px !important;
+  }
+
+  /* 7. STEPPER LABELS & WIZARD FORM MOBILE */
+  .step-label-desktop {
+    display: none !important;
+  }
+  .step-label-mobile {
+    display: inline !important;
+    font-size: 0.82rem !important;
+    letter-spacing: 0.2px !important;
+  }
+  .wizard-step-sub {
+    display: none !important;
+  }
+  .book-pickup-wizard-section {
+    padding-bottom: 6rem !important;
+  }
+
+  /* 8. HELP CENTER RESPONSIVE GRID */
+  .help-center-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+  .help-center-section {
+    padding-bottom: 5.5rem !important;
+  }
+
+  /* 9. USER DASHBOARD RESPONSIVE TABLE */
+  .user-table-scroll-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+  }
+  .user-dashboard-table {
+    min-width: 680px !important;
+  }
+
+  /* 10. PREVENT IOS SAFARI VIEWPORT AUTO-ZOOM */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
   /* Hide redundant desktop nav actions on small screens */
   .btn-quote-hide, .nav-actions .btn-coral {
     display: none !important;
   }
+}
+
+.step-label-mobile {
+  display: none;
+}
+.help-center-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+.user-table-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.user-dashboard-table {
+  width: 100%;
 }
 @keyframes ping {
   75%, 100% {

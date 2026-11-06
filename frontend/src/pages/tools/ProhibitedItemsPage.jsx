@@ -26,8 +26,8 @@ export default function ProhibitedItemsPage() {
 
       <section className="section section-ivory">
         <div className="container">
-          <div style={{ background: '#FFF', borderRadius: '12px', padding: '2.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem 2rem' }}>
+          <div style={{ background: '#FFF', borderRadius: '12px', padding: 'clamp(1.25rem, 4vw, 2.5rem)', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem 2rem' }}>
               
               {/* Column 1 */}
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>

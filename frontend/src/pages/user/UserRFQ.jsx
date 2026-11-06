@@ -35,7 +35,7 @@ export default function UserRFQ() {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
+    <div style={{ padding: 'clamp(1rem, 3vw, 2rem)', maxWidth: '1000px', margin: '0 auto' }}>
       <h1 style={{ fontSize: '1.8rem', color: '#1E3446', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <i className="fa-solid fa-file-invoice-dollar" style={{ color: '#3CC8C8' }}></i> My Bulk Quotes (RFQs)
       </h1>

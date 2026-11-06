@@ -78,8 +78,8 @@ export default function UserDashboard() {
                 <button className="btn btn-coral" onClick={() => navigate('/book-pickup')}>Schedule Pickup Now</button>
               </div>
             ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+              <div className="user-table-scroll-wrapper" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table className="user-dashboard-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                   <thead>
                     <tr style={{ borderBottom: '2px solid var(--border-light)', textAlign: 'left', color: 'var(--text-slate-muted)' }}>
                       <th style={{ padding: '0.85rem 0.5rem' }}>AWB Track ID</th>
@@ -162,8 +162,8 @@ export default function UserDashboard() {
             ) : ecomOrders.length === 0 ? (
               <p style={{ color: 'var(--text-slate-muted)' }}>No wholesale or retail orders placed yet.</p>
             ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+              <div className="user-table-scroll-wrapper" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table className="user-dashboard-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                   <thead>
                     <tr style={{ borderBottom: '2px solid var(--border-light)', textAlign: 'left', color: 'var(--text-slate-muted)' }}>
                       <th style={{ padding: '0.85rem 0.5rem' }}>Order ID</th>

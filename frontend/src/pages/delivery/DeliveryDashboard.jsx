@@ -89,7 +89,7 @@ const DeliveryDashboard = () => {
         </header>
 
         {/* Real-time Order Metrics Cards Grid */}
-        <div style={styles.statsGrid}>
+        <div className="delivery-stats-grid">
           <div style={{ ...styles.statCard, borderLeft: '3px solid #38bdf8' }}>
             <span style={{ ...styles.statNumber, color: '#38bdf8' }}>{totalTasks}</span>
             <span style={styles.statLabel}>Total Orders</span>

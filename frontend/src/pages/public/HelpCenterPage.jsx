@@ -301,8 +301,8 @@ export default function HelpCenterPage() {
       </section>
 
       {/* Main Content Area */}
-      <section style={{ maxWidth: '1200px', margin: '0 auto 4rem auto', padding: '0 1.5rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2.5rem', alignItems: 'start' }}>
+      <section className="help-center-section" style={{ maxWidth: '1200px', margin: '0 auto 4rem auto', padding: '0 1.5rem' }}>
+        <div className="help-center-grid">
           
           {/* Left Column: Knowledge Base / FAQs */}
           <div>

@@ -351,7 +351,7 @@ export default function PayOnlinePage() {
       {/* Verified Real Receipt Modal */}
       {receiptModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1.5rem' }}>
-          <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '20px', maxWidth: '540px', width: '100%', padding: '2.5rem', textAlign: 'center', color: '#1E293B', boxShadow: '0 25px 60px rgba(0, 0, 0, 0.25)' }}>
+          <div className="payment-receipt-modal" style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '20px', maxWidth: '540px', width: '100%', padding: 'clamp(1.25rem, 4vw, 2.5rem)', textAlign: 'center', color: '#1E293B', boxShadow: '0 25px 60px rgba(0, 0, 0, 0.25)' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 1.25rem auto' }}>
               <i className="fa-solid fa-circle-check"></i>
             </div>

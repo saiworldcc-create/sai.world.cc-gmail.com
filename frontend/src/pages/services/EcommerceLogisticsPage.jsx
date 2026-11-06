@@ -89,18 +89,15 @@ export default function EcommerceLogisticsPage() {
     <main style={{ paddingTop: '130px', minHeight: '100vh', background: '#F8FAFB' }}>
       
       {/* Full Page Split Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: 'calc(100vh - 130px)' }}>
+      <div className="ecom-page-layout">
         
         {/* LEFT SIDEBAR - SHOPS LIST */}
-        <aside style={{ 
-          background: '#FFFFFF', borderRight: '1px solid #E8EDF2', padding: '1.5rem 1rem', 
-          position: 'sticky', top: '130px', height: 'calc(100vh - 130px)', overflowY: 'auto' 
-        }}>
-          <h2 style={{ fontSize: '1.2rem', color: '#1E3446', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800, paddingLeft: '0.5rem' }}>
+        <aside className="ecom-page-sidebar">
+          <h2 style={{ fontSize: '1.2rem', color: '#1E3446', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800, paddingLeft: '0.5rem' }}>
             SAI Mega Store
           </h2>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div className="ecom-categories-list">
             {categories.map(cat => (
               <div 
                 key={cat.name} 
@@ -372,7 +369,7 @@ export default function EcommerceLogisticsPage() {
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#4A6B82', marginBottom: '0.4rem' }}>Full Name *</label>
                       <input type="text" placeholder="John Doe" value={customerDetails.name} onChange={e => setCustomerDetails({...customerDetails, name: e.target.value})} style={{ width: '100%', padding: '0.8rem 1rem', border: '1px solid #D5DEE5', borderRadius: '8px', outline: 'none', background: '#FAFBFC', color: '#1E3446', fontSize: '0.95rem' }} onFocus={e => e.target.style.borderColor = activeCategoryData.color} onBlur={e => e.target.style.borderColor = '#D5DEE5'} />
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="ecom-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       <div>
                         <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#4A6B82', marginBottom: '0.4rem' }}>Phone *</label>
                         <input type="text" placeholder="+91..." value={customerDetails.phone} onChange={e => setCustomerDetails({...customerDetails, phone: e.target.value})} style={{ width: '100%', padding: '0.8rem 1rem', border: '1px solid #D5DEE5', borderRadius: '8px', outline: 'none', background: '#FAFBFC', color: '#1E3446', fontSize: '0.95rem' }} onFocus={e => e.target.style.borderColor = activeCategoryData.color} onBlur={e => e.target.style.borderColor = '#D5DEE5'} />
@@ -399,7 +396,7 @@ export default function EcommerceLogisticsPage() {
                             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#4A6B82', marginBottom: '0.3rem' }}>Receiver Country *</label>
                             <input type="text" placeholder="e.g. USA, UK" value={customerDetails.receiverCountry} onChange={e => setCustomerDetails({...customerDetails, receiverCountry: e.target.value})} style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #D5DEE5', borderRadius: '6px' }} />
                           </div>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                          <div className="ecom-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <div>
                               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#4A6B82', marginBottom: '0.3rem' }}>Receiver Name *</label>
                               <input type="text" placeholder="Name" value={customerDetails.receiverName} onChange={e => setCustomerDetails({...customerDetails, receiverName: e.target.value})} style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #D5DEE5', borderRadius: '6px' }} />

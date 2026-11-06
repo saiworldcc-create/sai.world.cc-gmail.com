@@ -284,7 +284,7 @@ export default function BookPickupPage() {
         </div>
       </section>
 
-      <section className="section section-ivory">
+      <section className="section section-ivory book-pickup-wizard-section">
         <div className="container" style={{ maxWidth: '920px' }}>
           
           {/* Stepper Indicator */}
@@ -292,24 +292,33 @@ export default function BookPickupPage() {
             <div className={`wizard-step-indicator${currentStep === 1 ? ' active' : currentStep > 1 ? ' completed' : ''}`}>
               <div className="wizard-step-number-circle">1</div>
               <div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 800 }}>Sender & Pickup</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-slate-muted)' }}>Address & Time Slot</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 800 }}>
+                  <span className="step-label-desktop">Sender & Pickup</span>
+                  <span className="step-label-mobile">Pickup</span>
+                </div>
+                <div className="wizard-step-sub" style={{ fontSize: '0.72rem', color: 'var(--text-slate-muted)' }}>Address & Time Slot</div>
               </div>
             </div>
 
             <div className={`wizard-step-indicator${currentStep === 2 ? ' active' : currentStep > 2 ? ' completed' : ''}`}>
               <div className="wizard-step-number-circle">2</div>
               <div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 800 }}>Parcel & Destination</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-slate-muted)' }}>Receiver & Contents</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 800 }}>
+                  <span className="step-label-desktop">Parcel & Destination</span>
+                  <span className="step-label-mobile">Parcel</span>
+                </div>
+                <div className="wizard-step-sub" style={{ fontSize: '0.72rem', color: 'var(--text-slate-muted)' }}>Receiver & Contents</div>
               </div>
             </div>
 
             <div className={`wizard-step-indicator${currentStep === 3 ? ' active' : ''}`}>
               <div className="wizard-step-number-circle">3</div>
               <div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 800 }}>Review & Confirm</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-slate-muted)' }}>AWB Generation</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 800 }}>
+                  <span className="step-label-desktop">Review & Confirm</span>
+                  <span className="step-label-mobile">Review</span>
+                </div>
+                <div className="wizard-step-sub" style={{ fontSize: '0.72rem', color: 'var(--text-slate-muted)' }}>AWB Generation</div>
               </div>
             </div>
           </div>
