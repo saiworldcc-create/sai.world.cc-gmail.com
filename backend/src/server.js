@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const connectDB = require('./config/db');
+const mongoose = require('mongoose');
 const http = require('http');
 const { initSocket } = require('./services/socketService');
 
@@ -68,10 +69,16 @@ app.use(xss());
 
 // ── Health Check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
+  const isDbConnected = mongoose.connection.readyState === 1;
   res.json({
     status: 'ok',
     service: 'Sai International Couriers API',
     version: '2.0.0',
+    database: {
+      status: isDbConnected ? 'connected' : 'disconnected',
+      databaseName: mongoose.connection.name || 'N/A',
+      host: mongoose.connection.host || 'N/A'
+    },
     timestamp: new Date().toISOString(),
   });
 });
