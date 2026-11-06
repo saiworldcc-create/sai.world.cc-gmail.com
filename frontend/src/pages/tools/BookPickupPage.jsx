@@ -828,13 +828,58 @@ export default function BookPickupPage() {
         </div>
       )}
       
-      {/* CSS for printing just the modal */}
+      {/* Hidden Print Label - Only visible when printing */}
+      {confirmedBooking && (
+        <div className="shipping-label-print" style={{ display: 'none' }}>
+          <div style={{ border: '2px solid #000', padding: '20px', width: '400px', fontFamily: 'Arial, sans-serif', color: '#000', background: '#fff' }}>
+            <div style={{ borderBottom: '2px solid #000', paddingBottom: '10px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 900 }}>SAI EXPRESS</h1>
+              <h2 style={{ margin: 0, fontSize: '32px', fontWeight: 900 }}>{formData.destCountry?.substring(0, 3).toUpperCase() || 'EXP'}</h2>
+            </div>
+            
+            <div style={{ borderBottom: '2px solid #000', paddingBottom: '10px', marginBottom: '10px', display: 'flex', gap: '20px', fontSize: '13px', lineHeight: 1.4 }}>
+              <div style={{ flex: 1 }}>
+                <strong>SHIP FROM:</strong><br/>
+                {formData.senderName}<br/>
+                {formData.senderAddress}<br/>
+                Ph: {formData.senderPhone}
+              </div>
+              <div style={{ flex: 1 }}>
+                <strong>SHIP TO:</strong><br/>
+                {formData.receiverName}<br/>
+                Ph: {formData.receiverCountryCode} {formData.receiverPhone}<br/>
+                <strong>{formData.destCountry}</strong>
+              </div>
+            </div>
+            
+            <div style={{ textAlign: 'center', margin: '20px 0' }}>
+               <div style={{ fontSize: '12px', letterSpacing: '2px', marginBottom: '5px', fontWeight: 'bold' }}>TRACKING #: {confirmedBooking.awb}</div>
+               {/* Synthetic Barcode Using Gradients */}
+               <div style={{ width: '100%', height: '70px', background: 'repeating-linear-gradient(90deg, #000, #000 3px, #fff 3px, #fff 6px, #000 6px, #000 10px, #fff 10px, #fff 12px, #000 12px, #000 14px, #fff 14px, #fff 18px, #000 18px, #000 24px, #fff 24px, #fff 26px)', margin: '0 auto' }}></div>
+               <div style={{ fontSize: '20px', fontWeight: 900, marginTop: '5px', letterSpacing: '1px' }}>{confirmedBooking.awb}</div>
+            </div>
+            
+            <div style={{ borderTop: '2px solid #000', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 'bold' }}>
+              <div>
+                 WEIGHT: {formData.estimatedWeight}<br/>
+                 CONTENTS: {formData.itemCategory}
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                 DATE: {new Date().toLocaleDateString()}<br/>
+                 SVC: INTL PRIORITY
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* CSS for printing just the label */}
       <style>{`
         @media print {
           body * { visibility: hidden; }
-          .print-modal, .print-modal * { visibility: visible; }
-          .print-modal { position: absolute; left: 0; top: 0; margin: 0; padding: 0; width: 100%; box-shadow: none; border: none; }
-          .print-modal button, .print-modal a, .no-print { display: none !important; }
+          .print-modal { display: none !important; }
+          .shipping-label-print, .shipping-label-print * { visibility: visible; display: block !important; }
+          .shipping-label-print { position: absolute; left: 0; top: 0; margin: 0; padding: 20px; width: 100%; }
         }
       `}</style>
     </main>

@@ -132,7 +132,7 @@ exports.getTracking = async (req, res) => {
       });
     }
 
-    return res.status(404).json({ success: false, message: 'Invalid tracking ID. Please verify your AWB and try again.' });
+    return res.status(404).json({ success: false, message: 'Shipment not found. Please check your tracking number and try again.' });
   } catch (err) {
     console.error('Tracking error:', err);
     return res.status(500).json({ success: false, message: 'Server error. Please try again.' });

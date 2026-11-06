@@ -38,3 +38,5 @@ Thumbs.db
 DEMO_CREDENTIALS_LOCAL_ONLY.txt
 *.local-credentials.*
 *.credentials.local.*
+*LOGINS*.txt
+*CREDENTIALS*.txt
