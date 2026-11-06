@@ -2,14 +2,19 @@ import axios from 'axios';
 import { getShipmentByAwb, createShipment as dbCreateShipment } from './db';
 
 const resolveBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
+  let envUrl = import.meta.env.VITE_API_URL;
   if (typeof window !== 'undefined' && window.Capacitor?.isNativePlatform && window.Capacitor.isNativePlatform()) {
     // Android emulator loopback to host PC port 5000
     if (!envUrl || envUrl.includes('localhost') || envUrl.startsWith('/')) {
       return 'http://10.0.2.2:5000/api/v1';
     }
   }
-  return envUrl || '/api/v1';
+  if (!envUrl) return '/api/v1';
+  envUrl = envUrl.trim().replace(/\/+$/, '');
+  if (!envUrl.endsWith('/api/v1')) {
+    envUrl += '/api/v1';
+  }
+  return envUrl;
 };
 
 const api = axios.create({
