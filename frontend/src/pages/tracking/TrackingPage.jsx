@@ -43,15 +43,6 @@ export default function TrackingPage() {
 
   const queryClient = useQueryClient();
 
-  const [liveLocation, setLiveLocation] = useState(null);
-  const [socket, setSocket] = useState(null);
-  const [docTitle, setDocTitle] = useState('');
-  const [docUrl, setDocUrl] = useState('');
-  const [showPrefModal, setShowPrefModal] = useState(false);
-  const [prefInstruction, setPrefInstruction] = useState('');
-  const [prefReschedule, setPrefReschedule] = useState('');
-  const [prefHold, setPrefHold] = useState(false);
-
   // Convert raw DB data to UI data
   const mapTrackingData = (dbData) => {
     if (!dbData) return null;
