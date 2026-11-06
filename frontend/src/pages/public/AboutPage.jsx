@@ -125,7 +125,20 @@ export default function AboutPage() {
             </div>
             <div className="reveal-init stagger-2">
               <h2>{s.heading || 'Connecting Andhra Pradesh with the World Since Day One'}</h2>
-              {(s.paragraphs || []).map((p, i) => <p key={i} style={{ marginBottom: '1rem', lineHeight: '1.7' }}>{p}</p>)}
+              {(s.paragraphs && s.paragraphs.length > 0 ? s.paragraphs : [
+                "Sai International Couriers & Cargo was established with one clear mission — to provide Andhra Pradesh families, students, and businesses with a reliable, affordable, and transparent international courier solution.",
+                "Under the visionary leadership of Managing Directors S. Junaid Mohuddin and S. Chandra Vadu, we have grown from our founding office in Kadapa to a premier global shipping network serving thousands of satisfied NRI families and commercial exporters every month.",
+                "Our specialization in NRI food shipping — particularly homemade pickles, sweets, and traditional snacks — sets us apart in the industry. We understand the emotional value of these packages and treat each one with extraordinary care."
+              ]).map((p, i) => {
+                const formatted = p.replace(/(S\.\s*Junaid\s+Mohuddin|S\.\s*Chandra\s+Vadu|Managing\s+Directors?)/gi, '<strong>$1</strong>');
+                return (
+                  <p 
+                    key={i} 
+                    style={{ marginBottom: '1rem', lineHeight: '1.75', fontSize: '1.05rem' }}
+                    dangerouslySetInnerHTML={{ __html: formatted }}
+                  />
+                );
+              })}
 
               {s.stats && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.25rem', marginTop: '2rem' }}>
@@ -135,6 +148,235 @@ export default function AboutPage() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Executive Leadership Section (SEO Optimized) */}
+      <section 
+        className="section section-leadership reveal-init" 
+        style={{ 
+          background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)', 
+          padding: '5rem 0',
+          borderTop: '1px solid var(--border-light, #e2e8f0)',
+          borderBottom: '1px solid var(--border-light, #e2e8f0)'
+        }}
+        itemScope 
+        itemType="https://schema.org/Organization"
+      >
+        <meta itemProp="name" content="Sai International Couriers & Cargo" />
+        <meta itemProp="url" content="https://saiexpresscourier.com" />
+
+        {/* JSON-LD Schema Structured Data for Search Engines */}
+        <script 
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LogisticsService",
+              "name": "Sai International Couriers & Cargo",
+              "url": "https://saiexpresscourier.com/about",
+              "founder": [
+                {
+                  "@type": "Person",
+                  "name": "S. Junaid Mohuddin",
+                  "jobTitle": "Managing Director"
+                },
+                {
+                  "@type": "Person",
+                  "name": "S. Chandra Vadu",
+                  "jobTitle": "Managing Director"
+                }
+              ],
+              "employee": [
+                {
+                  "@type": "Person",
+                  "name": "S. Junaid Mohuddin",
+                  "jobTitle": "Managing Director"
+                },
+                {
+                  "@type": "Person",
+                  "name": "S. Chandra Vadu",
+                  "jobTitle": "Managing Director"
+                }
+              ]
+            })
+          }}
+        />
+
+        <div className="container">
+          <div className="section-header-editorial center" style={{ textAlign: 'center', maxWidth: '850px', margin: '0 auto 3.5rem' }}>
+            <div 
+              className="eyebrow-pill teal" 
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '0.5rem', 
+                padding: '0.45rem 1.25rem', 
+                borderRadius: '999px', 
+                background: 'rgba(13, 148, 136, 0.1)', 
+                color: '#0d9488', 
+                fontWeight: 800, 
+                fontSize: '0.9rem', 
+                marginBottom: '1rem', 
+                textTransform: 'uppercase', 
+                letterSpacing: '1px' 
+              }}
+            >
+              <i className="fa-solid fa-award"></i> Executive Leadership
+            </div>
+            <h2 style={{ fontSize: 'clamp(2.1rem, 4vw, 2.85rem)', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px', marginBottom: '1rem' }}>
+              Meet Our Managing Directors
+            </h2>
+            <p style={{ fontSize: '1.125rem', color: '#64748b', lineHeight: 1.75 }}>
+              Steering Sai International Couriers &amp; Cargo with strategic vision, global logistics excellence, and dedicated service to Andhra Pradesh and our worldwide NRI community.
+            </p>
+          </div>
+
+          <div 
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+              gap: '2.5rem', 
+              maxWidth: '960px', 
+              margin: '0 auto' 
+            }}
+          >
+            {/* Director 1: S. Junaid Mohuddin */}
+            <article 
+              className="director-card" 
+              itemScope 
+              itemType="https://schema.org/Person" 
+              itemProp="employee"
+              style={{
+                background: '#ffffff',
+                borderRadius: '1.25rem',
+                padding: '2.75rem 2.25rem',
+                border: '2px solid rgba(13, 148, 136, 0.25)',
+                boxShadow: '0 20px 35px -10px rgba(13, 148, 136, 0.12), 0 10px 15px -5px rgba(15, 23, 42, 0.05)',
+                textAlign: 'center',
+                position: 'relative'
+              }}
+            >
+              <div 
+                style={{ 
+                  width: '96px', 
+                  height: '96px', 
+                  margin: '0 auto 1.5rem', 
+                  borderRadius: '50%', 
+                  background: 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)', 
+                  color: '#ffffff', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  fontSize: '2.25rem', 
+                  fontWeight: 900,
+                  boxShadow: '0 10px 25px rgba(13, 148, 136, 0.35)'
+                }}
+              >
+                JM
+              </div>
+              <h3 
+                itemProp="name" 
+                style={{ 
+                  fontSize: '2rem', 
+                  fontWeight: 900, 
+                  color: '#0f172a', 
+                  marginBottom: '0.5rem',
+                  letterSpacing: '-0.5px' 
+                }}
+              >
+                S. Junaid Mohuddin
+              </h3>
+              <div 
+                itemProp="jobTitle" 
+                style={{ 
+                  display: 'inline-block',
+                  background: 'rgba(13, 148, 136, 0.12)',
+                  color: '#0f766e',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  padding: '0.4rem 1.35rem',
+                  borderRadius: '999px',
+                  marginBottom: '1.35rem',
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Managing Director
+              </div>
+              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, margin: 0 }}>
+                Leading international air freight operations, customs compliance, and commercial carrier partnerships across the USA, UK, Canada, Australia, and the Middle East.
+              </p>
+            </article>
+
+            {/* Director 2: S. Chandra Vadu */}
+            <article 
+              className="director-card" 
+              itemScope 
+              itemType="https://schema.org/Person" 
+              itemProp="employee"
+              style={{
+                background: '#ffffff',
+                borderRadius: '1.25rem',
+                padding: '2.75rem 2.25rem',
+                border: '2px solid rgba(2, 132, 199, 0.25)',
+                boxShadow: '0 20px 35px -10px rgba(2, 132, 199, 0.12), 0 10px 15px -5px rgba(15, 23, 42, 0.05)',
+                textAlign: 'center',
+                position: 'relative'
+              }}
+            >
+              <div 
+                style={{ 
+                  width: '96px', 
+                  height: '96px', 
+                  margin: '0 auto 1.5rem', 
+                  borderRadius: '50%', 
+                  background: 'linear-gradient(135deg, #0284c7 0%, #1e40af 100%)', 
+                  color: '#ffffff', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  fontSize: '2.25rem', 
+                  fontWeight: 900,
+                  boxShadow: '0 10px 25px rgba(2, 132, 199, 0.35)'
+                }}
+              >
+                CV
+              </div>
+              <h3 
+                itemProp="name" 
+                style={{ 
+                  fontSize: '2rem', 
+                  fontWeight: 900, 
+                  color: '#0f172a', 
+                  marginBottom: '0.5rem',
+                  letterSpacing: '-0.5px' 
+                }}
+              >
+                S. Chandra Vadu
+              </h3>
+              <div 
+                itemProp="jobTitle" 
+                style={{ 
+                  display: 'inline-block',
+                  background: 'rgba(2, 132, 199, 0.12)',
+                  color: '#0369a1',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  padding: '0.4rem 1.35rem',
+                  borderRadius: '999px',
+                  marginBottom: '1.35rem',
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Managing Director
+              </div>
+              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, margin: 0 }}>
+                Directing regional logistics networks across Kadapa, Tirupati, Nellore, and Hyderabad, with specialized leadership in NRI homemade food and vacuum packaging care.
+              </p>
+            </article>
           </div>
         </div>
       </section>

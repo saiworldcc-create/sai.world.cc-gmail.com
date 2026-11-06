@@ -209,7 +209,7 @@ const DEFAULT_PAGE_CONTENT = [
         heading: 'Connecting Andhra Pradesh with the World Since Day One',
         paragraphs: [
           'Sai International Couriers & Cargo was established with one clear mission — to provide Andhra Pradesh families, students, and businesses with a reliable, affordable, and transparent international courier solution.',
-          'Under the leadership of Managing Director S. Chandra Babu, we have grown from a single office in Kadapa to a network spanning Tirupati, Nellore, Proddutur, and Rayachoty, serving thousands of satisfied customers every month.',
+          'Under the visionary leadership of Managing Directors S. Junaid Mohuddin and S. Chandra Vadu, we have grown from our founding office in Kadapa to a premier global shipping network spanning Tirupati, Nellore, Proddutur, Rayachoty, Hyderabad, and Bangalore, serving thousands of satisfied NRI families and commercial exporters every month.',
           'Our specialization in NRI food shipping — particularly homemade pickles, sweets, and traditional snacks — sets us apart in the industry. We understand the emotional value of these packages and treat each one with extraordinary care.',
         ],
         image: `/assets/images/sai_customer_support.jpg`,
@@ -221,9 +221,10 @@ const DEFAULT_PAGE_CONTENT = [
         ],
       },
       team: {
-        heading: 'Leadership',
+        heading: 'Executive Leadership',
         members: [
-          { name: 'S. Chandra Babu', role: 'Managing Director & Founder', desc: 'Leading Sai Couriers with 10+ years of international logistics expertise.', initials: 'CB' },
+          { name: 'S. Junaid Mohuddin', role: 'Managing Director', desc: 'Leading strategic international air cargo operations, customs clearance, and global partner networks across the USA, UK, Canada, Australia, and the Middle East.', initials: 'JM' },
+          { name: 'S. Chandra Vadu', role: 'Managing Director', desc: 'Overseeing Andhra Pradesh branch logistics, doorstep express pickup fleet, and specialized NRI homemade food & vacuum packing services.', initials: 'CV' },
         ],
       },
       contact: {
