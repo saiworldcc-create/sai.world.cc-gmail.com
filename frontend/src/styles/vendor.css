@@ -13,28 +13,27 @@
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid #E2E8F0;
+  width: 100%;
 }
 
 .vendor-table {
   width: 100%;
+  min-width: 650px;
   border-collapse: collapse;
   text-align: left;
 }
 
-.vendor-table thead {
-  background: #F8FAFC;
-  border-bottom: 2px solid #E2E8F0;
-}
-
 .vendor-table th {
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
   color: #475569;
   font-weight: 600;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .vendor-table tr {
@@ -47,6 +46,28 @@
 }
 
 .vendor-table td {
-  padding: 1.2rem 1.5rem;
+  padding: 1rem 1.25rem;
   color: #0F172A;
+  white-space: nowrap;
+}
+
+/* Mobile Vendor Header & Drawer Utilities */
+.vendor-mobile-toggle {
+  display: none;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #0F172A;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .vendor-mobile-toggle {
+    display: inline-flex;
+  }
 }

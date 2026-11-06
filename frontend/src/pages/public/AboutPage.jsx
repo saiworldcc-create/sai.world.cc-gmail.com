@@ -234,10 +234,11 @@ export default function AboutPage() {
           </div>
 
           <div 
+            className="directors-grid"
             style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-              gap: '2.5rem', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', 
+              gap: '2rem', 
               maxWidth: '960px', 
               margin: '0 auto' 
             }}

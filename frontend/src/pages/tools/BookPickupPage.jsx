@@ -297,7 +297,7 @@ export default function BookPickupPage() {
               </div>
             </div>
 
-            <div className={`wizard-step-indicator${currentStep === 2 ? ' active' : currentStep > 2 ? ' completed' : ''}`} style={{ margin: '0 1rem' }}>
+            <div className={`wizard-step-indicator${currentStep === 2 ? ' active' : currentStep > 2 ? ' completed' : ''}`}>
               <div className="wizard-step-number-circle">2</div>
               <div>
                 <div style={{ fontSize: '0.88rem', fontWeight: 800 }}>Parcel & Destination</div>

@@ -90,22 +90,7 @@ export default function ChatbotWidget() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div style={{
-          position: 'fixed',
-          bottom: '90px',
-          right: '2rem',
-          width: '350px',
-          height: '500px',
-          background: 'var(--bg-card-tint)',
-          borderRadius: '12px',
-          boxShadow: '0 15px 40px rgba(0,0,0,0.2)',
-          zIndex: 9998,
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          border: '1px solid rgba(41,70,93,0.1)',
-          animation: 'slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-        }}>
+        <div className="chatbot-window">
           {/* Header */}
           <div style={{
             background: '#0B1622',

@@ -57,9 +57,9 @@ export default function UserDashboard() {
           <button onClick={handleLogout} className="btn btn-outline-slate btn-sm">Sign Out</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}>
           {/* Shipments Section */}
-          <div style={{ background: 'var(--bg-card-tint)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-light)', gridColumn: '1 / -1' }}>
+          <div style={{ background: 'var(--bg-card-tint)', padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '12px', border: '1px solid var(--border-light)', gridColumn: '1 / -1' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <h3 style={{ margin: 0, color: 'var(--accent-teal)' }}>
                 <i className="fa-solid fa-box-archive" style={{ marginRight: '8px' }}></i> Shipment History

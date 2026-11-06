@@ -24,14 +24,14 @@ export default function CookieBanner() {
   if (!isVisible) return null;
 
   return (
-    <div style={{
+    <div className="cookie-banner-wrap" style={{
       position: 'fixed',
       bottom: 0,
       left: 0,
       width: '100%',
       background: '#0B1622',
       color: '#FFF',
-      padding: '1.5rem',
+      padding: '1.25rem 1.5rem',
       zIndex: 9999,
       boxShadow: '0 -10px 30px rgba(0,0,0,0.3)',
       borderTop: '1px solid rgba(255,255,255,0.1)',
@@ -39,16 +39,16 @@ export default function CookieBanner() {
       alignItems: 'center',
       justifyContent: 'center'
     }}>
-      <div style={{
+      <div className="cookie-banner-inner" style={{
         maxWidth: '1200px',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '1.5rem'
+        gap: '1.25rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, minWidth: '300px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, minWidth: '260px' }}>
           <div style={{ 
             width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(60, 200, 200, 0.1)', 
             color: '#3CC8C8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0
@@ -56,15 +56,15 @@ export default function CookieBanner() {
             <i className="fa-solid fa-cookie-bite"></i>
           </div>
           <div>
-            <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1rem', color: '#FFF' }}>Your Privacy Matters</h4>
-            <p style={{ margin: 0, fontSize: '0.85rem', color: '#A0B0C0', lineHeight: 1.4 }}>
+            <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '0.95rem', color: '#FFF' }}>Your Privacy Matters</h4>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: '#A0B0C0', lineHeight: 1.4 }}>
               We use cookies to enhance your tracking experience, analyze site traffic, and serve targeted logistics solutions. 
               By clicking "Accept All", you consent to our use of cookies as per international GDPR guidelines.
             </p>
           </div>
         </div>
         
-        <div style={{ display: 'flex', gap: '1rem', flexShrink: 0 }}>
+        <div className="cookie-banner-actions" style={{ display: 'flex', gap: '0.75rem', flexShrink: 0 }}>
           <Link to="/about" style={{
             background: 'transparent', border: '1px solid #4A6B82', color: '#A0B0C0', padding: '0.6rem 1.25rem',
             borderRadius: '4px', fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center'
