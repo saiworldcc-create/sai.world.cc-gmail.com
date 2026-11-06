@@ -1,9 +1,18 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.sai.couriers',
-  appName: 'SAI Couriers',
-  webDir: 'dist'
+  appId: 'com.saicouriers.delivery',
+  appName: 'Sai Delivery Agent',
+  webDir: 'dist',
+  bundledWebRuntime: false,
+  plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
+  },
+  server: {
+    androidScheme: 'https'
+  }
 };
 
 export default config;

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { io } from 'socket.io-client';
 import { Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAdminAuth } from '../../context/AdminAuthContext';
@@ -18,6 +19,8 @@ import AdminCreateShipment from './AdminCreateShipment';
 import RateManager from './panels/RateManager';
 import EcommerceManager from './panels/EcommerceManager';
 import DispatchManager from './panels/DispatchManager';
+import EnterpriseAWBManager from './panels/EnterpriseAWBManager';
+import AdminFleet from './panels/AdminFleet'; // Phase 12
 import { getNewOrderCount, getAdminNotifications, markNotificationsRead } from '../../services/api';
 
 const getNavGroups = (role) => {
@@ -36,7 +39,9 @@ const getNavGroups = (role) => {
       items: [
         { path: '/admin/shipments', icon: 'fa-box-open', label: 'Shipments' },
         { path: '/admin/create-shipment', icon: 'fa-truck-fast', label: 'Create Shipment' },
+        { path: '/admin/enterprise-awb', icon: 'fa-globe', label: 'Enterprise AWB' },
         { path: '/admin/dispatch', icon: 'fa-map-location-dot', label: 'Fleet Dispatch' },
+        { path: '/admin/fleet', icon: 'fa-truck', label: 'Asset Management' },
         { path: '/admin/bookings', icon: 'fa-calendar-check', label: 'Bookings' },
         { path: '/admin/rate-manager', icon: 'fa-file-invoice-dollar', label: 'Rate Manager' },
         ...(isSuper ? [{ path: '/admin/customers', icon: 'fa-users', label: 'Customers Data' }] : []),
@@ -86,6 +91,40 @@ export default function AdminDashboard() {
       }
     }
   }, [location.pathname, admin]);
+
+  // Phase 2: Enterprise WebSockets Integration
+  useEffect(() => {
+    if (!admin) return;
+    
+    // Connect to WebSocket Server
+    const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000');
+    
+    socket.on('connect', () => {
+      console.log('🟢 Connected to Enterprise WebSocket Stream');
+      if (admin.role === 'super-admin' || admin.role === 'branch-manager') {
+        socket.emit('admin_join');
+      }
+    });
+
+    socket.on('new_notification', (newNotif) => {
+      // Invalidate queries to instantly flash the UI without polling
+      queryClient.invalidateQueries(['adminNotifications']);
+      
+      // Optionally show a native browser notification if permitted
+      if (Notification.permission === 'granted') {
+        new Notification('Sai Logistics', { body: newNotif.message });
+      }
+    });
+
+    socket.on('admin_fleet_update', (data) => {
+      // Instantly updates the Fleet Dispatch map (if implemented)
+      console.log('🚚 Live Fleet GPS Ping:', data);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [admin, queryClient]);
 
   // React Query: Poll for new orders every 8s
   const { data: newOrderCount = 0 } = useQuery({
@@ -380,7 +419,9 @@ export default function AdminDashboard() {
             <Route path="pages/:page" element={<PageEditor />} />
             <Route path="shipments" element={<ShipmentsManager />} />
             <Route path="create-shipment" element={<AdminCreateShipment />} />
+            <Route path="enterprise-awb" element={<EnterpriseAWBManager />} />
             <Route path="dispatch" element={<DispatchManager />} />
+            <Route path="fleet" element={<AdminFleet />} />
             <Route path="bookings" element={<BookingsManager />} />
             <Route path="messages" element={<MessagesManager />} />
             <Route path="media" element={<MediaLibrary />} />

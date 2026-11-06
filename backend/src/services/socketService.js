@@ -14,33 +14,41 @@ const initSocket = (server) => {
   io.on('connection', (socket) => {
     console.log(`🔌 New client connected: ${socket.id}`);
 
-    // Delivery Boy joins a room for a specific AWB to broadcast their location
+    // --- Enterprise Admin Rooms ---
+    socket.on('admin_join', () => {
+      socket.join('admin_global');
+      console.log(`👑 Admin joined room: admin_global`);
+    });
+
+    // --- Vendor Rooms ---
+    socket.on('vendor_join', (vendorId) => {
+      socket.join(`vendor_${vendorId}`);
+      console.log(`🏢 Vendor joined room: vendor_${vendorId}`);
+    });
+
+    // --- Delivery Rooms ---
     socket.on('driver_join_awb', (awb) => {
       socket.join(`track_${awb}`);
       console.log(`🚚 Driver joined room: track_${awb}`);
     });
 
-    // Customer joins a room to listen for live location updates
     socket.on('customer_join_awb', (awb) => {
       socket.join(`track_${awb}`);
       console.log(`👤 Customer joined tracking room: track_${awb}`);
     });
 
-    // Driver sends live location
     socket.on('driver_update_location', async (data) => {
       const { awb, lat, lng } = data;
       
-      // 1. Instantly broadcast to customer's screen
       socket.to(`track_${awb}`).emit('live_location_update', {
-        lat,
-        lng,
-        timestamp: new Date().toISOString()
+        lat, lng, timestamp: new Date().toISOString()
       });
 
-      // 2. Cache in Redis/Memory for high-frequency buffering
+      socket.to('admin_global').emit('admin_fleet_update', {
+        awb, lat, lng, timestamp: new Date().toISOString()
+      });
+
       await cacheLiveLocation(awb, lat, lng);
-      
-      // Note: A background worker (Phase 3) will flush Redis cache to MongoDB every 2-5 minutes
     });
 
     socket.on('disconnect', () => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAdminShipments, getDeliveryPartners, assignShipmentToDriver } from '../../../services/api';
+import AdminMap from './AdminMap'; // Phase 15 GeoSpatial Map
 
 export default function DispatchManager() {
   const [shipments, setShipments] = useState([]);
@@ -56,6 +57,9 @@ export default function DispatchManager() {
         <h2 style={{ color: '#1E3446' }}><i className="fa-solid fa-map-location-dot"></i> Fleet Dispatch Center</h2>
         <p style={{ color: '#64748B' }}>Assign shipments to delivery boys and monitor active routes.</p>
       </div>
+
+      {/* Phase 15: Geo-Spatial Radar */}
+      <AdminMap drivers={drivers} shipments={shipments} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
         

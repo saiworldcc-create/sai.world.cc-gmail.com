@@ -133,7 +133,7 @@ const DeliveryTaskDetail = () => {
       // Trigger Animated Success Popup for Pickup / Delivery
       if (newStatus.toLowerCase().includes('picked up')) {
         setSuccessModalData({
-          title: 'Order Picked Up Successfully! 🎉',
+          title: 'Order Picked Up Successfully',
           message: `Shipment ${activeAwb} pickup confirmed. Admin & Super Admin have been notified in real-time.`,
           icon: 'fa-box-check'
         });
@@ -141,7 +141,7 @@ const DeliveryTaskDetail = () => {
       } else if (newStatus.toLowerCase().includes('delivered')) {
         stopLiveTracking();
         setSuccessModalData({
-          title: 'Package Delivered Successfully! 🏆',
+          title: 'Package Delivered Successfully',
           message: `Shipment ${activeAwb} has been marked as Delivered. Proof of Delivery stored.`,
           icon: 'fa-circle-check'
         });
@@ -196,7 +196,7 @@ const DeliveryTaskDetail = () => {
         await handleStatusUpdate('Delivered');
       } else {
         setSuccessModalData({
-          title: 'POD Uploaded Successfully! 📸',
+          title: 'Proof of Delivery Uploaded Successfully',
           message: `Proof of delivery photo saved for shipment ${activeAwb}.`,
           icon: 'fa-camera'
         });

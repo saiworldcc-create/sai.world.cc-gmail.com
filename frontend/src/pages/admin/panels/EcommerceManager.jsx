@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   getEcomShops, createEcomShop, updateEcomShop, deleteEcomShop,
   getEcomProducts, createEcomProduct, updateEcomProduct, deleteEcomProduct,
-  getEcomOrders, updateEcomOrderStatus, markOrdersSeen, uploadMedia
+  getEcomOrders, updateEcomOrderStatus, markOrdersSeen, uploadMedia,
+  getAllVendors, updateVendorStatus, adminCreateVendor, deleteVendor, createVendorLogin
 } from '../../../services/api';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -24,6 +25,7 @@ export default function EcommerceManager() {
   const [shops, setShops] = useState([]);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
   const [search, setSearch] = useState('');
@@ -39,11 +41,19 @@ export default function EcommerceManager() {
   const [productForm, setProductForm] = useState({ shop: '', name: '', price: '', originalPrice: '', image: '', description: '', tag: '', rating: 4.5, isActive: true });
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  // Vendor form
+  const [showVendorForm, setShowVendorForm] = useState(false);
+  const [vendorForm, setVendorForm] = useState({ name: '', email: '', password: '', phone: '', shopName: '', gstin: '', tradeLicense: '' });
+
   // Order detail
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  // Vendor login creation form
+  const [showLoginModal, setShowLoginModal] = useState(null);
+  const [loginForm, setLoginForm] = useState({ vendorName: '', email: '', phone: '', password: '' });
 
   // Filter for products by shop
   const [filterShop, setFilterShop] = useState('');
@@ -74,10 +84,17 @@ export default function EcommerceManager() {
     } catch { setOrders([]); }
   }, [filterStatus]);
 
+  const loadVendors = useCallback(async () => {
+    try {
+      const res = await getAllVendors();
+      setVendors(res.data || []);
+    } catch { setVendors([]); }
+  }, []);
+
   useEffect(() => {
     setLoading(true);
-    Promise.all([loadShops(), loadProducts(), loadOrders()]).finally(() => setLoading(false));
-  }, [loadShops, loadProducts, loadOrders]);
+    Promise.all([loadShops(), loadProducts(), loadOrders(), loadVendors()]).finally(() => setLoading(false));
+  }, [loadShops, loadProducts, loadOrders, loadVendors]);
 
   // Mark orders as seen when switching to orders tab
   useEffect(() => {
@@ -215,6 +232,59 @@ export default function EcommerceManager() {
     } catch (err) { flash(`❌ ${err.message}`); }
   };
 
+  // ─── Vendors ───────────────────────────────────────────────────────────
+  const openNewVendor = () => {
+    setVendorForm({ name: '', email: '', password: '', phone: '', shopName: '', gstin: '', tradeLicense: '' });
+    setShowVendorForm(true);
+  };
+
+  const saveVendor = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await adminCreateVendor(vendorForm);
+      flash('✅ Vendor created and approved successfully!');
+      setShowVendorForm(false);
+      await loadVendors();
+    } catch (err) {
+      flash(`❌ ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleUpdateVendorStatus = async (shopId, status) => {
+    try {
+      await updateVendorStatus(shopId, status);
+      flash(`✅ Vendor KYC marked as ${status}.`);
+      await loadVendors();
+    } catch (err) { flash(`❌ ${err.message}`); }
+  };
+
+  const handleDeleteVendor = async (shopId) => {
+    try {
+      await deleteVendor(shopId);
+      flash('✅ Vendor deleted successfully.');
+      setDeleteConfirm(null);
+      await loadVendors();
+    } catch (err) { flash(`❌ ${err.message}`); }
+  };
+
+  const handleCreateLogin = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await createVendorLogin(showLoginModal.shopId, loginForm);
+      flash('✅ Vendor login created successfully!');
+      setShowLoginModal(null);
+      await loadVendors();
+    } catch (err) {
+      flash(`❌ ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // ─── Filtered data ────────────────────────────────────────────────────
   const filteredShops = shops.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
   const filteredProducts = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.shopName?.toLowerCase().includes(search.toLowerCase()));
@@ -223,6 +293,7 @@ export default function EcommerceManager() {
     o.customer?.name?.toLowerCase().includes(search.toLowerCase()) ||
     o.customer?.phone?.includes(search)
   );
+  const filteredVendors = vendors.filter(v => v.shopName?.toLowerCase().includes(search.toLowerCase()) || v.vendorName?.toLowerCase().includes(search.toLowerCase()));
 
   // ─── Render ───────────────────────────────────────────────────────────
   const tabStyle = (t) => ({
@@ -267,6 +338,9 @@ export default function EcommerceManager() {
             }}>{newOrdersCount}</span>
           )}
         </button>
+        <button style={tabStyle('vendors')} onClick={() => setTab('vendors')}>
+          Vendors KYC
+        </button>
       </div>
 
       {/* Search + Action bar */}
@@ -305,6 +379,11 @@ export default function EcommerceManager() {
         {tab === 'products' && (
           <button className="admin-btn admin-btn-primary" onClick={openNewProduct} disabled={shops.length === 0}>
             <i className="fa-solid fa-plus"></i> Add Product
+          </button>
+        )}
+        {tab === 'vendors' && (
+          <button className="admin-btn admin-btn-primary" onClick={openNewVendor}>
+            <i className="fa-solid fa-user-plus"></i> Add Vendor
           </button>
         )}
         {tab === 'orders' && (
@@ -506,6 +585,82 @@ export default function EcommerceManager() {
                                 <i className="fa-solid fa-check"></i> Confirm
                               </button>
                             )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+
+          {/* ─── VENDORS TAB ─────────────────────────────────────────── */}
+          {tab === 'vendors' && (
+            <div className="admin-table-wrapper">
+              {filteredVendors.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '3rem', color: '#8BA3B8' }}>
+                  <i className="fa-solid fa-id-card" style={{ fontSize: '2.5rem', marginBottom: '1rem', display: 'block', opacity: 0.4 }}></i>
+                  <p>No vendors registered yet.</p>
+                </div>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Vendor / Shop</th>
+                      <th>License / ID</th>
+                      <th>Contact</th>
+                      <th>KYC Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredVendors.map(v => (
+                      <tr key={v._id}>
+                        <td>
+                          <strong>{v.shopName}</strong>
+                          <div style={{ fontSize: '0.8rem', color: '#8BA3B8' }}>Owner: {v.vendorName}</div>
+                        </td>
+                        <td>
+                          {v.tradeLicense ? <span><i className="fa-solid fa-file-contract"></i> {v.tradeLicense}</span> : '-'}
+                        </td>
+                        <td>
+                          <div>{v.email}</div>
+                          {v.phone && <div style={{ fontSize: '0.8rem', color: '#3CC8C8' }}>{v.phone}</div>}
+                        </td>
+                        <td>
+                          <span className="admin-status-badge" style={{
+                            background: v.kycStatus === 'Approved' ? 'rgba(34,197,94,0.15)' : 
+                                      v.kycStatus === 'Rejected' ? 'rgba(239,68,68,0.15)' : 'rgba(217,119,6,0.15)',
+                            color: v.kycStatus === 'Approved' ? '#22C55E' : 
+                                   v.kycStatus === 'Rejected' ? '#EF4444' : '#D97706',
+                          }}>
+                            {v.kycStatus || 'Pending'}
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            {v.email === 'Unknown' && (
+                              <button className="admin-btn admin-btn-sm admin-btn-outline" onClick={() => {
+                                setShowLoginModal(v);
+                                setLoginForm({ vendorName: '', email: '', phone: '', password: '' });
+                              }}>
+                                <i className="fa-solid fa-key"></i> Add Login
+                              </button>
+                            )}
+                            {v.kycStatus !== 'Approved' && (
+                              <button className="admin-btn admin-btn-sm admin-btn-primary" onClick={() => handleUpdateVendorStatus(v.shopId, 'Approved')}>
+                                <i className="fa-solid fa-check"></i> Approve
+                              </button>
+                            )}
+                            {v.kycStatus !== 'Rejected' && (
+                              <button className="admin-btn admin-btn-sm admin-btn-danger" onClick={() => handleUpdateVendorStatus(v.shopId, 'Rejected')}>
+                                <i className="fa-solid fa-xmark"></i> Reject
+                              </button>
+                            )}
+                            <button className="admin-btn admin-btn-sm admin-btn-danger" onClick={() => setDeleteConfirm({ type: 'vendor', id: v.shopId, name: v.shopName })}>
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -748,6 +903,56 @@ export default function EcommerceManager() {
         </div>
       )}
 
+      {/* Vendor Form Modal */}
+      {showVendorForm && (
+        <div className="admin-modal-overlay" onClick={() => setShowVendorForm(false)}>
+          <div className="admin-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="admin-modal-header">
+              <h3>Create New Vendor (Pre-Approved)</h3>
+              <button onClick={() => setShowVendorForm(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onSubmit={saveVendor} className="admin-modal-body">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="admin-field">
+                  <label className="admin-field-label">Owner Name *</label>
+                  <input type="text" className="admin-field-input" required value={vendorForm.name} onChange={e => setVendorForm({ ...vendorForm, name: e.target.value })} placeholder="John Doe" />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-field-label">Phone *</label>
+                  <input type="text" className="admin-field-input" required value={vendorForm.phone} onChange={e => setVendorForm({ ...vendorForm, phone: e.target.value })} placeholder="+91 9876543210" />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-field-label">Email Address *</label>
+                  <input type="email" className="admin-field-input" required value={vendorForm.email} onChange={e => setVendorForm({ ...vendorForm, email: e.target.value })} placeholder="vendor@example.com" />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-field-label">Password *</label>
+                  <input type="password" className="admin-field-input" required value={vendorForm.password} onChange={e => setVendorForm({ ...vendorForm, password: e.target.value })} placeholder="••••••••" />
+                </div>
+                <div className="admin-field" style={{ gridColumn: '1 / -1' }}>
+                  <label className="admin-field-label">Business / Shop Name *</label>
+                  <input type="text" className="admin-field-input" required value={vendorForm.shopName} onChange={e => setVendorForm({ ...vendorForm, shopName: e.target.value })} placeholder="Acme Corp India" />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-field-label">GSTIN</label>
+                  <input type="text" className="admin-field-input" value={vendorForm.gstin} onChange={e => setVendorForm({ ...vendorForm, gstin: e.target.value })} placeholder="Optional" />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-field-label">Trade License</label>
+                  <input type="text" className="admin-field-input" value={vendorForm.tradeLicense} onChange={e => setVendorForm({ ...vendorForm, tradeLicense: e.target.value })} placeholder="Optional" />
+                </div>
+              </div>
+              <div className="admin-modal-footer">
+                <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowVendorForm(false)}>Cancel</button>
+                <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
+                  {saving ? 'Creating…' : 'Create Pre-Approved Vendor'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="admin-modal-overlay" onClick={() => setDeleteConfirm(null)}>
@@ -760,15 +965,52 @@ export default function EcommerceManager() {
               <p style={{ color: '#8BA3B8', marginBottom: '1.5rem' }}>
                 Are you sure you want to delete <strong>"{deleteConfirm.name}"</strong>?
                 {deleteConfirm.type === 'shop' && ' This will also delete all products in this shop.'}
+                {deleteConfirm.type === 'vendor' && ' This will completely delete the vendor and their shop.'}
                 {' '}This cannot be undone.
               </p>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
                 <button className="admin-btn admin-btn-outline" onClick={() => setDeleteConfirm(null)}>Cancel</button>
-                <button className="admin-btn admin-btn-danger" onClick={() => deleteConfirm.type === 'shop' ? handleDeleteShop(deleteConfirm.id) : handleDeleteProduct(deleteConfirm.id)}>
+                <button className="admin-btn admin-btn-danger" onClick={() => deleteConfirm.type === 'shop' ? handleDeleteShop(deleteConfirm.id) : deleteConfirm.type === 'vendor' ? handleDeleteVendor(deleteConfirm.id) : handleDeleteProduct(deleteConfirm.id)}>
                   <i className="fa-solid fa-trash"></i> Yes, Delete
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Login Creation Modal */}
+      {showLoginModal && (
+        <div className="admin-modal-overlay" onClick={() => setShowLoginModal(null)}>
+          <div className="admin-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div className="admin-modal-header">
+              <h3>Create Login for {showLoginModal.shopName}</h3>
+              <button onClick={() => setShowLoginModal(null)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onSubmit={handleCreateLogin} className="admin-modal-body">
+              <div className="admin-field">
+                <label className="admin-field-label">Owner Name *</label>
+                <input type="text" className="admin-field-input" required value={loginForm.vendorName} onChange={e => setLoginForm({ ...loginForm, vendorName: e.target.value })} placeholder="John Doe" />
+              </div>
+              <div className="admin-field">
+                <label className="admin-field-label">Email Address (Login) *</label>
+                <input type="email" className="admin-field-input" required value={loginForm.email} onChange={e => setLoginForm({ ...loginForm, email: e.target.value })} placeholder="vendor@example.com" />
+              </div>
+              <div className="admin-field">
+                <label className="admin-field-label">Phone</label>
+                <input type="text" className="admin-field-input" value={loginForm.phone} onChange={e => setLoginForm({ ...loginForm, phone: e.target.value })} placeholder="+91 9876543210" />
+              </div>
+              <div className="admin-field">
+                <label className="admin-field-label">Password *</label>
+                <input type="password" className="admin-field-input" required value={loginForm.password} onChange={e => setLoginForm({ ...loginForm, password: e.target.value })} placeholder="••••••••" />
+              </div>
+              <div className="admin-modal-footer">
+                <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowLoginModal(null)}>Cancel</button>
+                <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
+                  {saving ? 'Creating…' : 'Create Login'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -1,4 +1,18 @@
 node_modules/
-.env
-*.log
 dist/
+*.log
+
+# Environment Files & Secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.staging
+.env.production
+*.env
+*.env.local
+
+# Allow Example Templates
+!.env.example
+!*.example
+!**/*.example

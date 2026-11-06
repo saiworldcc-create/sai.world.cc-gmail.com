@@ -46,6 +46,10 @@ exports.calculateRates = async (req, res) => {
     const l = parseFloat(length) || 0; const w = parseFloat(width) || 0;
     const h = parseFloat(height) || 0; const aw = parseFloat(actualWeight) || 0;
 
+    if (aw <= 0) {
+      return res.status(400).json({ success: false, message: 'Actual weight must be greater than 0 kg.' });
+    }
+
     const volWeight = (l * w * h) / 5000;
     const chargeableWeight = Math.max(aw, volWeight);
     const weightKey = roundChargeable(chargeableWeight).toString();

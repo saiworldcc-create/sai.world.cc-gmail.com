@@ -118,6 +118,9 @@ export default function ShipmentsManager() {
                       <button className="admin-btn admin-btn-sm admin-btn-primary" onClick={() => openUpdate(s)}>
                         <i className="fa-solid fa-pen"></i> Update
                       </button>
+                      <button className="admin-btn admin-btn-sm" style={{ background: '#1E3446', color: '#fff', border: 'none' }} onClick={() => window.open(`http://localhost:5000/api/v1/pdf/awb/${s.awb}`, '_blank')}>
+                        <i className="fa-solid fa-print"></i> Label
+                      </button>
                     </div>
                   </td>
                 </tr>

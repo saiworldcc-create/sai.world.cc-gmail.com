@@ -1,32 +1,9 @@
+const carrierAdapter = require('../services/carrierAdapter');
 const Shipment = require('../models/Shipment');
 const EcomOrder = require('../models/EcomOrder');
 const Booking = require('../models/Booking');
 
-// Generic fallback data for unknown AWBs
-function buildGenericShipment(awbCode) {
-  return {
-    awb: awbCode.toUpperCase(),
-    status: 'In Transit (Express Cargo)',
-    stage: 3,
-    type: 'international',
-    sender: 'Verified Sender (Andhra Pradesh)',
-    receiver: 'Overseas Consignee',
-    contents: 'International Courier Parcel',
-    carrier: 'Sai Global Express Air Network',
-    deadWeight: '5.0 kg',
-    volWeight: '5.4 kg',
-    chargeableWeight: '5.4 kg',
-    origin: 'Kadapa Main Hub Depot',
-    destination: 'International Gateway',
-    eta: '3–4 Business Days Remaining',
-    history: [
-      { status: 'In Transit on International Connection Flight', time: 'Today, 06:45 AM', location: 'International Cargo Hub', completed: true, active: true },
-      { status: 'Departed RGIA Hyderabad Air Cargo Gateway', time: 'Yesterday, 09:20 PM', location: 'Hyderabad Airport', completed: true, active: false },
-      { status: 'Export Documentation & KYC Verification Approved', time: 'Yesterday, 03:15 PM', location: 'Kadapa Hub Depot', completed: true, active: false },
-      { status: 'Doorstep Picked Up & Vacuum Box Packed', time: '2 Days ago, 11:30 AM', location: 'Andhra Pradesh Service Zone', completed: true, active: false },
-    ],
-  };
-}
+
 
 exports.getTracking = async (req, res) => {
   try {
@@ -54,14 +31,20 @@ exports.getTracking = async (req, res) => {
       
       let syntheticHistory = [];
       const baseTime = new Date(ecomOrder.createdAt).getTime();
+      const updatedTime = new Date(ecomOrder.updatedAt || ecomOrder.createdAt).getTime();
+      const timeSpan = updatedTime - baseTime;
+      const totalSteps = (stage === 1) ? 0 : (stage === 2) ? 1 : (stage === 3) ? 2 : 4;
+      const getStepTime = (step) => {
+          if (totalSteps === 0) return baseTime;
+          return baseTime + (timeSpan * (step / totalSteps));
+      }
       
-      syntheticHistory.push({ status: 'Order Placed', time: new Date(baseTime).toLocaleString(), location: 'System Update', completed: true, active: stage === 1 });
-
-      if (stage >= 2) syntheticHistory.push({ status: 'Packed & Ready for Dispatch', time: new Date(baseTime + 3600000).toLocaleString(), location: 'SAI Fulfillment Center', completed: true, active: stage === 2 });
-      if (stage >= 3) syntheticHistory.push({ status: 'Dispatched in Transit', time: new Date(baseTime + 86400000).toLocaleString(), location: 'Main Logistics Hub', completed: true, active: stage === 3 });
+      syntheticHistory.push({ status: 'Order Placed', time: new Date(getStepTime(0)).toLocaleString(), location: 'System Update', completed: true, active: stage === 1 });
+      if (stage >= 2) syntheticHistory.push({ status: 'Packed & Ready for Dispatch', time: new Date(getStepTime(1)).toLocaleString(), location: 'SAI Fulfillment Center', completed: true, active: stage === 2 });
+      if (stage >= 3) syntheticHistory.push({ status: 'Dispatched in Transit', time: new Date(getStepTime(2)).toLocaleString(), location: 'Main Logistics Hub', completed: true, active: stage === 3 });
       if (stage >= 5) {
-        syntheticHistory.push({ status: 'Out for Delivery', time: new Date(new Date(ecomOrder.updatedAt).getTime() - 14400000).toLocaleString(), location: 'Local Courier Facility', completed: true, active: false });
-        syntheticHistory.push({ status: 'Order Delivered Successfully', time: new Date(ecomOrder.updatedAt).toLocaleString(), location: ecomOrder.receiver?.country || 'Destination', completed: true, active: true });
+        syntheticHistory.push({ status: 'Out for Delivery', time: new Date(getStepTime(3)).toLocaleString(), location: 'Local Courier Facility', completed: true, active: false });
+        syntheticHistory.push({ status: 'Order Delivered Successfully', time: new Date(getStepTime(4)).toLocaleString(), location: ecomOrder.receiver?.country || 'Destination', completed: true, active: true });
       }
       syntheticHistory = syntheticHistory.reverse();
 
@@ -90,12 +73,18 @@ exports.getTracking = async (req, res) => {
 
       let syntheticHistory = [];
       const baseTime = new Date(booking.createdAt).getTime();
+      const updatedTime = new Date(booking.updatedAt || booking.createdAt).getTime();
+      const timeSpan = updatedTime - baseTime;
+      const getStepTime = (step) => {
+          if (progress === 0) return baseTime;
+          return baseTime + (timeSpan * (step / progress));
+      }
 
-      syntheticHistory.push({ status: 'Booking Created', time: new Date(baseTime).toLocaleString(), location: booking.branchZone || 'Online', completed: true, active: progress === 0 });
-      if (progress >= 1) syntheticHistory.push({ status: 'Booking Confirmed', time: new Date(baseTime + 3600000).toLocaleString(), location: 'Customer Support', completed: true, active: progress === 1 });
-      if (progress >= 2) syntheticHistory.push({ status: 'Picked Up Successfully', time: new Date(baseTime + 86400000).toLocaleString(), location: booking.senderAddress || 'Sender Location', completed: true, active: progress === 2 });
-      if (progress >= 3) syntheticHistory.push({ status: 'In Transit to Destination', time: new Date(baseTime + 172800000).toLocaleString(), location: 'International Hub', completed: true, active: progress === 3 });
-      if (progress >= 4) syntheticHistory.push({ status: 'Delivered', time: new Date(booking.updatedAt || new Date()).toLocaleString(), location: booking.destCountry, completed: true, active: true });
+      syntheticHistory.push({ status: 'Booking Created', time: new Date(getStepTime(0)).toLocaleString(), location: booking.branchZone || 'Online', completed: true, active: progress === 0 });
+      if (progress >= 1) syntheticHistory.push({ status: 'Booking Confirmed', time: new Date(getStepTime(1)).toLocaleString(), location: 'Customer Support', completed: true, active: progress === 1 });
+      if (progress >= 2) syntheticHistory.push({ status: 'Picked Up Successfully', time: new Date(getStepTime(2)).toLocaleString(), location: booking.senderAddress || 'Sender Location', completed: true, active: progress === 2 });
+      if (progress >= 3) syntheticHistory.push({ status: 'In Transit to Destination', time: new Date(getStepTime(3)).toLocaleString(), location: 'International Hub', completed: true, active: progress === 3 });
+      if (progress >= 4) syntheticHistory.push({ status: 'Delivered', time: new Date(getStepTime(4)).toLocaleString(), location: booking.destCountry, completed: true, active: true });
 
       syntheticHistory = syntheticHistory.reverse();
 
@@ -107,8 +96,43 @@ exports.getTracking = async (req, res) => {
       return res.json({ success: true, data: bookingShipment, source: 'booking' });
     }
 
-    const generic = buildGenericShipment(awbCode);
-    return res.json({ success: true, data: generic, source: 'demo' });
+    // Check Carrier Sandbox Simulation if AWB matches standard carrier prefixes or sandbox mode
+    const isCarrierAwb = /^(DHL|UPS|FDX|FEDEX|EXP)/i.test(awbCode);
+    if (isCarrierAwb || process.env.CARRIER_MODE === 'sandbox' || process.env.NODE_ENV === 'development') {
+      const carrierType = awbCode.startsWith('DHL') ? 'DHL Express' : awbCode.startsWith('UPS') ? 'UPS' : 'FedEx Express';
+      const simData = await carrierAdapter.trackCarrierShipment(carrierType, awbCode);
+      return res.json({
+        success: true,
+        source: 'carrier_sandbox',
+        isSimulated: true,
+        simulationNotice: 'DEMO / SANDBOX DATA - NOT LIVE CARRIER MANIFEST',
+        data: {
+          awb: awbCode,
+          status: simData.status,
+          stage: 3,
+          type: 'international',
+          sender: 'Authorized International Consignor',
+          receiver: 'Consignee (Destination Address)',
+          contents: 'Commercial Sample / NRI Food Parcel',
+          carrier: simData.carrier,
+          deadWeight: '5.0 kg',
+          volWeight: '4.8 kg',
+          chargeableWeight: '5.0 kg',
+          origin: simData.origin,
+          destination: simData.destination,
+          eta: simData.estimatedDelivery,
+          history: simData.milestones.map(m => ({
+            status: m.checkpoint,
+            time: m.timestamp,
+            location: m.location,
+            completed: m.completed,
+            active: m.active
+          }))
+        }
+      });
+    }
+
+    return res.status(404).json({ success: false, message: 'Invalid tracking ID. Please verify your AWB and try again.' });
   } catch (err) {
     console.error('Tracking error:', err);
     return res.status(500).json({ success: false, message: 'Server error. Please try again.' });

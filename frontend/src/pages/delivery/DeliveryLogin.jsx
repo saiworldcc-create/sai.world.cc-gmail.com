@@ -178,252 +178,208 @@ const DeliveryLogin = () => {
 const styles = {
   pageBackground: {
     minHeight: '100vh',
-    backgroundColor: '#070f1e',
+    backgroundColor: '#000000', // Pitch black for high contrast
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: '1.5rem 1rem',
-    fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
-    position: 'relative',
-    overflow: 'hidden'
+    alignItems: 'flex-start',
+    padding: '0',
+    fontFamily: "system-ui, -apple-system, sans-serif",
   },
-  ambientGlowTop: {
-    position: 'absolute',
-    top: '-15%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '600px',
-    height: '600px',
-    background: 'radial-gradient(circle, rgba(255, 107, 74, 0.15) 0%, rgba(7, 15, 30, 0) 70%)',
-    pointerEvents: 'none',
-  },
-  ambientGlowBottom: {
-    position: 'absolute',
-    bottom: '-20%',
-    right: '10%',
-    width: '500px',
-    height: '500px',
-    background: 'radial-gradient(circle, rgba(0, 180, 216, 0.12) 0%, rgba(7, 15, 30, 0) 70%)',
-    pointerEvents: 'none',
-  },
+  ambientGlowTop: { display: 'none' }, // Removed for battery saving
+  ambientGlowBottom: { display: 'none' }, // Removed for battery saving
   mobileAppContainer: {
     width: '100%',
     maxWidth: '420px',
-    backgroundColor: '#0f172a',
-    borderRadius: '24px',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 107, 74, 0.15)',
-    padding: '2rem 1.75rem',
+    backgroundColor: '#000000',
+    minHeight: '100vh',
+    padding: '2rem 1.5rem',
     boxSizing: 'border-box',
-    position: 'relative',
-    zIndex: 2,
-    backdropFilter: 'blur(10px)',
+    display: 'flex',
+    flexDirection: 'column',
   },
   appHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '1.5rem',
+    marginBottom: '2rem',
     paddingBottom: '1rem',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+    borderBottom: '4px solid #333333' // Chunky border
   },
   brandRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.75rem'
+    gap: '1rem'
   },
   logoBadge: {
-    width: '42px',
-    height: '42px',
-    borderRadius: '12px',
-    background: 'linear-gradient(135deg, #ff6b4a 0%, #e0481d 100%)',
+    width: '48px',
+    height: '48px',
+    backgroundColor: '#FF5000', // Flat safety orange
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 4px 12px rgba(255, 107, 74, 0.4)'
+    borderRadius: '4px' // Boxy industrial look
   },
   appName: {
-    fontSize: '0.95rem',
-    fontWeight: '800',
-    color: '#ffffff',
-    letterSpacing: '0.5px',
+    fontSize: '1.2rem',
+    fontWeight: '900',
+    color: '#FFFFFF',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
     margin: 0,
-    lineHeight: 1.2
   },
   appSubtext: {
-    fontSize: '0.75rem',
-    color: '#94a3b8',
-    fontWeight: '500'
+    fontSize: '0.85rem',
+    color: '#AAAAAA',
+    fontWeight: '700',
+    textTransform: 'uppercase'
   },
   versionPill: {
-    fontSize: '0.7rem',
-    fontWeight: '600',
-    color: '#34d399',
-    backgroundColor: 'rgba(16, 185, 129, 0.12)',
-    padding: '0.25rem 0.6rem',
-    borderRadius: '20px',
-    border: '1px solid rgba(16, 185, 129, 0.25)'
+    fontSize: '0.8rem',
+    fontWeight: '800',
+    color: '#000000',
+    backgroundColor: '#00FF00', // High contrast neon green
+    padding: '4px 8px',
+    borderRadius: '2px', // Boxy
   },
   heroSection: {
-    textAlign: 'center',
-    marginBottom: '1.25rem'
+    marginBottom: '2rem'
   },
-  heroIconWrapper: {
-    width: '56px',
-    height: '56px',
-    borderRadius: '50%',
-    backgroundColor: 'rgba(255, 107, 74, 0.1)',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '0.75rem',
-    border: '1px solid rgba(255, 107, 74, 0.2)'
-  },
+  heroIconWrapper: { display: 'none' }, // Removed decorative icon
   heroTitle: {
-    fontSize: '1.35rem',
-    fontWeight: '700',
-    color: '#f8fafc',
-    margin: '0 0 0.35rem 0'
+    fontSize: '1.8rem',
+    fontWeight: '900',
+    color: '#FFFFFF',
+    margin: '0 0 0.5rem 0',
+    textTransform: 'uppercase'
   },
   heroDesc: {
-    fontSize: '0.82rem',
-    color: '#94a3b8',
+    fontSize: '1rem',
+    color: '#CCCCCC',
     margin: 0,
-    lineHeight: 1.45
+    lineHeight: 1.5,
+    fontWeight: '500'
   },
   demoFillBtn: {
     width: '100%',
-    backgroundColor: 'rgba(245, 158, 11, 0.12)',
-    color: '#fbbf24',
-    border: '1px dashed rgba(245, 158, 11, 0.35)',
-    padding: '0.65rem 1rem',
-    borderRadius: '12px',
-    fontSize: '0.82rem',
-    fontWeight: '600',
+    backgroundColor: '#333333',
+    color: '#FFFFFF',
+    border: '2px solid #555555',
+    padding: '1rem',
+    fontSize: '1rem',
+    fontWeight: '800',
     cursor: 'pointer',
-    marginBottom: '1.25rem',
+    marginBottom: '2rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    textTransform: 'uppercase'
   },
   errorBox: {
-    backgroundColor: 'rgba(239, 68, 68, 0.15)',
-    color: '#fca5a5',
-    border: '1px solid rgba(239, 68, 68, 0.3)',
-    padding: '0.75rem 1rem',
-    borderRadius: '10px',
-    marginBottom: '1.25rem',
-    fontSize: '0.82rem',
+    backgroundColor: '#FF0000',
+    color: '#FFFFFF',
+    padding: '1rem',
+    marginBottom: '2rem',
+    fontSize: '1rem',
+    fontWeight: '800',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    border: '4px solid #990000'
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.1rem'
+    gap: '1.5rem',
+    flex: 1
   },
   inputGroup: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.4rem'
+    gap: '0.5rem'
   },
   label: {
-    fontSize: '0.75rem',
-    color: '#cbd5e1',
-    fontWeight: '600',
+    fontSize: '1rem',
+    color: '#FFFFFF',
+    fontWeight: '800',
     textTransform: 'uppercase',
-    letterSpacing: '0.5px'
   },
   inputWrapper: {
     position: 'relative',
     display: 'flex',
     alignItems: 'center'
   },
-  inputIcon: {
-    position: 'absolute',
-    left: '12px',
-    color: '#64748b',
-    fontSize: '0.95rem',
-    pointerEvents: 'none'
-  },
+  inputIcon: { display: 'none' }, // Removed for cleaner industrial look
   input: {
     width: '100%',
-    padding: '0.75rem 0.85rem 0.75rem 2.4rem',
-    backgroundColor: '#1e293b',
-    border: '1px solid #334155',
-    borderRadius: '10px',
-    fontSize: '0.92rem',
-    color: '#f8fafc',
+    padding: '1.2rem 1rem', // Giant padding for fat fingers
+    backgroundColor: '#111111',
+    border: '3px solid #555555',
+    fontSize: '1.2rem',
+    color: '#FFFFFF',
     outline: 'none',
     boxSizing: 'border-box',
-    transition: 'border-color 0.2s ease',
+    fontWeight: '700'
   },
   togglePasswordBtn: {
     position: 'absolute',
-    right: '10px',
+    right: '15px',
     background: 'none',
     border: 'none',
-    color: '#64748b',
-    fontSize: '0.95rem',
+    color: '#AAAAAA',
+    fontSize: '1.2rem',
     cursor: 'pointer',
-    padding: '4px'
+    padding: '10px'
   },
   optionsRow: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: '-0.2rem'
   },
   rememberLabel: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.4rem',
-    fontSize: '0.8rem',
-    color: '#94a3b8',
+    gap: '0.5rem',
+    fontSize: '1rem',
+    color: '#FFFFFF',
+    fontWeight: '700',
     cursor: 'pointer'
   },
   forgotLink: {
-    fontSize: '0.8rem',
-    color: '#60a5fa',
+    fontSize: '1rem',
+    color: '#00AAFF',
     textDecoration: 'none',
-    fontWeight: '500'
+    fontWeight: '800',
+    textTransform: 'uppercase'
   },
   submitBtn: {
-    marginTop: '0.5rem',
-    backgroundColor: '#ff6b4a',
-    backgroundImage: 'linear-gradient(135deg, #ff6b4a 0%, #e0481d 100%)',
-    color: '#ffffff',
+    marginTop: '1rem',
+    backgroundColor: '#FF5000', // Flat safety orange
+    color: '#FFFFFF',
     border: 'none',
-    padding: '0.9rem',
-    borderRadius: '12px',
-    fontSize: '0.95rem',
-    fontWeight: '700',
+    padding: '1.2rem', // Massive touch target
+    fontSize: '1.2rem',
+    fontWeight: '900',
     cursor: 'pointer',
-    boxShadow: '0 10px 20px -5px rgba(255, 107, 74, 0.4)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    transition: 'transform 0.15s ease, box-shadow 0.15s ease'
+    textTransform: 'uppercase',
   },
   appFooter: {
-    marginTop: '1.75rem',
-    paddingTop: '1.25rem',
-    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+    marginTop: 'auto',
+    paddingTop: '2rem',
     textAlign: 'center'
   },
   securityBadge: {
-    fontSize: '0.75rem',
-    color: '#94a3b8',
-    marginBottom: '0.5rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+    fontSize: '0.9rem',
+    fontWeight: '800',
+    color: '#00FF00',
+    marginBottom: '1rem',
+    textTransform: 'uppercase'
   },
   supportText: {
-    fontSize: '0.75rem',
-    color: '#64748b',
-    margin: 0
+    fontSize: '0.9rem',
+    color: '#AAAAAA',
+    fontWeight: '700'
   }
 };
 

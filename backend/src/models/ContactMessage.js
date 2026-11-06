@@ -11,7 +11,7 @@ const contactMessageSchema = new mongoose.Schema(
     parcelWeight: { type: String, default: '' },
     pickupAddress: { type: String, default: '' },
     message: { type: String, default: '' },
-    source: { type: String, enum: ['contact', 'pickup'], default: 'contact' },
+    source: { type: String, enum: ['contact', 'pickup', 'help_center_ticket', 'quote'], default: 'contact' },
     read: { type: Boolean, default: false },
   },
   { timestamps: true }

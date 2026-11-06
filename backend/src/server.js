@@ -1,4 +1,7 @@
 require('dotenv').config();
+const config = require('./config/env');
+const path = require('path');
+const costService = require('./services/costService');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -21,6 +24,17 @@ const paymentRoutes = require('./routes/payment.routes');
 const aiRoutes = require('./routes/ai.routes');
 const ecommerceRoutes = require('./routes/ecommerce.routes');
 const deliveryRoutes = require('./routes/delivery.routes');
+const vendorRoutes = require('./routes/vendor.routes');
+const rfqRoutes = require('./routes/rfq.routes');
+const enterpriseRoutes = require('./routes/enterprise.routes');
+const analyticsRoutes = require('./routes/analytics.routes'); // Phase 9
+const fleetRoutes = require('./routes/fleet.routes'); // Phase 12
+const pdfRoutes = require('./routes/pdf.routes'); // Phase 13
+const externalRoutes = require('./routes/external.routes'); // Phase 14
+const geoRoutes = require('./routes/geo.routes'); // Free Geo Service
+
+// Initialize Enterprise Workers
+require('./workers/logisticsWorker');
 
 const app = express();
 const server = http.createServer(app);
@@ -40,7 +54,7 @@ app.use(cors({
     return callback(null, true);
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
   credentials: true,
 }));
 app.use(express.json({ limit: '5mb' }));
@@ -62,6 +76,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// ── Free Tier Cost Audit & Quota Monitoring ──────────────────────────────
+app.get('/api/v1/cost-audit', (req, res) => {
+  res.json({ success: true, ...costService.getCostAuditSummary() });
+});
+
+// ── Static File Uploads (Local Storage Fallback) ─────────────────────────
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+
 // ── API Routes ────────────────────────────────────────────────────────────
 app.use('/api/v1/tracking', trackingRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
@@ -75,6 +97,14 @@ app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/ecommerce', ecommerceRoutes);
 app.use('/api/v1/delivery', deliveryRoutes);
+app.use('/api/v1/vendor', vendorRoutes);
+app.use('/api/v1/rfq', rfqRoutes);
+app.use('/api/v1/enterprise', enterpriseRoutes);
+app.use('/api/v1/analytics', analyticsRoutes); // Phase 9
+app.use('/api/v1/fleet', fleetRoutes); // Phase 12
+app.use('/api/v1/pdf', pdfRoutes); // Phase 13
+app.use('/api/v2/external', externalRoutes); // Phase 14 (Headless)
+app.use('/api/v1/geo', geoRoutes); // Free Geo Service
 
 // ── 404 Handler ───────────────────────────────────────────────────────────
 app.use((req, res) => {

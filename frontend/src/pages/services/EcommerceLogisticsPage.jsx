@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
-import { getPublicEcomShops, getPublicEcomProducts, placePublicEcomOrder } from '../../services/api';
+import { getPublicEcomShops, getPublicEcomProducts, placePublicEcomOrder, createRFQ } from '../../services/api';
 import { useUser } from '../../context/UserContext';
 
 export default function EcommerceLogisticsPage() {
@@ -16,6 +16,11 @@ export default function EcommerceLogisticsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [placingOrder, setPlacingOrder] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);
+
+  // RFQ State
+  const [showRfqModal, setShowRfqModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [rfqForm, setRfqForm] = useState({ quantity: '', price: '', message: '' });
   
   // Checkout Form State
       const [customerDetails, setCustomerDetails] = useState({
@@ -254,6 +259,12 @@ export default function EcommerceLogisticsPage() {
                           Save ₹{product.originalPrice - product.price}
                         </div>
                       </div>
+                      
+                      <button onClick={(e) => { e.stopPropagation(); setSelectedProduct(product); setShowRfqModal(true); }}
+                        style={{ background: '#FFFBEB', color: '#D97706', border: '1px solid #FCD34D', borderRadius: '8px', padding: '0.4rem 0.6rem', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+                      >
+                        Bulk Quote
+                      </button>
                       {(() => {
                         const cartItem = cart.find(item => item.id === product.id);
                         return cartItem ? (
@@ -624,6 +635,63 @@ export default function EcommerceLogisticsPage() {
                   <i className="fa-solid fa-bag-shopping"></i> Continue Shopping
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ RFQ MODAL ═══ */}
+      {showRfqModal && selectedProduct && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10000,
+          background: 'rgba(11,22,34,0.75)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{ background: '#FFF', width: '90%', maxWidth: '500px', borderRadius: '16px', padding: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, color: '#1E3446', fontSize: '1.4rem' }}><i className="fa-solid fa-file-invoice-dollar" style={{ color: '#F59E0B' }}></i> Request Bulk Quote</h3>
+              <button onClick={() => setShowRfqModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#A0B0C0' }}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div style={{ background: '#F8FAFB', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
+              {selectedProduct.image && <img src={selectedProduct.image} alt="" style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />}
+              <div>
+                <h4 style={{ margin: '0 0 0.3rem 0', color: '#1E3446' }}>{selectedProduct.name}</h4>
+                <div style={{ fontSize: '0.8rem', color: '#7091A8' }}>Current Retail Price: <strong>₹{selectedProduct.price}</strong></div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', color: '#4A6B82', marginBottom: '0.4rem' }}>Required Quantity (Units)</label>
+                <input type="number" placeholder="e.g. 5000" value={rfqForm.quantity} onChange={e => setRfqForm({...rfqForm, quantity: e.target.value})} style={{ width: '100%', padding: '0.8rem', border: '1px solid #D5DEE5', borderRadius: '8px' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', color: '#4A6B82', marginBottom: '0.4rem' }}>Your Target Price (₹ per unit)</label>
+                <input type="number" placeholder="e.g. 400" value={rfqForm.price} onChange={e => setRfqForm({...rfqForm, price: e.target.value})} style={{ width: '100%', padding: '0.8rem', border: '1px solid #D5DEE5', borderRadius: '8px' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', color: '#4A6B82', marginBottom: '0.4rem' }}>Message to Vendor (Optional)</label>
+                <textarea rows="3" placeholder="Tell the vendor about your bulk requirements..." value={rfqForm.message} onChange={e => setRfqForm({...rfqForm, message: e.target.value})} style={{ width: '100%', padding: '0.8rem', border: '1px solid #D5DEE5', borderRadius: '8px', resize: 'vertical' }}></textarea>
+              </div>
+              
+              <button onClick={async () => {
+                if (!user) { alert('Please login to request a quote.'); return; }
+                if (!rfqForm.quantity || !rfqForm.price) { alert('Please fill quantity and target price'); return; }
+                try {
+                  await createRFQ({
+                    productId: selectedProduct.id,
+                    requestedQuantity: rfqForm.quantity,
+                    targetPricePerUnit: rfqForm.price,
+                    message: rfqForm.message
+                  });
+                  alert('RFQ Sent Successfully! You can view responses in your Dashboard.');
+                  setShowRfqModal(false);
+                  setRfqForm({ quantity: '', price: '', message: '' });
+                } catch(e) { alert(e.message); }
+              }} style={{ width: '100%', padding: '1rem', background: '#F59E0B', color: '#FFF', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', marginTop: '1rem' }}>
+                Submit Request for Quote
+              </button>
             </div>
           </div>
         </div>

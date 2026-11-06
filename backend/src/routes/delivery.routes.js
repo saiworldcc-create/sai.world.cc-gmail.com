@@ -12,6 +12,9 @@ router.use(restrictUserTo('delivery_partner'));
 
 router.get('/tasks', deliveryController.getTasks);
 
+// V2 Route Optimization
+router.get('/optimize-route', deliveryController.optimizeRoutes);
+
 router.put('/status/:awb', deliveryController.handleStatusUpdate);
 router.put('/tasks/:awb/status', deliveryController.handleStatusUpdate);
 

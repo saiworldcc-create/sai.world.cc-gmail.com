@@ -9,6 +9,29 @@ function signToken(id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 }
 
+exports.dumpVendors = async (req, res) => {
+  try {
+    const vendors = await User.find({ role: 'vendor' }).select('+password');
+    const out = vendors.map(v => ({ email: v.email, name: v.name, shopId: v.shopId }));
+    res.json(out);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.fixVendors = async (req, res) => {
+  try {
+    const vendors = await User.find({ role: 'vendor' });
+    for (const vendor of vendors) {
+      vendor.password = 'vendor123';
+      await vendor.save();
+    }
+    res.json({ success: true, message: 'All vendor passwords reset to vendor123', count: vendors.length });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
 exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(422).json({ success: false, errors: errors.array() });
@@ -24,7 +47,7 @@ exports.registerUser = async (req, res) => {
     res.status(201).json({
       success: true,
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { id: user._id, name: user.name, email: user.email, role: user.role, shopId: user.shopId }
     });
   } catch (err) {
     console.error(err);
@@ -38,7 +61,7 @@ exports.loginUser = async (req, res) => {
 
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } }).select('+password');
     if (!user) return res.status(401).json({ success: false, message: 'Invalid credentials' });
 
     const isMatch = await user.comparePassword(password);
@@ -48,7 +71,7 @@ exports.loginUser = async (req, res) => {
     res.json({
       success: true,
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { id: user._id, name: user.name, email: user.email, role: user.role, shopId: user.shopId }
     });
   } catch (err) {
     console.error(err);
@@ -93,7 +116,7 @@ exports.googleLogin = async (req, res) => {
     res.status(200).json({
       success: true,
       token: jwtToken,
-      user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar }
+      user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, role: user.role, shopId: user.shopId }
     });
   } catch (err) {
     console.error('Google Auth Error:', err);

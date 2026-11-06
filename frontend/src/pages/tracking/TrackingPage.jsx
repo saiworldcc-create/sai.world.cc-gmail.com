@@ -30,6 +30,15 @@ export default function TrackingPage() {
   const [inputAwb, setInputAwb] = useState(awbParam);
   const queryClient = useQueryClient();
 
+  const [liveLocation, setLiveLocation] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [docTitle, setDocTitle] = useState('');
+  const [docUrl, setDocUrl] = useState('');
+  const [showPrefModal, setShowPrefModal] = useState(false);
+  const [prefInstruction, setPrefInstruction] = useState('');
+  const [prefReschedule, setPrefReschedule] = useState('');
+  const [prefHold, setPrefHold] = useState(false);
+
   // Convert raw DB data to UI data
   const mapTrackingData = (dbData) => {
     if (!dbData) return null;
@@ -51,6 +60,8 @@ export default function TrackingPage() {
         carrier: dbData.carrier || 'SAI Global Network',
         origin: dbData.origin,
         eta: dbData.eta,
+        isSimulated: Boolean(dbData.isSimulated || /^(DHL|UPS|FDX|FEDEX|EXP)/i.test(dbData.awb)),
+        simulationNotice: dbData.simulationNotice || 'DEMO / SANDBOX DATA - NOT LIVE CARRIER MANIFEST',
         history: dbData.milestones
           .filter(m => m.timestamp)
           .map(m => ({
@@ -248,13 +259,12 @@ export default function TrackingPage() {
                   {loading ? <><i className="fa-solid fa-circle-notch fa-spin"></i> Locating…</> : <><i className="fa-solid fa-location-crosshairs"></i> Track Shipment</>}
                 </button>
               </form>
-
-
             </div>
 
             {error && (
-              <div style={{ padding: '1rem', background: '#FDEDEC', color: '#E74C3C', borderRadius: 'var(--radius-md)', textAlign: 'center', marginTop: '1.5rem', border: '1px solid #FADBD8' }}>
-                <i className="fa-solid fa-circle-exclamation" style={{ marginRight: '6px' }}></i> {error}
+              <div style={{ padding: '1rem 1.5rem', background: 'rgba(231, 76, 60, 0.15)', color: '#FF6B6B', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '1.5rem', border: '1px solid rgba(231, 76, 60, 0.3)' }}>
+                <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: '1.25rem' }}></i> 
+                <span style={{ fontSize: '0.95rem', fontWeight: 500 }}>{error}</span>
               </div>
             )}
 
@@ -267,6 +277,11 @@ export default function TrackingPage() {
                   <div>
                     <span className="eyebrow-pill teal" style={{ marginBottom: '0.4rem' }}>Live Tracking Data</span>
                     <h2 style={{ fontSize: '1.8rem', color: '#1E3446', margin: 0 }}>AWB: {trackingData.awb}</h2>
+                    {trackingData.isSimulated && (
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#FEF3C7', border: '1px solid #F59E0B', color: '#92400E', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, marginTop: '4px' }}>
+                        <i className="fa-solid fa-flask"></i> DEMO / SIMULATED CARRIER DATA
+                      </div>
+                    )}
                     <p style={{ fontSize: '0.95rem', color: '#4A6B82', margin: '0.35rem 0 0 0' }}>
                       <strong>{trackingData.origin}</strong> &rarr; <strong style={{ color: '#E97856' }}>{trackingData.destination}</strong>
                     </p>

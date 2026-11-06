@@ -1,0 +1,52 @@
+/* Vendor Portal Animations */
+@keyframes fadeInUpVendor {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.vendor-fade-in {
+  animation: fadeInUpVendor 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Enhancing Vendor UI Tables to match Enterprise Spec */
+.vendor-table-container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  overflow: hidden;
+  border: 1px solid #E2E8F0;
+}
+
+.vendor-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.vendor-table thead {
+  background: #F8FAFC;
+  border-bottom: 2px solid #E2E8F0;
+}
+
+.vendor-table th {
+  padding: 1rem 1.5rem;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vendor-table tr {
+  border-bottom: 1px solid #E2E8F0;
+  transition: background 0.2s;
+}
+
+.vendor-table tr:hover {
+  background: #F8FAFC;
+}
+
+.vendor-table td {
+  padding: 1.2rem 1.5rem;
+  color: #0F172A;
+}

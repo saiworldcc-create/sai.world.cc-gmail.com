@@ -5,10 +5,11 @@ const { protectUser } = require('../middleware/userAuth');
 const ecomController = require('../controllers/ecommerce.controller');
 
 // PUBLIC ENDPOINTS
-router.get('/seed', ecomController.seedDb);
+router.get('/seed', protect, restrictTo('super-admin'), ecomController.seedDb);
 router.get('/shops', ecomController.getShops);
 router.get('/products', ecomController.getProducts);
 router.post('/orders', ecomController.placeOrder);
+router.post('/b2b-orders', protectUser, require('../controllers/vendor.controller').placeB2BOrder);
 
 // ADMIN ENDPOINTS
 router.get('/admin/shops', protect, restrictTo('super-admin'), ecomController.getAdminShops);

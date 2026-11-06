@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../services/api';
 
 const UserContext = createContext();
 
@@ -9,10 +10,9 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // Configure axios defaults
+  // Synchronize token state and headers
   useEffect(() => {
     if (token) {
-      // NOTE: We'll set this specific to user requests if needed, but for now we set global
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       localStorage.setItem('userToken', token);
     } else {
@@ -29,15 +29,17 @@ export function UserProvider({ children }) {
         return;
       }
       try {
-        const res = await axios.get('/api/v1/users/me');
-        if (res.data.success) {
-          setUser(res.data.user);
+        const res = await api.get('/users/me');
+        if (res && res.success) {
+          setUser(res.user);
         } else {
           setToken(null);
+          setUser(null);
         }
       } catch (err) {
-        console.error('Failed to fetch user', err);
+        console.warn('User profile session verification:', err.message);
         setToken(null);
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -47,45 +49,50 @@ export function UserProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post('/api/v1/users/login', { email, password });
-      if (res.data.success) {
-        setToken(res.data.token);
-        setUser(res.data.user);
-        return { success: true, user: res.data.user };
+      const res = await api.post('/users/login', { email, password });
+      if (res && res.success) {
+        setToken(res.token);
+        setUser(res.user);
+        return { success: true, user: res.user };
       }
-      return { success: false, message: res.data.message || 'Login failed' };
+      return { success: false, message: res?.message || 'Login failed' };
     } catch (err) {
-      return { success: false, message: err.response?.data?.message || err.message || 'Login failed' };
+      return { success: false, message: err.message || 'Login failed' };
     }
   };
 
   const register = async (name, email, password, phone) => {
-    const res = await axios.post('/api/v1/users/register', { name, email, password, phone });
-    if (res.data.success) {
-      setToken(res.data.token);
-      setUser(res.data.user);
-      return { success: true };
+    try {
+      const res = await api.post('/users/register', { name, email, password, phone });
+      if (res && res.success) {
+        setToken(res.token);
+        setUser(res.user);
+        return { success: true };
+      }
+      return { success: false, message: res?.message || 'Registration failed' };
+    } catch (err) {
+      return { success: false, message: err.message || 'Registration failed' };
     }
-    return { success: false, message: res.data.message || 'Registration failed' };
   };
 
   const loginWithGoogle = async (googleToken) => {
     try {
-      const res = await axios.post('/api/v1/users/google', { token: googleToken });
-      if (res.data.success) {
-        setToken(res.data.token);
-        setUser(res.data.user);
+      const res = await api.post('/users/google', { token: googleToken });
+      if (res && res.success) {
+        setToken(res.token);
+        setUser(res.user);
         return { success: true };
       }
-      return { success: false, message: res.data.message || 'Google login failed' };
+      return { success: false, message: res?.message || 'Google login failed' };
     } catch (err) {
-      return { success: false, message: err.response?.data?.message || 'Google login failed' };
+      return { success: false, message: err.message || 'Google login failed' };
     }
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
+    localStorage.removeItem('userToken');
     window.location.href = '/login';
   };
 

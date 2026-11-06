@@ -25,6 +25,22 @@ const shipmentSchema = new mongoose.Schema(
     eta: { type: String, required: true },
     history: [trackingHistorySchema],
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    
+    // Enterprise Logistics & WMS
+    thirdPartyLogistics: {
+      provider: { type: String, enum: ['SaiNetwork', 'FedEx', 'DHL', 'BlueDart'], default: 'SaiNetwork' },
+      externalAwb: { type: String }
+    },
+    wms: {
+      aisle: { type: String },
+      bin: { type: String }
+    },
+    finance: {
+      ewayBillNumber: { type: String },
+      insuranceValue: { type: Number, default: 0 },
+      corporateWalletId: { type: String }
+    },
+    franchiseHub: { type: String },
     liveLocation: {
       lat: { type: Number },
       lng: { type: Number },

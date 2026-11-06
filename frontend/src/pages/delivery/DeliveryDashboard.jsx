@@ -244,30 +244,29 @@ const DeliveryDashboard = () => {
 const styles = {
   appShell: {
     minHeight: '100vh',
-    backgroundColor: '#070f1e',
+    backgroundColor: '#000000',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+    fontFamily: "system-ui, -apple-system, sans-serif"
   },
   appContainer: {
     width: '100%',
     maxWidth: '440px',
     minHeight: '100vh',
-    backgroundColor: '#0f172a',
+    backgroundColor: '#000000',
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-    boxShadow: '0 0 40px rgba(0,0,0,0.8)',
-    paddingBottom: '85px'
+    paddingBottom: '90px'
   },
   header: {
-    backgroundColor: '#1e293b',
-    padding: '1.25rem 1rem 1rem 1rem',
+    backgroundColor: '#111111',
+    padding: '1.5rem 1rem',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottom: '1px solid rgba(255,255,255,0.08)',
+    borderBottom: '4px solid #333333',
     position: 'sticky',
     top: 0,
     zIndex: 20
@@ -275,97 +274,99 @@ const styles = {
   driverProfile: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.75rem'
+    gap: '1rem'
   },
   avatarCircle: {
-    width: '42px',
-    height: '42px',
-    borderRadius: '50%',
-    background: 'linear-gradient(135deg, #ff6b4a 0%, #e0481d 100%)',
+    width: '48px',
+    height: '48px',
+    backgroundColor: '#FF5000', // Flat safety orange
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 4px 10px rgba(255, 107, 74, 0.3)'
+    borderRadius: '4px' // Boxy
   },
   driverName: {
     margin: 0,
-    fontSize: '0.95rem',
-    fontWeight: '700',
-    color: '#ffffff'
+    fontSize: '1.1rem',
+    fontWeight: '900',
+    color: '#FFFFFF',
+    textTransform: 'uppercase'
   },
   driverRole: {
-    fontSize: '0.72rem',
-    color: '#94a3b8'
+    fontSize: '0.8rem',
+    color: '#AAAAAA',
+    fontWeight: '700',
+    textTransform: 'uppercase'
   },
   dutyTag: {
-    fontSize: '0.65rem',
-    fontWeight: '700',
-    padding: '0.15rem 0.4rem',
-    borderRadius: '12px',
+    fontSize: '0.75rem',
+    fontWeight: '900',
+    padding: '2px 6px',
+    borderRadius: '2px', // Boxy
     display: 'inline-flex',
     alignItems: 'center',
     gap: '4px'
   },
   logoutBtn: {
-    backgroundColor: 'rgba(239, 68, 68, 0.15)',
-    border: '1px solid rgba(239, 68, 68, 0.3)',
-    color: '#fca5a5',
-    width: '36px',
-    height: '36px',
-    borderRadius: '10px',
+    backgroundColor: '#FF0000', // Flat pure red
+    border: 'none',
+    color: '#FFFFFF',
+    width: '44px', // Bigger touch target
+    height: '44px',
+    borderRadius: '4px', // Boxy
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    fontSize: '1.2rem'
   },
   statsGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr 1fr 1fr',
-    gap: '0.4rem',
-    padding: '0.85rem 0.75rem'
+    gap: '0.5rem',
+    padding: '1rem'
   },
   statCard: {
-    backgroundColor: '#1e293b',
-    borderRadius: '10px',
-    padding: '0.6rem 0.3rem',
+    backgroundColor: '#111111',
+    padding: '1rem 0.5rem',
     textAlign: 'center',
-    border: '1px solid rgba(255,255,255,0.05)'
+    border: '2px solid #333333'
   },
   statNumber: {
     display: 'block',
-    fontSize: '1.1rem',
-    fontWeight: '800',
-    color: '#f8fafc'
+    fontSize: '1.4rem',
+    fontWeight: '900',
+    color: '#FFFFFF'
   },
   statLabel: {
-    fontSize: '0.6rem',
-    color: '#94a3b8',
-    fontWeight: '700',
+    fontSize: '0.7rem',
+    color: '#AAAAAA',
+    fontWeight: '800',
     textTransform: 'uppercase',
-    letterSpacing: '0.2px'
   },
   tabBar: {
     display: 'flex',
-    gap: '0.35rem',
-    padding: '0 0.75rem 0.75rem 0.75rem',
-    borderBottom: '1px solid rgba(255,255,255,0.05)'
+    gap: '0.5rem',
+    padding: '0 1rem 1rem 1rem',
+    borderBottom: '4px solid #333333',
+    overflowX: 'auto'
   },
   tabBtn: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#94a3b8',
-    padding: '0.5rem 0.2rem',
-    borderRadius: '8px',
-    fontSize: '0.72rem',
-    fontWeight: '700',
+    flex: '0 0 auto',
+    backgroundColor: '#111111',
+    border: '2px solid #333333',
+    color: '#AAAAAA',
+    padding: '0.75rem 1rem',
+    fontSize: '0.9rem',
+    fontWeight: '800',
     cursor: 'pointer',
-    textAlign: 'center'
+    textAlign: 'center',
+    textTransform: 'uppercase'
   },
   tabBtnActive: {
-    backgroundColor: '#ff6b4a',
-    color: '#ffffff',
-    boxShadow: '0 4px 12px rgba(255,107,74,0.3)'
+    backgroundColor: '#FF5000',
+    border: '2px solid #FF5000',
+    color: '#FFFFFF',
   },
   content: {
     flex: 1,
@@ -373,26 +374,23 @@ const styles = {
   },
   loadingState: {
     textAlign: 'center',
-    padding: '3rem 1rem'
+    padding: '4rem 1rem'
   },
   emptyState: {
     textAlign: 'center',
-    padding: '3rem 1rem',
-    backgroundColor: '#1e293b',
-    borderRadius: '16px',
-    border: '1px solid rgba(255,255,255,0.05)'
+    padding: '4rem 1rem',
+    backgroundColor: '#111111',
+    border: '2px dashed #555555'
   },
   taskList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.85rem'
+    gap: '1rem'
   },
   taskCard: {
-    backgroundColor: '#1e293b',
-    borderRadius: '16px',
-    padding: '1.1rem',
-    border: '1px solid rgba(255,255,255,0.08)',
-    boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+    backgroundColor: '#111111',
+    padding: '1.5rem',
+    border: '3px solid #333333', // Chunky border
     cursor: 'pointer',
     position: 'relative'
   },
@@ -400,92 +398,100 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '0.6rem'
+    marginBottom: '1rem',
+    borderBottom: '2px solid #333333',
+    paddingBottom: '0.5rem'
   },
   awbBadge: {
-    fontSize: '0.8rem',
-    fontWeight: '700',
-    color: '#38bdf8',
-    letterSpacing: '0.5px'
+    fontSize: '1.2rem',
+    fontWeight: '900',
+    color: '#FFFFFF',
+    letterSpacing: '1px'
   },
   statusBadge: {
-    fontSize: '0.68rem',
-    fontWeight: '700',
-    padding: '0.2rem 0.55rem',
-    borderRadius: '20px'
+    fontSize: '0.85rem',
+    fontWeight: '900',
+    padding: '0.3rem 0.6rem',
+    textTransform: 'uppercase',
+    border: '2px solid'
   },
   receiverName: {
-    margin: '0 0 0.4rem 0',
-    fontSize: '1rem',
-    fontWeight: '700',
-    color: '#f8fafc'
+    margin: '0 0 0.5rem 0',
+    fontSize: '1.2rem',
+    fontWeight: '800',
+    color: '#FFFFFF',
+    textTransform: 'uppercase'
   },
   locationRow: {
     display: 'flex',
     alignItems: 'flex-start',
     gap: '0.5rem',
-    fontSize: '0.82rem',
-    color: '#cbd5e1',
-    lineHeight: 1.4,
-    marginBottom: '0.75rem'
+    fontSize: '1rem',
+    color: '#CCCCCC',
+    lineHeight: 1.5,
+    marginBottom: '1rem',
+    fontWeight: '700'
   },
   cardFooter: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: '0.6rem',
-    borderTop: '1px solid rgba(255,255,255,0.06)'
+    paddingTop: '1rem',
+    borderTop: '2px solid #333333'
   },
   tapPrompt: {
-    fontSize: '0.72rem',
-    color: '#94a3b8'
+    fontSize: '0.9rem',
+    color: '#AAAAAA',
+    fontWeight: '800',
+    textTransform: 'uppercase'
   },
   bottomNav: {
     position: 'fixed',
     bottom: 0,
     width: '100%',
     maxWidth: '440px',
-    backgroundColor: '#1e293b',
+    backgroundColor: '#000000',
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
-    padding: '0.75rem 0',
-    borderTop: '1px solid rgba(255,255,255,0.08)',
+    padding: '1rem 0',
+    borderTop: '4px solid #333333',
     zIndex: 30
   },
   navItem: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '4px',
-    color: '#64748b',
-    fontSize: '0.7rem',
-    fontWeight: '600',
-    cursor: 'pointer'
+    gap: '8px',
+    color: '#555555',
+    fontSize: '0.8rem',
+    fontWeight: '800',
+    cursor: 'pointer',
+    textTransform: 'uppercase'
   },
   navItemActive: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '4px',
-    color: '#ff6b4a',
-    fontSize: '0.7rem',
-    fontWeight: '700',
-    cursor: 'pointer'
+    gap: '8px',
+    color: '#FFFFFF',
+    fontSize: '0.8rem',
+    fontWeight: '900',
+    cursor: 'pointer',
+    textTransform: 'uppercase'
   },
   scanFab: {
-    width: '52px',
-    height: '52px',
-    borderRadius: '50%',
-    background: 'linear-gradient(135deg, #ff6b4a 0%, #e0481d 100%)',
-    color: '#ffffff',
+    width: '64px',
+    height: '64px',
+    backgroundColor: '#FF5000', // Flat safety orange
+    color: '#000000', // Max contrast
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 8px 20px rgba(255, 107, 74, 0.5)',
-    marginTop: '-20px',
+    marginTop: '-32px',
     cursor: 'pointer',
-    border: '3px solid #0f172a'
+    border: '4px solid #000000',
+    borderRadius: '4px' // Boxy industrial
   }
 };
 

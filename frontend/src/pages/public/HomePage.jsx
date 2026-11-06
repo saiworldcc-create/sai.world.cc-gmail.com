@@ -307,7 +307,6 @@ function BranchMapSwitcher() {
 
 const useTypewriter = (text, speed = 50, delayMs = 0) => {
   const [displayedText, setDisplayedText] = useState('');
-  const [cursorVisible, setCursorVisible] = useState(true);
 
   useEffect(() => {
     let i = 0;
@@ -331,12 +330,7 @@ const useTypewriter = (text, speed = 50, delayMs = 0) => {
     };
   }, [text, speed, delayMs]);
 
-  useEffect(() => {
-    const blinkTimer = setInterval(() => setCursorVisible(v => !v), 530);
-    return () => clearInterval(blinkTimer);
-  }, []);
-
-  return { text: displayedText, cursorVisible };
+  return { text: displayedText };
 };
 
 /* ══════════════════════════════════════════════════════════════════════════════
@@ -355,7 +349,7 @@ export default function HomePage() {
   const headingBase = h.heading || 'From INDIA';
   const headingHi = h.headingHighlight || 'to the WORLD';
   const fullText = `${headingBase} ${headingHi}`.trim();
-  const { text: typedText, cursorVisible } = useTypewriter(fullText, 45, 0); // starts immediately
+  const { text: typedText } = useTypewriter(fullText, 45, 0); // starts immediately
   const worldIndex = headingHi ? typedText.indexOf(headingHi) : -1;
   let prefix = typedText;
   let worldPart = '';
@@ -366,7 +360,7 @@ export default function HomePage() {
 
   // Typing animation for description
   const fullDesc = h.description || 'Worldwide Express Courier, Air Cargo & Doorstep Delivery to 195+ Countries.';
-  const { text: typedDesc, cursorVisible: descCursor } = useTypewriter(fullDesc, 35, 1200); // starts after heading finishes (~1.2s delay)
+  const { text: typedDesc } = useTypewriter(fullDesc, 35, 1200); // starts after heading finishes (~1.2s delay)
   
   const targetHighlight = (h.features && h.features.length > 0) ? h.features[0] : '195+ Countries';
   const highlightIndex = typedDesc.indexOf(targetHighlight);
@@ -449,29 +443,13 @@ export default function HomePage() {
             <h1 className="hero-heading">
               <span className="hero-heading-white">{prefix}</span>
               {worldPart && <span style={{ color: '#38BDF8' }}>{worldPart}</span>}
-              <span style={{ 
-                borderRight: '0.15em solid #38BDF8', 
-                marginLeft: '2px',
-                display: 'inline-block',
-                height: '0.85em',
-                verticalAlign: 'bottom',
-                opacity: cursorVisible ? 1 : 0,
-                transition: 'opacity 0.1s'
-              }}></span>
+
             </h1>
             <p className="hero-description">
               {descPrefix}
               {descHighlight && <span className="hero-highlight-countries">{descHighlight}</span>}
               {descSuffix}
-              <span style={{ 
-                borderRight: '0.15em solid rgba(255,255,255,0.7)', 
-                marginLeft: '2px',
-                display: 'inline-block',
-                height: '0.85em',
-                verticalAlign: 'bottom',
-                opacity: descCursor ? 1 : 0,
-                transition: 'opacity 0.1s'
-              }}></span>
+
             </p>
           </div>
 

@@ -42,9 +42,22 @@ const UserSchema = new mongoose.Schema(
     ],
     role: {
       type: String,
-      enum: ['customer', 'delivery_partner'],
+      enum: ['customer', 'delivery_partner', 'vendor'],
       default: 'customer'
-    }
+    },
+    shopId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'EcomShop'
+    },
+    // Phase 14: API Keys for Headless B2B Integrations
+    apiKeys: [
+      {
+        key: String,
+        name: String,
+        createdAt: { type: Date, default: Date.now },
+        lastUsed: Date
+      }
+    ]
   },
   { timestamps: true }
 );

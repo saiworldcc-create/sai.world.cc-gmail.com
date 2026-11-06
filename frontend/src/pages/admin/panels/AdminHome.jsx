@@ -2,19 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import api, { getAllContentPages } from '../../../services/api';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useAdminAuth } from '../../../context/AdminAuthContext';
 
-// Mock chart data (since we don't have historical data in the DB yet)
-const CHART_DATA = [
-  { name: 'Mon', bookings: 4 },
-  { name: 'Tue', bookings: 3 },
-  { name: 'Wed', bookings: 6 },
-  { name: 'Thu', bookings: 2 },
-  { name: 'Fri', bookings: 8 },
-  { name: 'Sat', bookings: 5 },
-  { name: 'Sun', bookings: 7 },
-];
+const COLORS = ['#3C9290', '#E97856', '#27AE60', '#D5A85F', '#9B59B6', '#E74C3C'];
 
 const QUICK_PAGES = [
   { key: 'branding', label: 'Branding & Logo', icon: 'fa-palette', link: '/admin/branding' },
@@ -57,6 +48,23 @@ export default function AdminHome() {
       return res.success ? res.stats : { totalBookings: 0, activeShipments: 0, totalShipments: 0, unreadMessages: 0, recentBookings: [] };
     },
     refetchInterval: 10000, // Poll every 10 seconds for real-time feel
+  });
+
+  // Phase 9: Enterprise Analytics Queries
+  const { data: revenueData = [] } = useQuery({
+    queryKey: ['adminRevenueAnalytics'],
+    queryFn: async () => {
+      const res = await api.get('/analytics/revenue');
+      return res.data || [];
+    }
+  });
+
+  const { data: shipmentData = [] } = useQuery({
+    queryKey: ['adminShipmentAnalytics'],
+    queryFn: async () => {
+      const res = await api.get('/analytics/shipments');
+      return res.data || [];
+    }
   });
 
   return (
@@ -114,23 +122,59 @@ export default function AdminHome() {
         </div>
       </div>
 
-      {/* Analytics Chart */}
+      {/* Analytics Charts (Phase 9) */}
       <div className="admin-section-title" style={{ marginTop: '2rem' }}>
-        <i className="fa-solid fa-chart-line"></i> Analytics Overview
+        <i className="fa-solid fa-chart-line"></i> Enterprise Analytics
       </div>
-      <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-light)', marginBottom: '2rem', height: '300px' }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={CHART_DATA}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" vertical={false} />
-            <XAxis dataKey="name" stroke="var(--text-slate-muted)" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="var(--text-slate-muted)" fontSize={12} tickLine={false} axisLine={false} />
-            <Tooltip 
-              contentStyle={{ background: 'var(--bg-card-tint)', border: '1px solid var(--border-light)', borderRadius: '8px', color: 'var(--text-slate-dark)' }} 
-              itemStyle={{ color: 'var(--accent-teal)' }}
-            />
-            <Line type="monotone" dataKey="bookings" stroke="var(--accent-teal)" strokeWidth={3} dot={{ r: 4, fill: 'var(--accent-teal)', strokeWidth: 2, stroke: 'var(--bg-card)' }} activeDot={{ r: 6 }} />
-          </LineChart>
-        </ResponsiveContainer>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+        
+        {/* Revenue Area Chart */}
+        <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-light)', height: '350px' }}>
+          <h4 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#1E3446' }}>30-Day Escrow Revenue Trend</h4>
+          <ResponsiveContainer width="100%" height="80%">
+            <AreaChart data={revenueData}>
+              <defs>
+                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3C9290" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#3C9290" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" vertical={false} />
+              <XAxis dataKey="date" stroke="var(--text-slate-muted)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(tick) => tick.slice(5)} />
+              <YAxis stroke="var(--text-slate-muted)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(tick) => `$${tick}`} />
+              <Tooltip 
+                contentStyle={{ background: 'var(--bg-card-tint)', border: '1px solid var(--border-light)', borderRadius: '8px', color: '#1E3446' }} 
+                itemStyle={{ color: 'var(--accent-teal)' }}
+              />
+              <Area type="monotone" dataKey="revenue" stroke="#3C9290" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Shipment Volume Pie Chart */}
+        <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-light)', height: '350px', display: 'flex', flexDirection: 'column' }}>
+          <h4 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#1E3446' }}>Global Shipment Status</h4>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={shipmentData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={90}
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {shipmentData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip contentStyle={{ borderRadius: '8px' }} />
+              <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
       </div>
 
       {/* Hotspots / Recent Bookings */}

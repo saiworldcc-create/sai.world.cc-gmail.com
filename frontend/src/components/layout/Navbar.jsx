@@ -156,7 +156,7 @@ export default function Navbar() {
             </div>
             <div className="utility-right">
               <a href="tel:+919059949365" className="utility-item"><i className="fa-solid fa-phone"></i> +91 90599 49365</a>
-              <Link to="/contact" className="utility-item"><i className="fa-solid fa-circle-info"></i> Help Center</Link>
+              <Link to="/help-center" className="utility-item"><i className="fa-solid fa-circle-question"></i> Help Center</Link>
               <div className="utility-divider"></div>
               {user ? (
                 <Link to="/dashboard" className="utility-item login-btn"><i className="fa-regular fa-user"></i> My Dashboard</Link>

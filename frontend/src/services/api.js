@@ -1,8 +1,19 @@
 import axios from 'axios';
 import { getShipmentByAwb, createShipment as dbCreateShipment } from './db';
 
+const resolveBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined' && window.Capacitor?.isNativePlatform && window.Capacitor.isNativePlatform()) {
+    // Android emulator loopback to host PC port 5000
+    if (!envUrl || envUrl.includes('localhost') || envUrl.startsWith('/')) {
+      return 'http://10.0.2.2:5000/api/v1';
+    }
+  }
+  return envUrl || '/api/v1';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
+  baseURL: resolveBaseUrl(),
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -30,11 +41,20 @@ api.interceptors.response.use(
       if (window.location.pathname.startsWith('/admin')) {
         localStorage.removeItem('sai_admin_token');
         localStorage.removeItem('sai_admin_user');
-        window.location.href = '/admin/login';
+        if (window.location.pathname !== '/admin/login') {
+          window.location.href = '/admin/login';
+        }
       } else {
         localStorage.removeItem('userToken');
         localStorage.removeItem('userInfo');
-        window.location.href = '/login';
+        const path = window.location.pathname;
+        if (path.startsWith('/vendor') && path !== '/vendor/login') {
+          window.location.href = '/vendor/login';
+        } else if (path.startsWith('/delivery') && path !== '/delivery/login') {
+          window.location.href = '/delivery/login';
+        } else if (path.startsWith('/dashboard') && path !== '/login') {
+          window.location.href = '/login';
+        }
       }
     }
     const message =
@@ -147,6 +167,23 @@ export const markOrdersSeen = () => api.patch('/ecommerce/admin/orders/mark-seen
 
 export const getUserEcomOrders = () => api.get('/ecommerce/my-orders');
 export const cancelUserEcomOrder = (id) => api.patch(`/ecommerce/my-orders/${id}/cancel`);
+
+// ─── Vendor Admin (Super Admin only) ──────────────────────────────────────
+export const getAllVendors = () => api.get('/vendor/all');
+export const updateVendorStatus = (shopId, status) => api.put(`/vendor/${shopId}/status`, { kycStatus: status });
+export const adminCreateVendor = (vendorData) => api.post('/vendor/admin-create', vendorData);
+export const deleteVendor = (shopId) => api.delete(`/vendor/${shopId}`);
+export const createVendorLogin = (shopId, data) => api.post(`/vendor/${shopId}/create-login`, data);
+
+// ─── Request For Quotation (RFQ) ──────────────────────────────────────────
+export const createRFQ = (data) => api.post('/rfq', data);
+export const getBuyerRFQs = () => api.get('/rfq/my-rfqs');
+export const acceptVendorCounter = (id) => api.patch(`/rfq/${id}/buyer-accept`);
+
+export const getVendorRFQs = () => api.get('/rfq/vendor-rfqs');
+export const vendorCounterOffer = (id, data) => api.patch(`/rfq/${id}/vendor-counter`, data);
+export const vendorAcceptRFQ = (id) => api.patch(`/rfq/${id}/vendor-accept`);
+
 export default api;
 
 

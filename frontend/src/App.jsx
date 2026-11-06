@@ -24,6 +24,7 @@ import AdvancedTrackingPage from './pages/tracking/AdvancedTrackingPage';
 import TrackingFaqsPage from './pages/tracking/TrackingFaqsPage';
 import BookPickupPage from './pages/tools/BookPickupPage';
 import ContactPage from './pages/public/ContactPage';
+import HelpCenterPage from './pages/public/HelpCenterPage';
 import PortalPage from './pages/auth/PortalPage';
 import PayOnlinePage from './pages/payment/PayOnlinePage';
 import NotFoundPage from './pages/auth/NotFoundPage';
@@ -31,6 +32,7 @@ import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserLoginPage from './pages/user/UserLoginPage';
 import UserDashboard from './pages/user/UserDashboard';
+import UserRFQ from './pages/user/UserRFQ';
 import AirFreightPage from './pages/services/AirFreightPage';
 import SeaFreightPage from './pages/services/SeaFreightPage';
 import EcommerceLogisticsPage from './pages/services/EcommerceLogisticsPage';
@@ -41,6 +43,17 @@ import DeliveryLogin from './pages/delivery/DeliveryLogin';
 import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
 import DeliveryTaskDetail from './pages/delivery/DeliveryTaskDetail';
 import DeliveryScanner from './pages/delivery/DeliveryScanner';
+
+// Vendor App Pages
+import VendorLogin from './pages/vendor/VendorLogin';
+import VendorLayout from './pages/vendor/VendorLayout';
+import VendorDashboard from './pages/vendor/VendorDashboard';
+import VendorProducts from './pages/vendor/VendorProducts';
+import VendorOrders from './pages/vendor/VendorOrders';
+import VendorFinancials from './pages/vendor/VendorFinancials';
+import VendorSupport from './pages/vendor/VendorSupport';
+import VendorRFQ from './pages/vendor/VendorRFQ';
+import VendorAPI from './pages/vendor/VendorAPI'; // Phase 14
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -64,15 +77,23 @@ function ProtectedUserRoute({ children }) {
   return isAuth ? children : <Navigate to="/login" replace />;
 }
 
+function ProtectedVendorRoute({ children }) {
+  const { isAuth, user, loading } = useUser();
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: '2rem', color: 'var(--accent-teal)' }}></i></div>;
+  return isAuth && user?.role === 'vendor' ? children : <Navigate to="/vendor/login" replace />;
+}
+
 function AppLayout() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isDeliveryRoute = location.pathname.startsWith('/delivery');
+  const isVendorRoute = location.pathname.startsWith('/vendor') && location.pathname !== '/vendor/login';
+  const hideNavbarFooter = isAdminRoute || isDeliveryRoute || isVendorRoute || location.pathname === '/vendor/login';
 
   return (
     <>
       <ScrollToTop />
-      {!isAdminRoute && !isDeliveryRoute && <Navbar />}
+      {!hideNavbarFooter && <Navbar />}
       <PageTransition>
         <Routes>
           {/* Public Routes */}
@@ -93,12 +114,14 @@ function AppLayout() {
           <Route path="/tracking-faqs" element={<TrackingFaqsPage />} />
           <Route path="/book-pickup" element={<BookPickupPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/help-center" element={<HelpCenterPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/pay-online" element={<PayOnlinePage />} />
           
           {/* User Routes */}
           <Route path="/login" element={<UserLoginPage />} />
           <Route path="/dashboard" element={<ProtectedUserRoute><UserDashboard /></ProtectedUserRoute>} />
+          <Route path="/dashboard/rfq" element={<ProtectedUserRoute><UserRFQ /></ProtectedUserRoute>} />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
@@ -111,13 +134,25 @@ function AppLayout() {
           <Route path="/delivery/task/*" element={<DeliveryTaskDetail />} />
           <Route path="/delivery/scan" element={<DeliveryScanner />} />
 
+          {/* Vendor Portal Routes */}
+          <Route path="/vendor/login" element={<VendorLogin />} />
+          <Route path="/vendor" element={<ProtectedVendorRoute><VendorLayout /></ProtectedVendorRoute>}>
+            <Route index element={<VendorDashboard />} />
+            <Route path="products" element={<VendorProducts />} />
+            <Route path="orders" element={<VendorOrders />} />
+            <Route path="financials" element={<VendorFinancials />} />
+            <Route path="support" element={<VendorSupport />} />
+            <Route path="rfq" element={<VendorRFQ />} />
+            <Route path="api" element={<VendorAPI />} />
+          </Route>
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </PageTransition>
-      {!isAdminRoute && !isDeliveryRoute && <ChatbotWidget />}
-      {!isAdminRoute && !isDeliveryRoute && <CookieBanner />}
-      {!isAdminRoute && !isDeliveryRoute && location.pathname !== '/ecommerce-logistics' && <Footer />}
-      {!isAdminRoute && !isDeliveryRoute && <AuthModal />}
+      {!hideNavbarFooter && <ChatbotWidget />}
+      {!hideNavbarFooter && <CookieBanner />}
+      {!hideNavbarFooter && location.pathname !== '/ecommerce-logistics' && <Footer />}
+      {!hideNavbarFooter && <AuthModal />}
     </>
   );
 }
