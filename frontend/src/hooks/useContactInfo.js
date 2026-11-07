@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getPageContent } from '../services/api';
 
-const CACHE_KEY = 'sai_contact_content';
+const CACHE_KEY = 'sai_contact_content_v3';
 const DEFAULT_CONTACT_DATA = {
   branches: {},
   global: { email: '', phones: [], hours: '' },

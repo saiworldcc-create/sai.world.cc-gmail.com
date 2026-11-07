@@ -266,14 +266,154 @@ function TestimonialsCarousel({ items }) {
   );
 }
 
+const HOME_MAP_BRANCHES = {
+  'kadapa-main': {
+    title: "Kadapa Head Office (Main Hub)",
+    district: "Kadapa",
+    addr: "41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001",
+    url: "https://maps.google.com/maps?q=14.4726874,78.8323784+(SAI+INTERNATIONAL+COURIER)&t=&z=17&ie=UTF8&iwloc=B&output=embed",
+    externalUrl: "https://www.google.com/maps/place/SAI+INTERNATIONAL+COURIER'S+SERVICE'S/@14.4726874,78.8323784,17z",
+    phone: "+91 90599 49365",
+  },
+  'kadapa-branch-2': {
+    title: "Kadapa Branch 2 (Nagarajupeta)",
+    district: "Kadapa",
+    addr: "Beside MedPlus, Near Visweswaraiah Circle, Nagarajupeta, Kadapa - 516001, A.P.",
+    url: "https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001",
+    phone: "+91 90000 22821",
+  },
+  'hyderabad': {
+    title: "Hyderabad Air Cargo Gateway (RGIA)",
+    district: "Hyderabad",
+    addr: "Mehdipatnam Express Counter / Direct RGIA Shamshabad Air Cargo link, Hyderabad, TS 500028",
+    url: "https://maps.google.com/maps?q=Rajiv+Gandhi+International+Airport,+Shamshabad,+Hyderabad&t=&z=14&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Rajiv+Gandhi+International+Airport,+Shamshabad,+Hyderabad",
+    phone: "+91 90000 22821",
+  },
+  'vijayawada': {
+    title: "Vijayawada Central Logistics Hub",
+    district: "Vijayawada",
+    addr: "MG Road, Near Benz Circle & RTC Complex, Governorpet, Vijayawada, AP 520001",
+    url: "https://maps.google.com/maps?q=Benz+Circle,+Vijayawada,+Andhra+Pradesh+520001&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Benz+Circle,+Vijayawada,+Andhra+Pradesh+520001",
+    phone: "+91 90000 22821",
+  },
+  'visakhapatnam': {
+    title: "Visakhapatnam Port & Air Cargo Center",
+    district: "Visakhapatnam",
+    addr: "Dwaraka Nagar Main Road, Near RTC Complex, Visakhapatnam, AP 530016",
+    url: "https://maps.google.com/maps?q=Dwaraka+Nagar,+Visakhapatnam,+Andhra+Pradesh+530016&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Dwaraka+Nagar,+Visakhapatnam,+Andhra+Pradesh+530016",
+    phone: "+91 90000 22821",
+  },
+  'tirupati': {
+    title: "Tirupati Regional Branch",
+    district: "Tirupati",
+    addr: "Bhavani Nagar Main Road, Near RTC Central Bus Stand, Tirupati, AP 517501",
+    url: "https://maps.google.com/maps?q=RTC+Central+Bus+Stand,+Tirupati,+Andhra+Pradesh+517501&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=RTC+Central+Bus+Stand,+Tirupati,+Andhra+Pradesh+517501",
+    phone: "+91 90000 22821",
+  },
+  'nellore': {
+    title: "Nellore Regional Branch",
+    district: "Nellore",
+    addr: "Grand Trunk Road, Opp. RTC Complex, Subedarpet, Nellore, AP 524001",
+    url: "https://maps.google.com/maps?q=RTC+Complex,+Subedarpet,+Nellore,+Andhra+Pradesh+524001&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=RTC+Complex,+Subedarpet,+Nellore,+Andhra+Pradesh+524001",
+    phone: "+91 90000 22821",
+  },
+  'chittoor': {
+    title: "Chittoor Regional Hub",
+    district: "Chittoor",
+    addr: "High Road, Near Old Bus Stand & Collectorate, Chittoor, AP 517001",
+    url: "https://maps.google.com/maps?q=High+Road,+Chittoor,+Andhra+Pradesh+517001&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=High+Road,+Chittoor,+Andhra+Pradesh+517001",
+    phone: "+91 90000 22821",
+  },
+  'badvel': {
+    title: "Badvel Express Counter",
+    district: "Kadapa",
+    addr: "Main Bazar Road, Near RTC Bus Stand, Badvel, YSR Kadapa Dist, AP 516227",
+    url: "https://maps.google.com/maps?q=RTC+Bus+Stand,+Badvel,+Andhra+Pradesh+516227&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=RTC+Bus+Stand,+Badvel,+Andhra+Pradesh+516227",
+    phone: "+91 90599 49365",
+  },
+  'annamaya': {
+    title: "Annamayya Hub (Rayachoty)",
+    district: "Annamayya",
+    addr: "Main Bazar Road, Near Old Bus Stand, Rayachoty, Annamayya Dist, AP 516269",
+    url: "https://maps.google.com/maps?q=Rayachoty,+Annamayya+District,+Andhra+Pradesh+516269&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Rayachoty,+Annamayya+District,+Andhra+Pradesh+516269",
+    phone: "+91 90599 49365",
+  },
+  'rajampet': {
+    title: "Rajampet Service Point (Annamayya Dist)",
+    district: "Annamayya",
+    addr: "RTC Bus Stand Road, Near Railway Station Road, Rajampet, Annamayya Dist, AP 516115",
+    url: "https://maps.google.com/maps?q=Rajampet,+Annamayya+District,+Andhra+Pradesh+516115&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Rajampet,+Annamayya+District,+Andhra+Pradesh+516115",
+    phone: "+91 90000 22821",
+  },
+  'rajahmundry': {
+    title: "Rajahmundry Godavari Hub",
+    district: "Rajahmundry",
+    addr: "Kotipalli Bus Stand Road, Near Main Market, Rajahmundry, AP 533101",
+    url: "https://maps.google.com/maps?q=Kotipalli+Bus+Stand,+Rajahmundry,+Andhra+Pradesh+533101&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Kotipalli+Bus+Stand,+Rajahmundry,+Andhra+Pradesh+533101",
+    phone: "+91 90000 22821",
+  },
+  'guntur': {
+    title: "Guntur Commercial Hub",
+    district: "Guntur",
+    addr: "Arundelpet 4th Lane, Near Hindu College, Guntur, AP 522002",
+    url: "https://maps.google.com/maps?q=Arundelpet,+Guntur,+Andhra+Pradesh+522002&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Arundelpet,+Guntur,+Andhra+Pradesh+522002",
+    phone: "+91 90000 22821",
+  },
+  'kurnool': {
+    title: "Kurnool Rayalaseema Gateway",
+    district: "Kurnool",
+    addr: "Bellary Road, Near Old Bus Stand & Chowrasta, Kurnool, AP 518001",
+    url: "https://maps.google.com/maps?q=Bellary+Road,+Kurnool,+Andhra+Pradesh+518001&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Bellary+Road,+Kurnool,+Andhra+Pradesh+518001",
+    phone: "+91 90000 22821",
+  },
+  'proddutur': {
+    title: "Proddatur Drop-off Center",
+    district: "Kadapa",
+    addr: "Gandhi Road, Near Sivalayam Temple, Proddatur, YSR Kadapa Dist, AP 516360",
+    url: "https://maps.google.com/maps?q=Gandhi+Road,+Proddatur,+Andhra+Pradesh+516360&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Gandhi+Road,+Proddatur,+Andhra+Pradesh+516360",
+    phone: "+91 90000 22821",
+  }
+};
+
 function BranchMapSwitcher() {
-  const { data: contactData, loading } = useContactInfo();
-  const branches = contactData?.branches || {};
+  const { data: contactData } = useContactInfo();
+  const branches = { ...HOME_MAP_BRANCHES, ...(contactData?.branches || {}) };
   const [activeBranch, setActiveBranch] = useState('kadapa-main');
   
-  if (loading || Object.keys(branches).length === 0) return <div className="skeleton-box" style={{ height: '400px' }}></div>;
-  
-  const data = branches[activeBranch] || Object.values(branches)[0];
+  const data = branches[activeBranch] || Object.values(branches)[0] || HOME_MAP_BRANCHES['kadapa-main'];
+
+  const getPillName = (key, b) => {
+    const raw = b.title || key;
+    return raw
+      .replace("SAI INTERNATIONAL COURIER'S SERVICE'S", 'Kadapa Main')
+      .replace('(Kadapa Head Office)', '')
+      .split('(')[0]
+      .replace('Drop-off Center', '')
+      .replace('Regional Branch', '')
+      .replace('Regional Center', '')
+      .replace('Service Point', '')
+      .replace('Express Counter', '')
+      .replace('Express Center', '')
+      .replace('Logistics Hub', '')
+      .replace('Port & Air Cargo Center', 'Port & Cargo')
+      .replace('Commercial Hub', '')
+      .replace('Gateway', '')
+      .trim();
+  };
 
   return (
     <div className="google-maps-card-wrapper">
@@ -281,12 +421,12 @@ function BranchMapSwitcher() {
         <div className="maps-branch-selector-pills">
           {Object.entries(branches).map(([key, b]) => (
             <button key={key} className={`map-branch-pill-btn${activeBranch === key ? ' active' : ''}`} onClick={() => setActiveBranch(key)}>
-              <i className="fa-solid fa-location-dot"></i> {b.title.split('(')[0].trim().replace("SAI INTERNATIONAL COURIER'S SERVICE'S", 'Kadapa Main')}
+              <i className="fa-solid fa-location-dot"></i> {getPillName(key, b)}
             </button>
           ))}
         </div>
-        <div>
-          <a href={data.externalUrl} target="_blank" rel="noopener noreferrer" className="btn btn-soft-cream btn-sm">
+        <div style={{ marginTop: '0.5rem' }}>
+          <a href={data.externalUrl || `https://maps.google.com/?q=${encodeURIComponent(data.addr)}`} target="_blank" rel="noopener noreferrer" className="btn btn-soft-cream btn-sm">
             <i className="fa-solid fa-diamond-turn-right" style={{ color: 'var(--accent-coral)' }}></i> Open in Google Maps
           </a>
         </div>
@@ -299,7 +439,14 @@ function BranchMapSwitcher() {
           <strong style={{ color: 'var(--text-slate-dark)', fontSize: '0.95rem' }}>{data.title}</strong>
           <div style={{ fontSize: '0.85rem', color: 'var(--text-slate-muted)' }}>{data.addr}</div>
         </div>
-        <a href={`tel:${data.phone}`} className="btn btn-soft-cream btn-sm">Call for Pickup</a>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <a href={`tel:${data.phone?.replace(/[^0-9+]/g, '') || '+919059949365'}`} className="btn btn-coral btn-sm">
+            <i className="fa-solid fa-phone"></i> Call Hub
+          </a>
+          <a href="/book-pickup" className="btn btn-teal btn-sm">
+            <i className="fa-solid fa-truck-fast"></i> Book Pickup
+          </a>
+        </div>
       </div>
     </div>
   );
