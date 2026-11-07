@@ -65,7 +65,7 @@ export default function CookieBanner() {
         </div>
         
         <div className="cookie-banner-actions" style={{ display: 'flex', gap: '0.75rem', flexShrink: 0 }}>
-          <Link to="/about" style={{
+          <Link to="/privacy" style={{
             background: 'transparent', border: '1px solid #4A6B82', color: '#A0B0C0', padding: '0.6rem 1.25rem',
             borderRadius: '4px', fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center'
           }}>

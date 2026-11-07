@@ -162,8 +162,8 @@ export default function Footer() {
             <span style={{ color: 'var(--accent-teal)', fontWeight: '600' }}>
               <i className="fa-solid fa-lock" style={{ marginRight: '4px' }}></i> HTTPS SSL 256-Bit Protected
             </span>
-            <a href="#" style={{ color: '#9FB8CC' }}>Terms & Conditions</a>
-            <a href="#" style={{ color: '#9FB8CC' }}>Privacy Policy</a>
+            <Link to="/terms" style={{ color: '#9FB8CC' }} onMouseOver={(e) => e.target.style.color = '#38BDF8'} onMouseOut={(e) => e.target.style.color = '#9FB8CC'}>Terms &amp; Conditions</Link>
+            <Link to="/privacy" style={{ color: '#9FB8CC' }} onMouseOver={(e) => e.target.style.color = '#38BDF8'} onMouseOut={(e) => e.target.style.color = '#9FB8CC'}>Privacy Policy</Link>
             <span style={{ color: '#4A6B82' }}>|</span>
             <Link to="/admin/login" style={{ color: '#9FB8CC' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-coral)'} onMouseOut={(e) => e.target.style.color = '#9FB8CC'}>Admin Portal</Link>
             <Link to="/delivery/login" style={{ color: '#9FB8CC' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-coral)'} onMouseOut={(e) => e.target.style.color = '#9FB8CC'}>Delivery Portal</Link>

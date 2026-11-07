@@ -37,6 +37,8 @@ import AirFreightPage from './pages/services/AirFreightPage';
 import SeaFreightPage from './pages/services/SeaFreightPage';
 import EcommerceLogisticsPage from './pages/services/EcommerceLogisticsPage';
 import ExpressCourierPage from './pages/services/ExpressCourierPage';
+import TermsPage from './pages/public/TermsPage';
+import PrivacyPolicyPage from './pages/public/PrivacyPolicyPage';
 
 // Delivery Boy App Pages
 import DeliveryLogin from './pages/delivery/DeliveryLogin';
@@ -117,6 +119,10 @@ function AppLayout() {
           <Route path="/help-center" element={<HelpCenterPage />} />
           <Route path="/portal" element={<PortalPage />} />
           <Route path="/pay-online" element={<PayOnlinePage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/terms-and-conditions" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           
           {/* User Routes */}
           <Route path="/login" element={<UserLoginPage />} />
