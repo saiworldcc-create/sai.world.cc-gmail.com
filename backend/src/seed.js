@@ -88,7 +88,7 @@ const DEFAULT_PAGE_CONTENT = [
     page: 'home',
     sections: {
       hero: {
-        badge: 'INTERNATIONAL SHIPPING FROM ANDHRA PRADESH',
+        badge: '',
         heading: 'From Andhra Pradesh',
         headingHighlight: 'to the World.',
         description: 'Worldwide Express Courier, Air Cargo & Doorstep Delivery to 195+ Countries.',

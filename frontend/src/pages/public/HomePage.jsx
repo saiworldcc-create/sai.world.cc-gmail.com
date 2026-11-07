@@ -436,10 +436,6 @@ export default function HomePage() {
         </div>
         <div className="hero-main-container hero-sky-placement">
           <div className="hero-sky-copy-zone">
-            <div className="hero-kicker-badge">
-              <span className="hero-kicker-dot"></span>
-              <span>{h.badge || 'GLOBAL LOGISTICS & CARGO'}</span>
-            </div>
             <h1 className="hero-heading">
               <span className="hero-heading-white">{prefix}</span>
               {worldPart && <span style={{ color: '#38BDF8' }}>{worldPart}</span>}
