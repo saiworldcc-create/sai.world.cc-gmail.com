@@ -1,44 +1,151 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
+const TABS = [
+  { id: 'section-1', title: 'Terms of Carriage', isRoute: false },
+  { id: 'privacy-link', title: 'Privacy Policy', isRoute: true, path: '/privacy' },
+  { id: 'section-2', title: 'Shipper Warranties', isRoute: false },
+  { id: 'section-3', title: 'Dangerous Goods', isRoute: false },
+  { id: 'section-4', title: 'Limited Liability', isRoute: false },
+  { id: 'section-5', title: 'Customs & Duties', isRoute: false },
+  { id: 'section-6', title: 'NRI Food & Pickles', isRoute: false },
+  { id: 'section-7', title: 'Security Inspection', isRoute: false },
+  { id: 'section-8', title: 'Force Majeure', isRoute: false },
+  { id: 'section-9', title: 'Claims & Notice', isRoute: false },
+  { id: 'section-10', title: 'Jurisdiction', isRoute: false },
+  { id: 'branches-link', title: 'Branch Network', isRoute: true, path: '/branches' },
+];
+
 export default function TermsPage() {
+  const [activeTab, setActiveTab] = useState('section-1');
+  const navRef = useRef(null);
+  const tabRefs = useRef({});
+
+  // Real-time Scrollspy & Auto-scroll of top tab bar
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    const handleScroll = () => {
+      const winScroll = window.scrollY || document.documentElement.scrollTop;
+      const scrollPos = winScroll + 170;
+
+      const clauseSections = TABS.filter(t => !t.isRoute);
+      for (let i = clauseSections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(clauseSections[i].id);
+        if (el && el.offsetTop <= scrollPos) {
+          const currentId = clauseSections[i].id;
+          setActiveTab(currentId);
+
+          // Auto-scroll the top navigation bar to keep the active tab visible
+          const tabEl = tabRefs.current[currentId];
+          const navEl = navRef.current;
+          if (tabEl && navEl) {
+            const tabLeft = tabEl.offsetLeft;
+            const tabWidth = tabEl.offsetWidth;
+            const navScroll = navEl.scrollLeft;
+            const navWidth = navEl.offsetWidth;
+            if (tabLeft < navScroll || (tabLeft + tabWidth) > (navScroll + navWidth)) {
+              navEl.scrollTo({
+                left: tabLeft - (navWidth / 2) + (tabWidth / 2),
+                behavior: 'smooth'
+              });
+            }
+          }
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const yOffset = -135;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      setActiveTab(id);
+    }
+  };
+
+  const scrollNav = (direction) => {
+    if (navRef.current) {
+      const amount = direction === 'left' ? -280 : 280;
+      navRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+  };
+
+  const handleWheel = (e) => {
+    if (navRef.current && e.deltaY !== 0) {
+      e.preventDefault();
+      navRef.current.scrollLeft += e.deltaY;
+    }
+  };
 
   return (
     <main style={{ paddingTop: '72px' }}>
-      {/* Oracle-Style Legal Sub-Navigation Tab Bar */}
+      {/* Scrollable Horizontal Sub-Navigation Tab Bar */}
       <nav className="oracle-subnav-bar" aria-label="Legal Navigation">
-        <div className="oracle-subnav-container">
-          <Link to="/terms" className="oracle-subnav-tab active">
-            Terms of Carriage
-          </Link>
-          <Link to="/privacy" className="oracle-subnav-tab">
-            Privacy Policy
-          </Link>
-          <a href="#prohibited-goods" className="oracle-subnav-tab">
-            Prohibited Goods
-          </a>
-          <a href="#customs-duties" className="oracle-subnav-tab">
-            Customs &amp; Duties
-          </a>
-          <a href="#food-pickles" className="oracle-subnav-tab">
-            NRI Food &amp; Pickles
-          </a>
-          <a href="#claims-procedure" className="oracle-subnav-tab">
-            Claims &amp; Notice
-          </a>
-          <a href="#governing-law" className="oracle-subnav-tab">
-            Jurisdiction
-          </a>
-          <Link to="/branches" className="oracle-subnav-tab">
-            Branch Network
-          </Link>
+        <div className="oracle-subnav-wrapper">
+          <button
+            type="button"
+            className="oracle-subnav-arrow"
+            onClick={() => scrollNav('left')}
+            aria-label="Scroll left"
+            title="Scroll left"
+          >
+            <i className="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <div
+            className="oracle-subnav-scroll"
+            ref={navRef}
+            onWheel={handleWheel}
+          >
+            {TABS.map((tab) => {
+              if (tab.isRoute) {
+                return (
+                  <Link
+                    key={tab.id}
+                    to={tab.path}
+                    className="oracle-subnav-tab"
+                  >
+                    {tab.title}
+                  </Link>
+                );
+              }
+
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  ref={(el) => (tabRefs.current[tab.id] = el)}
+                  type="button"
+                  onClick={() => scrollToSection(tab.id)}
+                  className={`oracle-subnav-tab ${isActive ? 'active' : ''}`}
+                >
+                  {tab.title}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            className="oracle-subnav-arrow"
+            onClick={() => scrollNav('right')}
+            aria-label="Scroll right"
+            title="Scroll right"
+          >
+            <i className="fa-solid fa-chevron-right"></i>
+          </button>
         </div>
       </nav>
 
-      {/* Oracle-Style Clean Hero Banner */}
+      {/* Wide Responsive Hero Banner */}
       <section className="oracle-hero-banner">
         <div className="oracle-hero-container">
           <div className="breadcrumb-trail" style={{ marginBottom: '1.25rem' }}>
@@ -74,7 +181,7 @@ export default function TermsPage() {
         </div>
       </section>
 
-      {/* Oracle-Style Clean Single-Column Legal Document */}
+      {/* Wide Responsive Single-Column Legal Document */}
       <section className="oracle-doc-section">
         <div className="oracle-doc-container">
 
@@ -90,7 +197,7 @@ export default function TermsPage() {
           </div>
 
           {/* Section 1 */}
-          <article id="carriage-contract" className="oracle-clause-item">
+          <article id="section-1" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">1.</span> The Contract of Carriage &amp; Air Waybill (AWB)
             </h2>
@@ -103,7 +210,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 2 */}
-          <article id="shipper-warranties" className="oracle-clause-item">
+          <article id="section-2" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">2.</span> Shipper’s Warranties, Declarations &amp; Packing Obligations
             </h2>
@@ -119,7 +226,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 3 */}
-          <article id="prohibited-goods" className="oracle-clause-item">
+          <article id="section-3" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">3.</span> Prohibited, Dangerous &amp; Hazardous Goods
             </h2>
@@ -143,7 +250,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 4 */}
-          <article id="limited-liability" className="oracle-clause-item">
+          <article id="section-4" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">4.</span> Strict Limitation of Carrier Liability
             </h2>
@@ -159,7 +266,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 5 */}
-          <article id="customs-duties" className="oracle-clause-item">
+          <article id="section-5" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">5.</span> Destination Customs Clearance, Import Duties &amp; Taxes
             </h2>
@@ -175,7 +282,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 6 */}
-          <article id="food-pickles" className="oracle-clause-item">
+          <article id="section-6" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">6.</span> Special Conditions for Homemade Food, Pickles &amp; Sweets
             </h2>
@@ -191,7 +298,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 7 */}
-          <article id="aviation-security" className="oracle-clause-item">
+          <article id="section-7" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">7.</span> Right of Inspection &amp; Aviation Security Screening
             </h2>
@@ -201,7 +308,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 8 */}
-          <article id="force-majeure" className="oracle-clause-item">
+          <article id="section-8" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">8.</span> Transit Timelines &amp; Force Majeure
             </h2>
@@ -214,7 +321,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 9 */}
-          <article id="claims-procedure" className="oracle-clause-item">
+          <article id="section-9" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">9.</span> Claims Procedure &amp; Mandatory Notice Deadlines
             </h2>
@@ -230,7 +337,7 @@ export default function TermsPage() {
           </article>
 
           {/* Section 10 */}
-          <article id="governing-law" className="oracle-clause-item">
+          <article id="section-10" className="oracle-clause-item">
             <h2 className="oracle-clause-heading">
               <span className="num">10.</span> Governing Law &amp; Exclusive Jurisdiction
             </h2>

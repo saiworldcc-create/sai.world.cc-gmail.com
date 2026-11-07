@@ -1,47 +1,149 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
+const TABS = [
+  { id: 'terms-link', title: 'Terms of Carriage', isRoute: true, path: '/terms' },
+  { id: 'privacy-1', title: 'Information We Collect', isRoute: false },
+  { id: 'privacy-2', title: 'KYC Legal Mandate', isRoute: false },
+  { id: 'privacy-3', title: 'How We Use Data', isRoute: false },
+  { id: 'privacy-4', title: 'Airline & Customs Sharing', isRoute: false },
+  { id: 'privacy-5', title: 'Security & 256-Bit SSL', isRoute: false },
+  { id: 'privacy-6', title: 'Data Retention Rules', isRoute: false },
+  { id: 'privacy-7', title: 'Your Legal Rights', isRoute: false },
+  { id: 'privacy-8', title: 'Grievance Officer', isRoute: false },
+  { id: 'branches-link', title: 'Branch Network', isRoute: true, path: '/branches' },
+];
+
 export default function PrivacyPolicyPage() {
+  const [activeTab, setActiveTab] = useState('privacy-1');
+  const navRef = useRef(null);
+  const tabRefs = useRef({});
+
+  // Real-time Scrollspy & Auto-scroll of top tab bar
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    const handleScroll = () => {
+      const winScroll = window.scrollY || document.documentElement.scrollTop;
+      const scrollPos = winScroll + 170;
+
+      const clauseSections = TABS.filter(t => !t.isRoute);
+      for (let i = clauseSections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(clauseSections[i].id);
+        if (el && el.offsetTop <= scrollPos) {
+          const currentId = clauseSections[i].id;
+          setActiveTab(currentId);
+
+          // Auto-scroll the top navigation bar to keep the active tab visible
+          const tabEl = tabRefs.current[currentId];
+          const navEl = navRef.current;
+          if (tabEl && navEl) {
+            const tabLeft = tabEl.offsetLeft;
+            const tabWidth = tabEl.offsetWidth;
+            const navScroll = navEl.scrollLeft;
+            const navWidth = navEl.offsetWidth;
+            if (tabLeft < navScroll || (tabLeft + tabWidth) > (navScroll + navWidth)) {
+              navEl.scrollTo({
+                left: tabLeft - (navWidth / 2) + (tabWidth / 2),
+                behavior: 'smooth'
+              });
+            }
+          }
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const yOffset = -135;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      setActiveTab(id);
+    }
+  };
+
+  const scrollNav = (direction) => {
+    if (navRef.current) {
+      const amount = direction === 'left' ? -280 : 280;
+      navRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+  };
+
+  const handleWheel = (e) => {
+    if (navRef.current && e.deltaY !== 0) {
+      e.preventDefault();
+      navRef.current.scrollLeft += e.deltaY;
+    }
+  };
 
   return (
     <main style={{ paddingTop: '72px' }}>
-      {/* Oracle-Style Legal Sub-Navigation Tab Bar */}
+      {/* Scrollable Horizontal Sub-Navigation Tab Bar */}
       <nav className="oracle-subnav-bar" aria-label="Privacy Navigation">
-        <div className="oracle-subnav-container">
-          <Link to="/terms" className="oracle-subnav-tab">
-            Terms of Carriage
-          </Link>
-          <Link to="/privacy" className="oracle-subnav-tab active teal-theme">
-            Privacy Policy
-          </Link>
-          <a href="#data-collected" className="oracle-subnav-tab">
-            Data Collected
-          </a>
-          <a href="#kyc-mandate" className="oracle-subnav-tab">
-            KYC Mandate
-          </a>
-          <a href="#data-usage" className="oracle-subnav-tab">
-            Data Usage
-          </a>
-          <a href="#forwarders" className="oracle-subnav-tab">
-            Airline &amp; Customs Sharing
-          </a>
-          <a href="#data-retention" className="oracle-subnav-tab">
-            Retention Rules
-          </a>
-          <a href="#grievance-officer" className="oracle-subnav-tab">
-            Grievance Officer
-          </a>
-          <Link to="/branches" className="oracle-subnav-tab">
-            Branch Network
-          </Link>
+        <div className="oracle-subnav-wrapper">
+          <button
+            type="button"
+            className="oracle-subnav-arrow"
+            onClick={() => scrollNav('left')}
+            aria-label="Scroll left"
+            title="Scroll left"
+          >
+            <i className="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <div
+            className="oracle-subnav-scroll"
+            ref={navRef}
+            onWheel={handleWheel}
+          >
+            {TABS.map((tab) => {
+              if (tab.isRoute) {
+                return (
+                  <Link
+                    key={tab.id}
+                    to={tab.path}
+                    className="oracle-subnav-tab"
+                  >
+                    {tab.title}
+                  </Link>
+                );
+              }
+
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  ref={(el) => (tabRefs.current[tab.id] = el)}
+                  type="button"
+                  onClick={() => scrollToSection(tab.id)}
+                  className={`oracle-subnav-tab ${isActive ? 'active teal-theme' : ''}`}
+                >
+                  {tab.title}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            className="oracle-subnav-arrow"
+            onClick={() => scrollNav('right')}
+            aria-label="Scroll right"
+            title="Scroll right"
+          >
+            <i className="fa-solid fa-chevron-right"></i>
+          </button>
         </div>
       </nav>
 
-      {/* Oracle-Style Clean Hero Banner */}
+      {/* Wide Responsive Hero Banner */}
       <section className="oracle-hero-banner">
         <div className="oracle-hero-container">
           <div className="breadcrumb-trail" style={{ marginBottom: '1.25rem' }}>
@@ -80,7 +182,7 @@ export default function PrivacyPolicyPage() {
         </div>
       </section>
 
-      {/* Oracle-Style Clean Single-Column Document */}
+      {/* Wide Responsive Single-Column Document */}
       <section className="oracle-doc-section">
         <div className="oracle-doc-container">
 
@@ -96,7 +198,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           {/* Section 1 */}
-          <article id="data-collected" className="oracle-clause-item">
+          <article id="privacy-1" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">1.</span> Information We Collect
             </h2>
@@ -112,7 +214,7 @@ export default function PrivacyPolicyPage() {
           </article>
 
           {/* Section 2 */}
-          <article id="kyc-mandate" className="oracle-clause-item">
+          <article id="privacy-2" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">2.</span> Legal Basis &amp; Why We Collect KYC Data
             </h2>
@@ -130,7 +232,7 @@ export default function PrivacyPolicyPage() {
           </article>
 
           {/* Section 3 */}
-          <article id="data-usage" className="oracle-clause-item">
+          <article id="privacy-3" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">3.</span> How We Use Your Data
             </h2>
@@ -147,7 +249,7 @@ export default function PrivacyPolicyPage() {
           </article>
 
           {/* Section 4 */}
-          <article id="forwarders" className="oracle-clause-item">
+          <article id="privacy-4" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">4.</span> Third-Party Disclosures &amp; International Forwarders
             </h2>
@@ -160,7 +262,7 @@ export default function PrivacyPolicyPage() {
           </article>
 
           {/* Section 5 */}
-          <article id="data-security" className="oracle-clause-item">
+          <article id="privacy-5" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">5.</span> Data Storage, Security &amp; Encryption
             </h2>
@@ -173,7 +275,7 @@ export default function PrivacyPolicyPage() {
           </article>
 
           {/* Section 6 */}
-          <article id="data-retention" className="oracle-clause-item">
+          <article id="privacy-6" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">6.</span> Data Retention Period
             </h2>
@@ -183,7 +285,7 @@ export default function PrivacyPolicyPage() {
           </article>
 
           {/* Section 7 */}
-          <article id="shipper-rights" className="oracle-clause-item">
+          <article id="privacy-7" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">7.</span> Your Legal Rights (DPDP Act 2023)
             </h2>
@@ -199,7 +301,7 @@ export default function PrivacyPolicyPage() {
           </article>
 
           {/* Section 8 */}
-          <article id="grievance-officer" className="oracle-clause-item">
+          <article id="privacy-8" className="oracle-clause-item">
             <h2 className="oracle-clause-heading teal-theme">
               <span className="num">8.</span> Grievance Officer &amp; Privacy Contact
             </h2>
