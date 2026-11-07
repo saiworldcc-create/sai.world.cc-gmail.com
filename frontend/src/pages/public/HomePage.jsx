@@ -727,15 +727,13 @@ export default function HomePage() {
           ═══════════════════════════════════════════════════════════════════════ */}
       <section className="section leadership-section" id="executive-leadership">
         <div className="container">
-          <div className="section-header text-center" style={{ maxWidth: '820px', margin: '0 auto 2.5rem' }}>
+          <div className="leadership-header">
             <div className="eyebrow-pill teal">
               <i className="fa-solid fa-crown" style={{ marginRight: '0.4rem', color: '#F7A88B' }}></i>
               Executive Leadership
             </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', fontWeight: 800, letterSpacing: '-0.5px', marginTop: '0.5rem' }}>
-              Guided by Visionary Logistics Leadership
-            </h2>
-            <p style={{ color: 'var(--text-slate-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginTop: '0.75rem' }}>
+            <h2>Guided by Visionary Logistics Leadership</h2>
+            <p>
               Under the dedicated governance of our Managing Directors, Sai International Couriers &amp; Cargo bridges families, NRI diaspora, and global exporters across India with direct air cargo connections to 195+ countries.
             </p>
           </div>
@@ -743,7 +741,7 @@ export default function HomePage() {
           <div className="directors-executive-grid">
             {/* Director 1: S. Junaid Mohuddin */}
             <article className="director-executive-card">
-              <div className="director-visual-col">
+              <div className="director-header-row">
                 <div className="director-avatar-wrapper">
                   <img 
                     src="/assets/images/director_junaid_mohuddin.jpg" 
@@ -761,29 +759,30 @@ export default function HomePage() {
                     <i className="fa-solid fa-plane-up"></i>
                   </div>
                 </div>
-                <div className="director-tag-pill">
-                  <span className="live-dot"></span> Managing Director
+
+                <div className="director-title-lockup">
+                  <div className="director-tag-pill">
+                    <span className="live-dot"></span> Managing Director
+                  </div>
+                  <h3 className="director-name">S. Junaid Mohuddin</h3>
+                  <div className="director-role-caption">International Air Cargo &amp; Global Operations</div>
                 </div>
               </div>
 
-              <div className="director-info-col">
-                <div className="director-eyebrow">Strategic Leadership &amp; Global Operations</div>
-                <h3 className="director-name">S. Junaid Mohuddin</h3>
-                <div className="director-role-caption">Managing Director • International Air Cargo</div>
-                <p className="director-desc">
-                  Directing cross-border air freight corridors, global customs clearance protocols, and strategic airline partnerships across the USA, UK, Canada, Australia, and the Middle East. Ensuring ultra-fast, time-definite transit with complete regulatory adherence.
-                </p>
-                <div className="director-specialties">
-                  <span className="specialty-chip"><i className="fa-solid fa-plane"></i> Global Air Cargo</span>
-                  <span className="specialty-chip"><i className="fa-solid fa-shield-halved"></i> Customs Compliance</span>
-                  <span className="specialty-chip"><i className="fa-solid fa-globe"></i> 195+ Countries</span>
-                </div>
+              <p className="director-desc">
+                Directing cross-border air freight corridors, global customs clearance protocols, and strategic airline partnerships across the USA, UK, Canada, Australia, and the Middle East. Ensuring ultra-fast, time-definite transit with complete regulatory adherence.
+              </p>
+
+              <div className="director-specialties">
+                <span className="specialty-chip"><i className="fa-solid fa-plane"></i> Global Air Cargo</span>
+                <span className="specialty-chip"><i className="fa-solid fa-shield-halved"></i> Customs Compliance</span>
+                <span className="specialty-chip"><i className="fa-solid fa-globe"></i> 195+ Countries</span>
               </div>
             </article>
 
             {/* Director 2: S. Chandra Vadu */}
             <article className="director-executive-card">
-              <div className="director-visual-col">
+              <div className="director-header-row">
                 <div className="director-avatar-wrapper">
                   <img 
                     src="/assets/images/director_chandra_vadu.jpg" 
@@ -801,23 +800,24 @@ export default function HomePage() {
                     <i className="fa-solid fa-boxes-packing"></i>
                   </div>
                 </div>
-                <div className="director-tag-pill">
-                  <span className="live-dot"></span> Managing Director
+
+                <div className="director-title-lockup">
+                  <div className="director-tag-pill">
+                    <span className="live-dot"></span> Managing Director
+                  </div>
+                  <h3 className="director-name">S. Chandra Vadu</h3>
+                  <div className="director-role-caption">Regional Hubs &amp; NRI Logistics Care</div>
                 </div>
               </div>
 
-              <div className="director-info-col">
-                <div className="director-eyebrow">Domestic Networks &amp; NRI Logistics Care</div>
-                <h3 className="director-name">S. Chandra Vadu</h3>
-                <div className="director-role-caption">Managing Director • Regional Hubs &amp; Packaging</div>
-                <p className="director-desc">
-                  Spearheading expansive regional doorstep logistics across Andhra Pradesh and Telangana, multi-tier domestic consolidation, and pioneering specialized certified vacuum packaging for NRI homemade food, traditional sweets, and fragile consignments.
-                </p>
-                <div className="director-specialties">
-                  <span className="specialty-chip"><i className="fa-solid fa-truck-ramp-box"></i> Doorstep Pickup</span>
-                  <span className="specialty-chip"><i className="fa-solid fa-box-open"></i> NRI Food Vacuum Packing</span>
-                  <span className="specialty-chip"><i className="fa-solid fa-map-location-dot"></i> AP &amp; TG Network</span>
-                </div>
+              <p className="director-desc">
+                Spearheading expansive regional doorstep logistics across Andhra Pradesh and Telangana, multi-tier domestic consolidation, and pioneering specialized certified vacuum packaging for NRI homemade food, traditional sweets, and fragile consignments.
+              </p>
+
+              <div className="director-specialties">
+                <span className="specialty-chip"><i className="fa-solid fa-truck-ramp-box"></i> Doorstep Pickup</span>
+                <span className="specialty-chip"><i className="fa-solid fa-box-open"></i> NRI Food Vacuum Packing</span>
+                <span className="specialty-chip"><i className="fa-solid fa-map-location-dot"></i> AP &amp; TG Network</span>
               </div>
             </article>
           </div>
