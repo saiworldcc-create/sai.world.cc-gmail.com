@@ -1012,7 +1012,7 @@ export default function HomePage() {
             <div className="video-showcase-wrapper reveal-init stagger-1">
               <div className="video-player-frame">
                 <VideoPlayer
-                  videoUrl={vs.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}
+                  videoUrl={vs.videoUrl || h.videoUrl || 'https://www.youtube.com/watch?v=OveFQSCsZqQ'}
                   posterImage={vs.posterImage || '/assets/images/sai_global_3d_hero.jpg'}
                   title={vs.heading || 'Sai Couriers Video'}
                 />
