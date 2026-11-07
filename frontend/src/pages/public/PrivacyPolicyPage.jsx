@@ -9,76 +9,131 @@ export default function PrivacyPolicyPage() {
   return (
     <main style={{ paddingTop: '80px' }}>
       {/* Hero Banner */}
-      <section className="page-hero-banner">
-        <div className="container">
-          <div className="breadcrumb-trail">
+      <section className="page-hero-banner legal-hero-banner">
+        <div className="container legal-page-container">
+          <div className="breadcrumb-trail" style={{ marginBottom: '1rem' }}>
             <Link to="/">Home</Link>
             <span className="separator"><i className="fa-solid fa-chevron-right"></i></span>
-            <span className="current">Privacy &amp; Data Protection Policy</span>
+            <span className="current">Privacy &amp; Data Protection</span>
           </div>
-          <div className="eyebrow-pill teal">
-            <i className="fa-solid fa-user-shield" style={{ marginRight: '0.4rem', color: '#F7A88B' }}></i>
-            Data Privacy &amp; KYC Governance
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem' }}>
+            <div className="eyebrow-pill teal" style={{ margin: 0 }}>
+              <i className="fa-solid fa-user-shield" style={{ marginRight: '0.45rem', color: '#2DD4BF' }}></i>
+              Data Privacy &bull; DPDP &amp; KYC Governance
+            </div>
+            <div className="legal-status-badge">
+              <span className="status-dot-pulse"></span>
+              <span>DPDP Act 2023 &bull; Compliant</span>
+            </div>
           </div>
-          <h1 className="page-hero-title">Privacy Policy &amp; Data Protection</h1>
-          <p className="page-hero-desc">
+
+          <h1 className="page-hero-title" style={{ marginBottom: '1rem', fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em' }}>
+            Privacy Policy &amp; Data Protection
+          </h1>
+
+          <p className="page-hero-desc" style={{ maxWidth: '900px', color: '#94A3B8', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '1.75rem' }}>
             How Sai International Couriers &amp; Cargo collects, verifies, stores, and safeguards your personal identity and cross-border shipping documentation in accordance with Indian and International privacy laws.
           </p>
+
+          {/* Quick Document Metadata & Action Bar */}
+          <div className="legal-meta-bar">
+            <div className="legal-meta-items">
+              <div className="legal-meta-chip">
+                <i className="fa-solid fa-shield-halved"></i>
+                <span>Framework: <strong>DPDP Act 2023 &amp; IT Act 2000</strong></span>
+              </div>
+              <div className="legal-meta-chip">
+                <i className="fa-solid fa-building-columns"></i>
+                <span>Entity: <strong>Sai International Couriers &amp; Cargo</strong></span>
+              </div>
+              <div className="legal-meta-chip">
+                <i className="fa-solid fa-stamp"></i>
+                <span>GSTIN: <strong>37BOPPS1122H1ZS</strong></span>
+              </div>
+              <div className="legal-meta-chip">
+                <i className="fa-solid fa-calendar-check"></i>
+                <span>Effective: <strong>November 2026</strong></span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="legal-print-btn"
+              title="Print or Save PDF"
+            >
+              <i className="fa-solid fa-print"></i>
+              <span>Print / PDF</span>
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Main Privacy Content */}
-      <section className="section section-ivory" style={{ padding: '3.5rem 0 5rem 0' }}>
-        <div className="container" style={{ maxWidth: '1000px' }}>
+      <section className="section section-ivory" style={{ padding: '2.5rem 0 5rem 0' }}>
+        <div className="container legal-page-container">
+
+          {/* Table of Contents Quick Jump Bar */}
+          <div className="legal-toc-bar">
+            <span className="legal-toc-label">
+              <i className="fa-solid fa-list-ol"></i> Jump To:
+            </span>
+            <div className="legal-toc-scroll">
+              <a href="#privacy-1" className="legal-toc-link">1. Data Collected</a>
+              <a href="#privacy-2" className="legal-toc-link">2. KYC Mandate</a>
+              <a href="#privacy-3" className="legal-toc-link">3. Use of Data</a>
+              <a href="#privacy-4" className="legal-toc-link">4. Third-Party Sharing</a>
+              <a href="#privacy-5" className="legal-toc-link">5. Security &amp; Encryption</a>
+              <a href="#privacy-6" className="legal-toc-link">6. Retention Period</a>
+              <a href="#privacy-7" className="legal-toc-link">7. Shipper Rights</a>
+              <a href="#privacy-8" className="legal-toc-link">8. Grievance Desk</a>
+            </div>
+          </div>
 
           {/* Privacy Trust Card */}
-          <div style={{
-            background: 'rgba(20, 184, 166, 0.08)',
-            borderLeft: '4px solid #14B8A6',
-            borderRadius: '12px',
-            padding: '1.5rem 1.75rem',
-            marginBottom: '2.5rem',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#2DD4BF', fontWeight: 800, fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="legal-notice-banner teal-theme">
+            <div className="legal-notice-header teal-theme">
               <i className="fa-solid fa-lock"></i>
               Our Unconditional Privacy Guarantee
             </div>
-            <p style={{ color: '#C2D5E5', fontSize: '0.94rem', lineHeight: 1.7, margin: '0.65rem 0 0 0' }}>
+            <p className="legal-notice-body">
               <strong>SAI INTERNATIONAL COURIERS &amp; CARGO</strong> is committed to preserving the confidentiality of your personal shipping data and KYC records. We <strong>never sell, lease, or monetize</strong> your personal details or government ID copies to third-party marketing companies. Data is collected solely to execute cross-border air cargo transport, satisfy statutory Indian Customs (CBIC) mandates, and ensure secure doorstep delivery worldwide.
             </p>
           </div>
 
           {/* Legal Document Container */}
-          <div style={{
-            background: '#122336',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '18px',
-            padding: '3rem 2.5rem',
-            color: '#E2E8F0',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
-          }}>
+          <div className="legal-document-card">
 
-            <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.6rem', color: '#FFFFFF', margin: '0 0 0.5rem 0' }}>
+            {/* Document Header */}
+            <div className="legal-document-card-header">
+              <h2 className="legal-document-h2">
                 Customer Data Protection &amp; KYC Privacy Policy
               </h2>
-              <div style={{ fontSize: '0.85rem', color: '#94A3B8' }}>
-                Statutory Compliance: <strong>Digital Personal Data Protection (DPDP) Act, 2023</strong> &amp; <strong>Information Technology Act, 2000 (India)</strong><br />
-                Operating Entity: <strong>Sai International Couriers &amp; Cargo</strong> | GSTIN: <strong>37BOPPS1122H1ZS</strong><br />
-                Effective Date: November 2026 | Last Reviewed: Annual Legal Review Cycle
+              <div className="legal-document-meta-grid">
+                <div>
+                  <strong>Statutory Framework:</strong> Digital Personal Data Protection (DPDP) Act, 2023 &amp; IT Act, 2000<br />
+                  <strong>Operating Entity:</strong> Sai International Couriers &amp; Cargo
+                </div>
+                <div>
+                  <strong>GSTIN:</strong> 37BOPPS1122H1ZS<br />
+                  <strong>Head Office:</strong> 41/1248, Ratna Sabhapathi Building, Kadapa, AP - 516001
+                </div>
+                <div>
+                  <strong>Executive Oversight:</strong> Managing Directors <strong>S. Junaid Mohuddin</strong> &amp; <strong>S. Chandra Vadu</strong>
+                </div>
               </div>
             </div>
 
             {/* Section 1 */}
-            <div className="legal-article" style={{ marginBottom: '2.25rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                1. Information We Collect
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
+            <div id="privacy-1" className="legal-section-block">
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">01</span>
+                <h3 className="legal-section-title teal-theme">Information We Collect</h3>
+              </div>
+              <p className="legal-section-p">
                 To fulfill our logistics obligations and satisfy statutory government aviation and customs rules, Sai Couriers collects the following categories of information:
               </p>
-              <ul style={{ paddingLeft: '1.5rem', lineHeight: 1.8, fontSize: '0.93rem', color: '#CBD5E1' }}>
+              <ul className="legal-section-list">
                 <li><strong>Contact Information:</strong> Full legal names, physical origin and delivery addresses, mobile numbers, and email addresses of both Shipper (Sender) and Consignee (Receiver).</li>
                 <li><strong>Statutory Sender KYC Records:</strong> Government-issued identification (Aadhaar Card, Indian Passport, Driving License, or Voter ID) and PAN Card copies.</li>
                 <li><strong>Shipment Manifest Details:</strong> Item descriptions, declared value, invoice amounts, HS codes, gross weight, volumetric dimensions, and specialized packaging instructions.</li>
@@ -87,17 +142,18 @@ export default function PrivacyPolicyPage() {
             </div>
 
             {/* Section 2 */}
-            <div className="legal-article" style={{ marginBottom: '2.25rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                2. Legal Basis &amp; Why We Collect KYC Data
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
+            <div id="privacy-2" className="legal-section-block">
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">02</span>
+                <h3 className="legal-section-title teal-theme">Legal Basis &amp; Why We Collect KYC Data</h3>
+              </div>
+              <p className="legal-section-p">
                 2.1. <strong>Customs &amp; Aviation Mandate:</strong> Under regulations prescribed by the <strong>Central Board of Indirect Taxes &amp; Customs (CBIC)</strong> and the <strong>Bureau of Civil Aviation Security (BCAS)</strong>, every international parcel departing India must be accompanied by verified KYC documentation linking the shipment to an identifiable legal individual or entity.
               </p>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
+              <p className="legal-section-p">
                 2.2. KYC data is collected solely to:
               </p>
-              <ul style={{ paddingLeft: '1.5rem', lineHeight: 1.8, fontSize: '0.93rem', color: '#CBD5E1' }}>
+              <ul className="legal-section-list">
                 <li>Generate the official export shipping declaration (Courier Shipping Bill - CSB IV/V);</li>
                 <li>Comply with anti-money laundering (AML) and anti-narcotics screening directives;</li>
                 <li>Ensure smooth customs clearance without destination holding or confiscation.</li>
@@ -105,70 +161,72 @@ export default function PrivacyPolicyPage() {
             </div>
 
             {/* Section 3 */}
-            <div className="legal-article" style={{ marginBottom: '2.25rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                3. How We Use Your Data
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
+            <div id="privacy-3" className="legal-section-block">
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">03</span>
+                <h3 className="legal-section-title teal-theme">How We Use Your Data</h3>
+              </div>
+              <p className="legal-section-p">
                 We process your personal information strictly for legitimate commercial and operational purposes:
               </p>
-              <ul style={{ paddingLeft: '1.5rem', lineHeight: 1.8, fontSize: '0.93rem', color: '#CBD5E1' }}>
+              <ul className="legal-section-list">
                 <li>Generating and printing official Air Waybills (AWBs) and barcoded shipping labels;</li>
                 <li>Dispatching mobile doorstep pickup vehicles to your home or office;</li>
                 <li>Transmitting flight cargo manifests to scheduled international airlines operating from Rajiv Gandhi International Airport (RGIA) Hyderabad;</li>
-                <li>Providing real-time automated tracking alerts via SMS, WhatsApp, and our online Tracking Portal;</li>
-                <li>Coordinating with overseas delivery personnel for final physical handover.</li>
+                <li>Providing real-time automated tracking alerts via SMS, WhatsApp, and email;</li>
+                <li>Resolving shipment inquiries, claims, and providing customer care assistance.</li>
               </ul>
             </div>
 
             {/* Section 4 */}
-            <div className="legal-article" style={{ marginBottom: '2.25rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                4. Third-Party Sharing (Logistics Execution Only)
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
-                4.1. Sai Couriers does not sell, rent, trade, or distribute your data. Information is shared strictly on a need-to-know basis with authorized entities involved in the carriage chain:
+            <div id="privacy-4" className="legal-section-block">
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">04</span>
+                <h3 className="legal-section-title teal-theme">Third-Party Disclosures &amp; International Forwarders</h3>
+              </div>
+              <p className="legal-section-p">
+                4.1. <strong>Operational Forwarding Partners:</strong> To execute end-to-end global delivery across 195+ destination countries, consignment manifests and customs invoices are shared securely with verified international logistics networks (such as DHL Express, FedEx, UPS, Aramex, and local national postal authorities).
               </p>
-              <ul style={{ paddingLeft: '1.5rem', lineHeight: 1.8, fontSize: '0.93rem', color: '#CBD5E1' }}>
-                <li><strong>International Airlines:</strong> Air cargo handlers and airline cargo security screening teams;</li>
-                <li><strong>Sovereign Customs Authorities:</strong> Indian Customs (EDI system) and foreign border control agencies (e.g. US CBP, UK Border Force, Australian Customs);</li>
-                <li><strong>Last-Mile Delivery Partners:</strong> Licensed global express logistics networks (including FedEx, DHL, UPS, Aramex, and national postal administrations);</li>
-                <li><strong>Law Enforcement:</strong> If mandated by a formal warrant, court order, or national security directive under the laws of India.</li>
-              </ul>
+              <p className="legal-section-p">
+                4.2. <strong>Statutory Authorities:</strong> We are legally obligated to disclose shipping records and identity credentials to law enforcement, Indian Customs, CISF airport security, and destination customs authorities upon receipt of a lawful warrant or regulatory audit notice.
+              </p>
             </div>
 
             {/* Section 5 */}
-            <div className="legal-article" style={{ marginBottom: '2.25rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                5. Data Security &amp; Encryption Standards
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
-                5.1. <strong>SSL 256-Bit Encryption:</strong> All data transmitted through our website, online quote calculator, and booking tools is encrypted using industry-standard TLS 1.3 / 256-bit SSL protocols.
+            <div id="privacy-5" className="legal-section-block">
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">05</span>
+                <h3 className="legal-section-title teal-theme">Data Storage, Security &amp; Encryption</h3>
+              </div>
+              <p className="legal-section-p">
+                5.1. All web traffic between your browser and our booking portals is protected by <strong>HTTPS 256-Bit SSL/TLS Encryption</strong>.
               </p>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
-                5.2. <strong>Restricted Internal Access:</strong> Customer KYC documents and ID cards are stored in secure, permission-controlled digital repositories accessible only to authorized customs filing managers. Physical paper manifests are stored under lock and key at our central hub in Kadapa.
+              <p className="legal-section-p">
+                5.2. Customer KYC files and government identification scans are housed in password-protected, encrypted digital repositories accessible only to authorized customs filing managers. Physical paper manifests are stored under lock and key at our central hub in Kadapa.
               </p>
             </div>
 
             {/* Section 6 */}
-            <div className="legal-article" style={{ marginBottom: '2.25rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                6. Data Retention Period
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
+            <div id="privacy-6" className="legal-section-block">
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">06</span>
+                <h3 className="legal-section-title teal-theme">Data Retention Period</h3>
+              </div>
+              <p className="legal-section-p">
                 Under the Indian Customs Act and export documentation regulations, international shipping manifests and supporting KYC records must be retained for a statutory audit period of <strong>five (5) to seven (7) years</strong> following the financial year of export. Once the statutory retention period expires, files are permanently shredded or cryptographically deleted.
               </p>
             </div>
 
             {/* Section 7 */}
-            <div className="legal-article" style={{ marginBottom: '2.25rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                7. Your Legal Rights (DPDP Act 2023)
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
+            <div id="privacy-7" className="legal-section-block">
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">07</span>
+                <h3 className="legal-section-title teal-theme">Your Legal Rights (DPDP Act 2023)</h3>
+              </div>
+              <p className="legal-section-p">
                 Subject to mandatory customs and statutory retention requirements, you have the right to:
               </p>
-              <ul style={{ paddingLeft: '1.5rem', lineHeight: 1.8, fontSize: '0.93rem', color: '#CBD5E1' }}>
+              <ul className="legal-section-list">
                 <li>Request confirmation and summary of personal data held about you;</li>
                 <li>Request correction of inaccurate or outdated contact details;</li>
                 <li>Withdraw consent for optional promotional alerts via SMS or WhatsApp;</li>
@@ -177,11 +235,12 @@ export default function PrivacyPolicyPage() {
             </div>
 
             {/* Section 8 */}
-            <div className="legal-article" style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.25rem', color: '#38BDF8', margin: '0 0 0.75rem 0' }}>
-                8. Grievance Officer &amp; Privacy Contact
-              </h3>
-              <p style={{ lineHeight: 1.75, fontSize: '0.95rem', color: '#CBD5E1' }}>
+            <div id="privacy-8" className="legal-section-block" style={{ marginBottom: '1.5rem' }}>
+              <div className="legal-section-header">
+                <span className="legal-section-badge teal-theme">08</span>
+                <h3 className="legal-section-title teal-theme">Grievance Officer &amp; Privacy Contact</h3>
+              </div>
+              <p className="legal-section-p">
                 In accordance with the <strong>Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011</strong> and the <strong>DPDP Act, 2023</strong>, the contact details for our Grievance Officer are:
               </p>
               <div style={{
@@ -193,7 +252,7 @@ export default function PrivacyPolicyPage() {
                 lineHeight: 1.75,
                 fontSize: '0.92rem'
               }}>
-                <strong>Data Protection &amp; Grievance Redressal Desk</strong><br />
+                <strong style={{ color: '#FFFFFF', fontSize: '1rem' }}>Data Protection &amp; Grievance Redressal Desk</strong><br />
                 Attn: <strong>S. Junaid Mohuddin &amp; S. Chandra Vadu (Managing Directors)</strong><br />
                 Entity: <strong>Sai International Couriers &amp; Cargo</strong><br />
                 Address: 41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP - 516001, India<br />
@@ -203,21 +262,12 @@ export default function PrivacyPolicyPage() {
             </div>
 
             {/* Support and Legal Contact Footer */}
-            <div style={{
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-              paddingTop: '1.5rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '1rem',
-              fontSize: '0.9rem'
-            }}>
+            <div className="legal-card-footer">
               <div>
-                <strong>Need Help with KYC or Tracking Privacy?</strong><br />
+                <strong style={{ color: '#FFFFFF', fontSize: '0.95rem' }}>Need Help with KYC or Tracking Privacy?</strong><br />
                 <span style={{ color: '#94A3B8' }}>Our customer support team is available Mon-Sun: 9:00 AM - 9:30 PM IST</span>
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                 <Link to="/terms" className="btn btn-teal btn-sm">
                   <i className="fa-solid fa-file-contract"></i> View Terms &amp; Conditions
                 </Link>
