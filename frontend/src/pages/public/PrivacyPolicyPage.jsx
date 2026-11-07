@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const SECTIONS = [
@@ -14,20 +14,21 @@ const SECTIONS = [
 
 export default function PrivacyPolicyPage() {
   const [activeSection, setActiveSection] = useState('privacy-1');
-  const [readingProgress, setReadingProgress] = useState(0);
-  const [dockSide, setDockSide] = useState('right'); // 'right' or 'left'
+  const [dockSide, setDockSide] = useState('left'); // Default to left side like Apple / Microsoft
+  const [beamHeight, setBeamHeight] = useState(0);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
+  const itemRefs = useRef([]);
+  const trackRef = useRef(null);
+
+  // Scrollspy to detect active section as user scrolls
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
 
     const handleScroll = () => {
       const winScroll = window.scrollY || document.documentElement.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-      setReadingProgress(Math.min(100, Math.max(0, Math.round(scrolled))));
+      const scrollPos = winScroll + 170;
 
-      const scrollPos = winScroll + 160;
       for (let i = SECTIONS.length - 1; i >= 0; i--) {
         const el = document.getElementById(SECTIONS[i].id);
         if (el && el.offsetTop <= scrollPos) {
@@ -42,6 +43,23 @@ export default function PrivacyPolicyPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Update Apple/Microsoft animated beam height and auto-scroll left sidebar
+  useEffect(() => {
+    const activeIdx = SECTIONS.findIndex((s) => s.id === activeSection);
+    if (activeIdx >= 0 && itemRefs.current[activeIdx] && itemRefs.current[0]) {
+      const firstEl = itemRefs.current[0];
+      const activeEl = itemRefs.current[activeIdx];
+
+      const firstCenter = firstEl.offsetTop + firstEl.offsetHeight / 2;
+      const activeCenter = activeEl.offsetTop + activeEl.offsetHeight / 2;
+      const height = Math.max(0, activeCenter - firstCenter);
+      setBeamHeight(height);
+
+      // Auto-scroll left sidebar so active item stays in view
+      activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [activeSection]);
+
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
@@ -53,7 +71,7 @@ export default function PrivacyPolicyPage() {
     }
   };
 
-  const activeIndex = SECTIONS.findIndex(s => s.id === activeSection);
+  const activeIndex = SECTIONS.findIndex((s) => s.id === activeSection);
   const activeNum = activeIndex >= 0 ? activeIndex + 1 : 1;
 
   return (
@@ -120,71 +138,87 @@ export default function PrivacyPolicyPage() {
         </div>
       </section>
 
-      {/* Main Privacy Content with Sticky Animated Side Navigation */}
+      {/* Main Privacy Content with Apple/Microsoft Animated Timeline Navigation */}
       <section className="section section-ivory" style={{ padding: '2.5rem 0 5rem 0' }}>
         <div className="container legal-layout-container">
 
           <div className={`legal-layout-grid dock-${dockSide}`}>
 
-            {/* STICKY ANIMATED SIDEBAR (Left or Right) */}
+            {/* APPLE / MICROSOFT STYLE TIMELINE SIDEBAR (Left side by default) */}
             <aside className="legal-sidebar-col">
-              <div className="legal-sticky-card">
-                
-                {/* Sidebar Header & Dock Switcher */}
-                <div className="legal-sidebar-top-bar">
-                  <div className="legal-sidebar-title teal-theme">
-                    <i className="fa-solid fa-list-check"></i>
-                    <span>Privacy Clauses</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setDockSide(prev => prev === 'right' ? 'left' : 'right')}
-                    className="legal-dock-toggle-btn"
-                    title={`Dock navigation to ${dockSide === 'right' ? 'left' : 'right'} side`}
-                  >
-                    <i className="fa-solid fa-arrows-left-right"></i>
-                    <span>{dockSide === 'right' ? 'Dock Left' : 'Dock Right'}</span>
-                  </button>
-                </div>
+              <div className="apple-timeline-card">
 
-                {/* Animated Reading Progress Bar */}
-                <div className="legal-progress-card">
-                  <div className="legal-progress-label teal-theme">
-                    <span>Reading Section {activeNum} of {SECTIONS.length}</span>
-                    <strong>{readingProgress}% Read</strong>
+                {/* Timeline Header */}
+                <div className="apple-timeline-header">
+                  <div className="apple-timeline-title teal-theme">
+                    <i className="fa-solid fa-shield-halved"></i>
+                    <span>Privacy Journey</span>
                   </div>
-                  <div className="legal-progress-track">
-                    <div
-                      className="legal-progress-fill teal-theme"
-                      style={{ width: `${readingProgress}%` }}
-                    ></div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                    <span className="apple-timeline-counter teal-theme">
+                      {activeNum} of {SECTIONS.length}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setDockSide(prev => prev === 'left' ? 'right' : 'left')}
+                      className="legal-dock-toggle-btn"
+                      title={`Dock to ${dockSide === 'left' ? 'right' : 'left'} side`}
+                    >
+                      <i className="fa-solid fa-arrows-left-right"></i>
+                      <span>{dockSide === 'left' ? 'Right' : 'Left'}</span>
+                    </button>
                   </div>
                 </div>
 
-                {/* Vertical Scrollspy Navigation Links */}
-                <nav className="legal-nav-list" aria-label="Privacy Table of Contents">
-                  {SECTIONS.map((sec) => {
+                {/* Connected Vertical Timeline Track */}
+                <div className="apple-timeline-track-wrap" ref={trackRef}>
+                  
+                  {/* Static background spine line connecting all points */}
+                  <div className="apple-timeline-base-line" />
+
+                  {/* Animated Glowing Progress Beam covering until current point */}
+                  <div
+                    className="apple-timeline-active-beam teal-theme"
+                    style={{ height: `${beamHeight}px` }}
+                  />
+
+                  {/* Timeline Points (Nodes) */}
+                  {SECTIONS.map((sec, idx) => {
                     const isActive = activeSection === sec.id;
+                    const isPassed = idx < activeIndex;
+
                     return (
                       <button
                         key={sec.id}
+                        ref={(el) => (itemRefs.current[idx] = el)}
                         type="button"
                         onClick={() => scrollToSection(sec.id)}
-                        className={`legal-nav-link-btn active:teal-theme ${isActive ? 'active teal-theme' : ''}`}
+                        className={`apple-timeline-item ${isActive ? 'active teal-theme' : ''} ${isPassed ? 'passed teal-theme' : ''}`}
                         title={sec.title}
                       >
-                        <span className="legal-nav-num-badge">{sec.num}</span>
-                        <span className="legal-nav-text-col">
-                          <span className="legal-nav-title-text">{sec.title}</span>
+                        {/* Connected Node */}
+                        <span className="apple-timeline-node">
+                          {isPassed ? (
+                            <i className="fa-solid fa-check" style={{ fontSize: '0.62rem' }}></i>
+                          ) : (
+                            sec.num
+                          )}
                         </span>
+
+                        {/* Title Text */}
+                        <span className="apple-timeline-text">
+                          <span className="apple-timeline-name">{sec.title}</span>
+                        </span>
+
+                        {/* Active Glowing Pip */}
                         {isActive && <span className="legal-nav-active-pip teal-theme" />}
                       </button>
                     );
                   })}
-                </nav>
+                </div>
 
-                {/* Sidebar Footer Actions */}
-                <div className="legal-sidebar-actions">
+                {/* Timeline Footer Controls */}
+                <div className="apple-timeline-footer">
                   <button
                     type="button"
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -428,7 +462,7 @@ export default function PrivacyPolicyPage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#FFFFFF', fontWeight: 800 }}>
-                <i className="fa-solid fa-list-check" style={{ color: '#2DD4BF' }}></i>
+                <i className="fa-solid fa-shield-halved" style={{ color: '#2DD4BF' }}></i>
                 <span>Privacy Clauses</span>
               </div>
               <button
