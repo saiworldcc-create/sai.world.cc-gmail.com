@@ -45,15 +45,25 @@ export default function Footer() {
 
           {/* Col 1: Brand */}
           <div className="footer-col">
-            <div style={{ display: 'inline-flex', alignItems: 'center', background: 'var(--bg-card-tint)', padding: '6px 12px', borderRadius: '12px', marginBottom: '0.75rem', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
-              <img
-                src="/assets/images/sai_logo_transparent.png"
-                alt="Sai International Couriers & Cargo"
-                style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
-              />
-            </div>
-            <p style={{ fontSize: '0.88rem', color: '#C2D5E5', lineHeight: '1.6', marginTop: '0.5rem' }}>
-              Managing Director: <strong style={{ color: '#FFFFFF' }}>S. Chandra Babu</strong><br />
+            <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.85rem', textDecoration: 'none', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', background: 'var(--bg-card-tint)', padding: '6px 12px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
+                <img
+                  src="/assets/images/sai_logo_transparent.png"
+                  alt="Sai International Couriers & Cargo"
+                  style={{ height: '44px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '1.15rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.01em', lineHeight: 1.25 }}>
+                  SAI International Couriers &amp; Cargo
+                </span>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#38BDF8', letterSpacing: '0.6px', textTransform: 'uppercase', marginTop: '3px' }}>
+                  Worldwide Air Cargo &amp; NRI Logistics
+                </span>
+              </div>
+            </Link>
+            <p style={{ fontSize: '0.88rem', color: '#C2D5E5', lineHeight: '1.6', marginTop: '0.25rem' }}>
+              Managing Directors: <strong style={{ color: '#FFFFFF' }}>S. Junaid Mohuddin</strong> &amp; <strong style={{ color: '#FFFFFF' }}>S. Chandra Vadu</strong><br />
               Serving 195+ international destinations with door-to-door express parcel delivery, specialized food/pickle packaging, and air cargo solutions.
             </p>
             <div style={{ fontSize: '0.85rem', color: '#9FB8CC' }}>
