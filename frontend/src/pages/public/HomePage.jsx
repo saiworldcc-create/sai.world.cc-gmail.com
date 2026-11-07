@@ -35,7 +35,7 @@ const HERO_STATS = [
 const BRAND_FEATURES = [
   { icon: 'fa-plane-departure', text: 'Direct Air Cargo Flights' },
   { icon: 'fa-house-chimney',   text: 'Free Doorstep Collection' },
-  { icon: 'fa-shield-check',    text: 'End-to-End Customs Support' },
+  { icon: 'fa-shield-halved',   text: 'End-to-End Customs Support' },
   { icon: 'fa-location-crosshairs', text: 'Live Satellite GPS Tracking' },
 ];
 
@@ -518,36 +518,42 @@ export default function HomePage() {
             <div className="reveal-init stagger-2">
               <div className="eyebrow-pill teal">{bs.eyebrow || 'Our Heritage & Commitment'}</div>
               <h2>{(!bs.heading || bs.heading.includes('Andhra Pradesh')) ? 'Connecting India with the World' : bs.heading}</h2>
-              <p style={{ fontSize: '1.05rem', lineHeight: '1.65', margin: '1rem 0' }}>
-                {(!bs.paragraph1 || bs.paragraph1.includes('across Kadapa, Nellore')) ? (
-                  "Founded with the mission to bridge families, NRI diaspora, and commercial exporters across India with 195+ countries globally, Sai International Couriers & Cargo delivers unmatched speed, reliability, and care. We provide seamless door-to-door international logistics across India's top metropolitan hubs including Mumbai, Delhi NCR, Bengaluru, Chennai, Kolkata, and Pune, alongside dedicated gateway hubs across Telangana (Hyderabad, Secunderabad, Warangal, Nizamabad) and comprehensive regional coverage throughout Andhra Pradesh (Visakhapatnam, Vijayawada, Guntur, Tirupati, Kadapa, Nellore, Kurnool, Rajahmundry, Kakinada, Proddatur, and Rayachoty)."
+              <p style={{ fontSize: '1.02rem', lineHeight: '1.7', margin: '1rem 0', color: '#CBD5E1' }}>
+                {(!bs.paragraph1 || bs.paragraph1.includes('across Kadapa, Nellore') || bs.paragraph1.includes('including Mumbai, Delhi')) ? (
+                  "Founded with the mission to bridge families, NRI communities, and commercial enterprises across India with 195+ countries globally, Sai International Couriers & Cargo delivers unmatched speed, reliability, and precision care. We provide seamless door-to-door express logistics, connecting India's economic powerhouses and regional heartlands directly to premier international air corridors."
                 ) : bs.paragraph1}
               </p>
-              <p>
+              <p style={{ fontSize: '0.98rem', lineHeight: '1.7', color: '#94A3B8' }}>
                 {(!bs.paragraph2 || bs.paragraph2.includes('or beloved homemade delicacies, we manage')) ? (
-                  "Whether it's essential university academic transcripts, confidential corporate documents, heavy commercial air freight, or beloved homemade Andhra delicacies and NRI food parcels, our network ensures rapid dispatch with direct air cargo connections from Rajiv Gandhi International Airport (RGIA) Hyderabad, specialized multi-layer vacuum packaging, and seamless customs clearance."
+                  "Whether it's essential university academic transcripts, confidential corporate documents, heavy commercial air freight, or beloved homemade Andhra delicacies and NRI food parcels, our network ensures rapid dispatch via Rajiv Gandhi International Airport (RGIA) Hyderabad, certified multi-layer vacuum packaging, and seamless customs clearance."
                 ) : bs.paragraph2}
               </p>
 
-              {/* City Hub Chips */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', margin: '1.25rem 0' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', fontSize: '0.84rem', color: 'var(--text-slate-muted)' }}>
-                  <span style={{ background: 'rgba(56, 189, 248, 0.12)', color: '#0284c7', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
-                    <i className="fa-solid fa-city"></i> Pan-India Metros:
+              {/* City Network Hubs Panel */}
+              <div className="story-network-panel">
+                <div className="story-network-row">
+                  <span className="story-network-badge metro">
+                    <i className="fa-solid fa-city"></i> Pan-India Metros
                   </span>
-                  <span>Mumbai • Delhi NCR • Bengaluru • Chennai • Kolkata • Pune • Ahmedabad</span>
+                  <div className="story-network-cities">
+                    Mumbai <span className="city-sep">•</span> Delhi NCR <span className="city-sep">•</span> Bengaluru <span className="city-sep">•</span> Chennai <span className="city-sep">•</span> Kolkata <span className="city-sep">•</span> Pune <span className="city-sep">•</span> Ahmedabad
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', fontSize: '0.84rem', color: 'var(--text-slate-muted)' }}>
-                  <span style={{ background: 'rgba(13, 148, 136, 0.12)', color: '#0f766e', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
-                    <i className="fa-solid fa-plane-departure"></i> Telangana Gateway:
+                <div className="story-network-row">
+                  <span className="story-network-badge tg">
+                    <i className="fa-solid fa-plane-departure"></i> Telangana Gateway
                   </span>
-                  <span>Hyderabad (RGIA) • Secunderabad • Warangal • Nizamabad</span>
+                  <div className="story-network-cities">
+                    Hyderabad (RGIA Air Cargo) <span className="city-sep">•</span> Secunderabad <span className="city-sep">•</span> Warangal <span className="city-sep">•</span> Nizamabad
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', fontSize: '0.84rem', color: 'var(--text-slate-muted)' }}>
-                  <span style={{ background: 'rgba(233, 120, 86, 0.12)', color: '#c2410c', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
-                    <i className="fa-solid fa-location-dot"></i> Andhra Pradesh Network:
+                <div className="story-network-row">
+                  <span className="story-network-badge ap">
+                    <i className="fa-solid fa-location-dot"></i> Andhra Pradesh Network
                   </span>
-                  <span>Visakhapatnam • Vijayawada • Guntur • Tirupati • Kadapa • Nellore • Kurnool • Rajahmundry • Proddatur • Rayachoty</span>
+                  <div className="story-network-cities">
+                    Visakhapatnam <span className="city-sep">•</span> Vijayawada <span className="city-sep">•</span> Guntur <span className="city-sep">•</span> Tirupati <span className="city-sep">•</span> Kadapa <span className="city-sep">•</span> Nellore <span className="city-sep">•</span> Kurnool <span className="city-sep">•</span> Rajahmundry <span className="city-sep">•</span> Chittoor <span className="city-sep">•</span> Badvel <span className="city-sep">•</span> Proddatur <span className="city-sep">•</span> Rayachoty (Annamayya)
+                  </div>
                 </div>
               </div>
 
@@ -560,11 +566,113 @@ export default function HomePage() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
-                <a href="tel:+919059949365" className="btn btn-coral"><i className="fa-solid fa-phone"></i> Call Dispatch: 90599 49365</a>
-                <a href="tel:+919000022821" className="btn btn-teal"><i className="fa-solid fa-phone"></i> 90000 22821</a>
+                <a href="tel:+919000022821" className="btn btn-coral"><i className="fa-solid fa-phone"></i> +91 90000 22821</a>
+                <a href="tel:+919000867874" className="btn btn-teal"><i className="fa-solid fa-phone"></i> +91 90008 67874</a>
                 <a href="https://wa.me/919059949365" target="_blank" rel="noopener noreferrer" className="btn btn-soft-cream"><i className="fa-brands fa-whatsapp" style={{ color: '#25D366' }}></i> WhatsApp</a>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          3B. EXECUTIVE LEADERSHIP — Managing Directors
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="section leadership-section reveal-init" id="executive-leadership">
+        <div className="container">
+          <div className="section-header text-center" style={{ maxWidth: '820px', margin: '0 auto 2.5rem' }}>
+            <div className="eyebrow-pill teal">
+              <i className="fa-solid fa-crown" style={{ marginRight: '0.4rem', color: '#F7A88B' }}></i>
+              Executive Leadership
+            </div>
+            <h2 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', fontWeight: 800, letterSpacing: '-0.5px', marginTop: '0.5rem' }}>
+              Guided by Visionary Logistics Leadership
+            </h2>
+            <p style={{ color: 'var(--text-slate-muted)', fontSize: '1.05rem', lineHeight: '1.7', marginTop: '0.75rem' }}>
+              Under the dedicated governance of our Managing Directors, Sai International Couriers &amp; Cargo bridges families, NRI diaspora, and global exporters across India with direct air cargo connections to 195+ countries.
+            </p>
+          </div>
+
+          <div className="directors-executive-grid">
+            {/* Director 1: S. Junaid Mohuddin */}
+            <article className="director-executive-card">
+              <div className="director-visual-col">
+                <div className="director-avatar-wrapper">
+                  <img 
+                    src="/assets/images/director_junaid_mohuddin.jpg" 
+                    alt="S. Junaid Mohuddin - Managing Director" 
+                    className="director-portrait-img"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="director-avatar-fallback junaid-fallback" style={{ display: 'none' }}>
+                    JM
+                  </div>
+                  <div className="director-badge-ring" title="Global Air Cargo Operations">
+                    <i className="fa-solid fa-plane-up"></i>
+                  </div>
+                </div>
+                <div className="director-tag-pill">
+                  <span className="live-dot"></span> Managing Director
+                </div>
+              </div>
+
+              <div className="director-info-col">
+                <div className="director-eyebrow">Strategic Leadership &amp; Global Operations</div>
+                <h3 className="director-name">S. Junaid Mohuddin</h3>
+                <div className="director-role-caption">Managing Director • International Air Cargo</div>
+                <p className="director-desc">
+                  Directing cross-border air freight corridors, global customs clearance protocols, and strategic airline partnerships across the USA, UK, Canada, Australia, and the Middle East. Ensuring ultra-fast, time-definite transit with complete regulatory adherence.
+                </p>
+                <div className="director-specialties">
+                  <span className="specialty-chip"><i className="fa-solid fa-plane"></i> Global Air Cargo</span>
+                  <span className="specialty-chip"><i className="fa-solid fa-shield-halved"></i> Customs Compliance</span>
+                  <span className="specialty-chip"><i className="fa-solid fa-globe"></i> 195+ Countries</span>
+                </div>
+              </div>
+            </article>
+
+            {/* Director 2: S. Chandra Vadu */}
+            <article className="director-executive-card">
+              <div className="director-visual-col">
+                <div className="director-avatar-wrapper">
+                  <img 
+                    src="/assets/images/director_chandra_vadu.jpg" 
+                    alt="S. Chandra Vadu - Managing Director" 
+                    className="director-portrait-img"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="director-avatar-fallback chandra-fallback" style={{ display: 'none' }}>
+                    CV
+                  </div>
+                  <div className="director-badge-ring" title="Regional Logistics & NRI Care">
+                    <i className="fa-solid fa-boxes-packing"></i>
+                  </div>
+                </div>
+                <div className="director-tag-pill">
+                  <span className="live-dot"></span> Managing Director
+                </div>
+              </div>
+
+              <div className="director-info-col">
+                <div className="director-eyebrow">Domestic Networks &amp; NRI Logistics Care</div>
+                <h3 className="director-name">S. Chandra Vadu</h3>
+                <div className="director-role-caption">Managing Director • Regional Hubs &amp; Packaging</div>
+                <p className="director-desc">
+                  Spearheading expansive regional doorstep logistics across Andhra Pradesh and Telangana, multi-tier domestic consolidation, and pioneering specialized certified vacuum packaging for NRI homemade food, traditional sweets, and fragile consignments.
+                </p>
+                <div className="director-specialties">
+                  <span className="specialty-chip"><i className="fa-solid fa-truck-ramp-box"></i> Doorstep Pickup</span>
+                  <span className="specialty-chip"><i className="fa-solid fa-box-open"></i> NRI Food Vacuum Packing</span>
+                  <span className="specialty-chip"><i className="fa-solid fa-map-location-dot"></i> AP &amp; TG Network</span>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
       </section>

@@ -12,7 +12,7 @@ const DEFAULT_BRANCHES = [
     address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP - 516001',
     landmark: 'Opposite Cooperative Bank / Near Old Bus Stand',
     phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874'],
-    manager: 'S. Chandra Babu (MD)',
+    manager: 'S. Chandra Vadu (MD) / S. Junaid Mohuddin (MD)',
     email: 'saiinternationalcouriers83@gmail.com',
     hours: 'Mon - Sun: 09:00 AM - 09:30 PM',
     mapEmbed: 'https://maps.google.com/maps?q=14.4726874,78.8323784+(SAI+INTERNATIONAL+COURIER)&t=&z=17&ie=UTF8&iwloc=B&output=embed',
@@ -26,14 +26,62 @@ const DEFAULT_BRANCHES = [
     tag: 'City Express Counter',
     pincode: '516001',
     address: 'Beside MedPlus Pharmacy, Near Visweswaraiah Circle, Nagarajupeta, Kadapa, AP - 516001',
-    landmark: 'Beside MedPlus Pharmacy',
-    phones: ['+91 96030 49365', '+91 90599 49365'],
+    landmark: 'Beside MedPlus Pharmacy, Visweswaraiah Circle',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
     manager: 'K. Rajesh Kumar',
     email: 'kadapa2@saiinternationalcouriers.com',
     hours: 'Mon - Sat: 09:30 AM - 09:00 PM',
     mapEmbed: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed',
     directionsUrl: 'https://maps.google.com/?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001',
     amenities: ['Vacuum Packaging', 'Digital Scale', 'Student Transcripts Express', 'Instant KYC Verification']
+  },
+  {
+    id: 'hyd-hub',
+    name: 'Hyderabad Air Cargo Gateway (RGIA)',
+    district: 'Hyderabad',
+    tag: 'International Cargo Flight Terminal',
+    pincode: '500028',
+    address: 'Mehdipatnam Express Counter / Direct Air Cargo Transit link to RGIA Shamshabad, Hyderabad, TS - 500028',
+    landmark: 'Direct Air Cargo Express Link to Rajiv Gandhi International Airport (RGIA)',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'S. Junaid Mohuddin (MD Desk)',
+    email: 'hyderabad@saiinternationalcouriers.com',
+    hours: '24/7 Air Cargo Operations',
+    mapEmbed: 'https://maps.google.com/maps?q=Rajiv+Gandhi+International+Airport,+Shamshabad,+Hyderabad&t=&z=14&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Rajiv+Gandhi+International+Airport,+Shamshabad,+Hyderabad',
+    amenities: ['Direct Airport Cargo Flights', 'Customs Clearance Hub', 'Heavy Commercial Freight', 'Doorstep Pickup Hyderabad']
+  },
+  {
+    id: 'vijayawada-hub',
+    name: 'Vijayawada Central Logistics Hub',
+    district: 'Vijayawada',
+    tag: 'Capital Region Major Hub',
+    pincode: '520001',
+    address: 'MG Road, Near Benz Circle & RTC Complex, Governorpet, Vijayawada, AP - 520001',
+    landmark: 'Near Benz Circle & RTC Complex',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'T. Rama Krishna',
+    email: 'vijayawada@saiinternationalcouriers.com',
+    hours: 'Mon - Sun: 09:00 AM - 09:30 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Benz+Circle,+Vijayawada,+Andhra+Pradesh+520001&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Benz+Circle,+Vijayawada,+Andhra+Pradesh+520001',
+    amenities: ['Heavy Air Freight Desk', 'Pickles & Homemade Food Packing', 'Express USA/UK Counter', 'Doorstep Van Service']
+  },
+  {
+    id: 'visakhapatnam-hub',
+    name: 'Visakhapatnam Port & Air Cargo Center',
+    district: 'Visakhapatnam',
+    tag: 'City of Destiny Port & Express Hub',
+    pincode: '530016',
+    address: 'Dwaraka Nagar Main Road, Near RTC Complex, Visakhapatnam, AP - 530016',
+    landmark: 'Opposite Dwaraka Bus Station / RTC Complex',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'S. V. Ramana Rao',
+    email: 'vizag@saiinternationalcouriers.com',
+    hours: 'Mon - Sun: 09:00 AM - 09:30 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Dwaraka+Nagar,+Visakhapatnam,+Andhra+Pradesh+530016&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Dwaraka+Nagar,+Visakhapatnam,+Andhra+Pradesh+530016',
+    amenities: ['Sea & Air Cargo Export', 'Multi-Layer Food Sealing', 'Student Visa Document Desk', 'Doorstep Collection']
   },
   {
     id: 'tirupati-hub',
@@ -43,12 +91,12 @@ const DEFAULT_BRANCHES = [
     pincode: '517501',
     address: 'Bhavani Nagar Main Road, Near RTC Central Bus Stand, Tirupati, AP - 517501',
     landmark: 'Near RTC Central Bus Stand',
-    phones: ['+91 99853 23365', '+91 90599 49365'],
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
     manager: 'M. Venkat Reddy',
     email: 'tirupati@saiinternationalcouriers.com',
     hours: 'Mon - Sun: 09:00 AM - 09:30 PM',
-    mapEmbed: 'https://maps.google.com/maps?q=Tirupati,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    directionsUrl: 'https://maps.google.com/?q=Tirupati,+Andhra+Pradesh',
+    mapEmbed: 'https://maps.google.com/maps?q=RTC+Central+Bus+Stand,+Tirupati,+Andhra+Pradesh+517501&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=RTC+Central+Bus+Stand,+Tirupati,+Andhra+Pradesh+517501',
     amenities: ['NRI Prasadam Packaging', 'Industrial Vacuum Sealer', 'Student Visa Baggage Desk', 'Free Doorstep Collection']
   },
   {
@@ -58,14 +106,126 @@ const DEFAULT_BRANCHES = [
     tag: 'Coastal District Logistics Hub',
     pincode: '524001',
     address: 'Grand Trunk Road, Opp. RTC Complex, Subedarpet, Nellore, AP - 524001',
-    landmark: 'Opposite RTC Complex',
+    landmark: 'Opposite RTC Complex, Subedarpet',
     phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
     manager: 'P. Srinivasulu',
     email: 'nellore@saiinternationalcouriers.com',
     hours: 'Mon - Sun: 09:00 AM - 09:00 PM',
-    mapEmbed: 'https://maps.google.com/maps?q=Nellore,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    directionsUrl: 'https://maps.google.com/?q=Nellore,+Andhra+Pradesh',
+    mapEmbed: 'https://maps.google.com/maps?q=RTC+Complex,+Subedarpet,+Nellore,+Andhra+Pradesh+524001&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=RTC+Complex,+Subedarpet,+Nellore,+Andhra+Pradesh+524001',
     amenities: ['Spices & Pickle Sealing', 'Digital Weighing Machine', 'Air Cargo Booking', 'Doorstep Van Service']
+  },
+  {
+    id: 'chittoor-hub',
+    name: 'Chittoor Regional Hub',
+    district: 'Chittoor',
+    tag: 'Border District Express Hub',
+    pincode: '517001',
+    address: 'High Road, Near Old Bus Stand & Collectorate, Chittoor, AP - 517001',
+    landmark: 'Near Old Bus Stand & District Court',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'K. Mohan Reddy',
+    email: 'chittoor@saiinternationalcouriers.com',
+    hours: 'Mon - Sun: 09:00 AM - 09:00 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=High+Road,+Chittoor,+Andhra+Pradesh+517001&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=High+Road,+Chittoor,+Andhra+Pradesh+517001',
+    amenities: ['NRI Food Vacuum Packaging', 'Express Export Counters', 'Free Doorstep Collection', 'Daily Airport Link']
+  },
+  {
+    id: 'badvel-hub',
+    name: 'Badvel Express Counter',
+    district: 'Kadapa',
+    tag: 'Commercial & Agricultural Express Hub',
+    pincode: '516227',
+    address: 'Main Bazar Road, Near RTC Bus Stand, Badvel, YSR Kadapa Dist, AP - 516227',
+    landmark: 'Near RTC Bus Stand, Badvel',
+    phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874'],
+    manager: 'P. Narayana Rao',
+    email: 'badvel@saiinternationalcouriers.com',
+    hours: 'Mon - Sat: 09:30 AM - 08:30 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=RTC+Bus+Stand,+Badvel,+Andhra+Pradesh+516227&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=RTC+Bus+Stand,+Badvel,+Andhra+Pradesh+516227',
+    amenities: ['Certified Vacuum Sealing', 'Agricultural Samples Export', 'Doorstep Pickup Service', 'Instant AWB Tracking']
+  },
+  {
+    id: 'rayachoty-hub',
+    name: 'Rayachoty (Annamayya District Hub)',
+    district: 'Annamayya',
+    tag: 'District Headquarters Central Counter',
+    pincode: '516269',
+    address: 'Main Bazar Road, Near Old Bus Stand, Rayachoty, Annamayya Dist, AP - 516269',
+    landmark: 'Near Old Bus Stand, Rayachoty',
+    phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874'],
+    manager: 'K. Subba Reddy',
+    email: 'rayachoty@saiinternationalcouriers.com',
+    hours: 'Mon - Sat: 09:30 AM - 08:30 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Rayachoty,+Annamayya+District,+Andhra+Pradesh+516269&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Rayachoty,+Annamayya+District,+Andhra+Pradesh+516269',
+    amenities: ['Vacuum Packaging', 'Doorstep Pickup Service', 'Commercial Samples', 'Express Air Courier']
+  },
+  {
+    id: 'rajampet-hub',
+    name: 'Rajampet Express Center (Annamayya Dist)',
+    district: 'Annamayya',
+    tag: 'Educational & NRI Express Desk',
+    pincode: '516115',
+    address: 'RTC Bus Stand Road, Near Railway Station Road, Rajampet, Annamayya Dist, AP - 516115',
+    landmark: 'Near RTC Bus Stand, Rajampet',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'B. Suresh Kumar',
+    email: 'rajampet@saiinternationalcouriers.com',
+    hours: 'Mon - Sat: 09:30 AM - 08:30 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Rajampet,+Annamayya+District,+Andhra+Pradesh+516115&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Rajampet,+Annamayya+District,+Andhra+Pradesh+516115',
+    amenities: ['Student Transcripts Express', 'Vacuum Food Packing', 'Doorstep Pickup', 'Express Air Freight']
+  },
+  {
+    id: 'rajamahndry-hub',
+    name: 'Rajahmundry Godavari Logistics Hub',
+    district: 'Rajahmundry',
+    tag: 'East Godavari Regional Express Hub',
+    pincode: '533101',
+    address: 'Kotipalli Bus Stand Road, Near Main Market, Rajahmundry, AP - 533101',
+    landmark: 'Near Kotipalli Bus Stand',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'G. Satyanarayana',
+    email: 'rajahmundry@saiinternationalcouriers.com',
+    hours: 'Mon - Sun: 09:00 AM - 09:00 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Kotipalli+Bus+Stand,+Rajahmundry,+Andhra+Pradesh+533101&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Kotipalli+Bus+Stand,+Rajahmundry,+Andhra+Pradesh+533101',
+    amenities: ['Sweet & Savory Food Sealing', 'Commercial Agro Exports', 'Doorstep Collection', 'Direct RGIA Link']
+  },
+  {
+    id: 'guntur-hub',
+    name: 'Guntur Commercial Hub',
+    district: 'Guntur',
+    tag: 'Export & Spices Logistics Center',
+    pincode: '522002',
+    address: 'Arundelpet 4th Lane, Near Hindu College, Guntur, AP - 522002',
+    landmark: 'Near Arundelpet 4th Lane',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'Y. Nageswara Rao',
+    email: 'guntur@saiinternationalcouriers.com',
+    hours: 'Mon - Sun: 09:00 AM - 09:00 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Arundelpet,+Guntur,+Andhra+Pradesh+522002&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Arundelpet,+Guntur,+Andhra+Pradesh+522002',
+    amenities: ['Chilli & Spices Export Packaging', 'Commercial Cargo Desk', 'Doorstep Pickup Van', 'Digital Weight Verification']
+  },
+  {
+    id: 'kurnool-hub',
+    name: 'Kurnool Rayalaseema Gateway',
+    district: 'Kurnool',
+    tag: 'Rayalaseema Regional Express Gateway',
+    pincode: '518001',
+    address: 'Bellary Road, Near Old Bus Stand, Kurnool, AP - 518001',
+    landmark: 'Near Old Bus Stand & Bellary Chowrasta',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
+    manager: 'B. Madhusudhan Reddy',
+    email: 'kurnool@saiinternationalcouriers.com',
+    hours: 'Mon - Sun: 09:00 AM - 09:00 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Bellary+Road,+Kurnool,+Andhra+Pradesh+518001&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Bellary+Road,+Kurnool,+Andhra+Pradesh+518001',
+    amenities: ['Industrial Vacuum Sealer', 'Doorstep Van Service', 'Express Courier Desk', 'Direct RGIA Link']
   },
   {
     id: 'proddatur-hub',
@@ -74,30 +234,14 @@ const DEFAULT_BRANCHES = [
     tag: 'Commercial Gold City Counter',
     pincode: '516360',
     address: 'Gandhi Road, Near Sivalayam Temple, Proddatur, YSR Kadapa Dist, AP - 516360',
-    landmark: 'Near Sivalayam Temple',
-    phones: ['+91 96030 49365', '+91 90599 49365'],
+    landmark: 'Near Sivalayam Temple, Gandhi Road',
+    phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
     manager: 'V. Ramanjaneyulu',
     email: 'proddatur@saiinternationalcouriers.com',
     hours: 'Mon - Sat: 09:30 AM - 08:30 PM',
-    mapEmbed: 'https://maps.google.com/maps?q=Proddatur,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    directionsUrl: 'https://maps.google.com/?q=Proddatur,+Andhra+Pradesh',
+    mapEmbed: 'https://maps.google.com/maps?q=Gandhi+Road,+Proddatur,+Andhra+Pradesh+516360&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Gandhi+Road,+Proddatur,+Andhra+Pradesh+516360',
     amenities: ['Vacuum Sealing', 'Commercial Textile Samples', 'Door Pickup Team', 'Express Cargo']
-  },
-  {
-    id: 'rayachoty-hub',
-    name: 'Rayachoty Express Branch',
-    district: 'Rayachoty',
-    tag: 'District Headquarters Express Desk',
-    pincode: '516269',
-    address: 'Main Bazar Road, Near Old Bus Stand, Rayachoty, Annamayya Dist, AP - 516269',
-    landmark: 'Near Old Bus Stand',
-    phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874'],
-    manager: 'K. Subba Reddy',
-    email: 'rayachoty@saiinternationalcouriers.com',
-    hours: 'Mon - Sat: 09:30 AM - 08:30 PM',
-    mapEmbed: 'https://maps.google.com/maps?q=Rayachoty,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed',
-    directionsUrl: 'https://maps.google.com/?q=Rayachoty,+Andhra+Pradesh',
-    amenities: ['Vacuum Packaging', 'Doorstep Pickup Service', 'Commercial Samples', 'Express Air Courier']
   }
 ];
 
@@ -129,6 +273,11 @@ export default function BranchesPage() {
     return branchesList.find(b => b.id === activeMapBranch) || branchesList[0];
   }, [branchesList, activeMapBranch]);
 
+  const availableDistricts = useMemo(() => {
+    const set = new Set(branchesList.map(b => b.district).filter(Boolean));
+    return ['all', ...Array.from(set)];
+  }, [branchesList]);
+
   return (
     <main style={{ paddingTop: '80px' }}>
       <section className="page-hero-banner">
@@ -139,7 +288,7 @@ export default function BranchesPage() {
             <span className="current">Branch Network</span>
           </div>
           <div className="eyebrow-pill teal">
-            <i className="fa-solid fa-location-dot"></i> {branchesList.length} Regional Hubs Across Andhra Pradesh
+            <i className="fa-solid fa-location-dot"></i> {branchesList.length} Major Courier &amp; Cargo Hubs Across India, AP &amp; Telangana
           </div>
           <h1 className="page-hero-title">{hero.heading || 'Find Your Nearest Branch & Drop-off Hub'}</h1>
           <p className="page-hero-desc">
@@ -158,7 +307,7 @@ export default function BranchesPage() {
                 <input
                   type="text"
                   className="branch-search-input"
-                  placeholder="Search by City, Branch Name, Area, or 6-Digit Pincode (e.g. 516001, Tirupati)..."
+                  placeholder="Search by City (Hyderabad, Vijayawada, Kadapa, Chittoor, Badvel...), Branch Name, Area, or PIN..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -182,16 +331,16 @@ export default function BranchesPage() {
 
             {/* Filter Pills & View Switcher */}
             <div className="branch-filter-pills-row">
-              <div className="district-pills-group">
+              <div className="district-pills-group" style={{ overflowX: 'auto', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-slate-muted)', marginRight: '0.25rem' }}>Filter Region:</span>
-                {['all', 'Kadapa', 'Tirupati', 'Nellore', 'Rayachoty'].map(dist => (
+                {availableDistricts.map(dist => (
                   <button
                     key={dist}
                     type="button"
                     className={`district-pill-btn${selectedDistrict === dist ? ' active' : ''}`}
                     onClick={() => setSelectedDistrict(dist)}
                   >
-                    {dist === 'all' ? `All Branches (${branchesList.length})` : dist}
+                    {dist === 'all' ? `All Hubs (${branchesList.length})` : dist}
                   </button>
                 ))}
               </div>

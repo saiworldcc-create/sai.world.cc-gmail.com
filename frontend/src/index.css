@@ -7523,3 +7523,300 @@ body {
     opacity: 0;
   }
 }
+
+
+/* --------------------------------------------------------------------------
+   Brand Story Network Coverage Panel
+   -------------------------------------------------------------------------- */
+.story-network-panel {
+  background: rgba(18, 35, 54, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  margin: 1.35rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+.story-network-row {
+  display: grid;
+  grid-template-columns: 195px 1fr;
+  align-items: baseline;
+  gap: 0.85rem;
+}
+
+@media (max-width: 680px) {
+  .story-network-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}
+
+.story-network-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.story-network-badge.metro {
+  background: rgba(56, 189, 248, 0.14);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.story-network-badge.tg {
+  background: rgba(20, 184, 166, 0.14);
+  color: #2dd4bf;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+}
+
+.story-network-badge.ap {
+  background: rgba(249, 115, 22, 0.14);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.story-network-cities {
+  font-size: 0.86rem;
+  color: #E2E8F0;
+  line-height: 1.6;
+}
+
+.story-network-cities .city-sep {
+  color: #475569;
+  margin: 0 0.35rem;
+}
+
+/* --------------------------------------------------------------------------
+   Executive Leadership / Managing Directors Section
+   -------------------------------------------------------------------------- */
+.leadership-section {
+  background: linear-gradient(180deg, #0B1622 0%, #0d1e30 50%, #0B1622 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leadership-section::before {
+  content: '';
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.directors-executive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.25rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .directors-executive-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+}
+
+.director-executive-card {
+  position: relative;
+  background: rgba(18, 35, 54, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 18px;
+  padding: 2.25rem 2rem;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1.75rem;
+  align-items: center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.director-executive-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 16px 40px rgba(56, 189, 248, 0.12), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 580px) {
+  .director-executive-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.25rem;
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+.director-visual-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.director-avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, #0284c7 0%, #14b8a6 50%, #f97316 100%);
+  box-shadow: 0 8px 25px rgba(2, 132, 199, 0.35);
+  flex-shrink: 0;
+}
+
+.director-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  border-radius: 50%;
+  display: block;
+  background: #0F1E2E;
+}
+
+.director-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.director-avatar-fallback.junaid-fallback {
+  background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+}
+
+.director-avatar-fallback.chandra-fallback {
+  background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%);
+}
+
+.director-badge-ring {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0284c7;
+  color: #FFFFFF;
+  border: 2px solid #0B1622;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.director-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(13, 148, 136, 0.16);
+  color: #2dd4bf;
+  border: 1px solid rgba(20, 184, 166, 0.35);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.director-tag-pill .live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2dd4bf;
+  box-shadow: 0 0 8px #2dd4bf;
+}
+
+.director-info-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.director-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  margin-bottom: 0.3rem;
+}
+
+.director-name {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+
+.director-role-caption {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #F7A88B;
+  margin-bottom: 0.75rem;
+}
+
+.director-desc {
+  font-size: 0.92rem;
+  color: #C2D5E5;
+  line-height: 1.65;
+  margin: 0 0 1rem 0;
+}
+
+.director-specialties {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 580px) {
+  .director-specialties {
+    justify-content: center;
+  }
+}
+
+.specialty-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #E2E8F0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.specialty-chip i {
+  color: #38bdf8;
+  font-size: 0.75rem;
+}
