@@ -725,7 +725,7 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════════════════════════════════
           3B. EXECUTIVE LEADERSHIP — Managing Directors
           ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="section leadership-section reveal-init" id="executive-leadership">
+      <section className="section leadership-section" id="executive-leadership">
         <div className="container">
           <div className="section-header text-center" style={{ maxWidth: '820px', margin: '0 auto 2.5rem' }}>
             <div className="eyebrow-pill teal">

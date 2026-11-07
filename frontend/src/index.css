@@ -7607,6 +7607,9 @@ body {
   padding: 5rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
 }
 
 .leadership-section::before {
