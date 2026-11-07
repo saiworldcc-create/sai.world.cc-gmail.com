@@ -8821,3 +8821,226 @@ body {
   padding-top: 0.85rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+/* ========================================================================== */
+/* ORACLE-STYLE ENTERPRISE LEGAL & COMPLIANCE ARCHITECTURE                    */
+/* ========================================================================== */
+
+/* Sticky Horizontal Sub-Navigation Tab Bar */
+.oracle-subnav-bar {
+  position: sticky;
+  top: 72px; /* right below main site header */
+  background: #09131F;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 40;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.oracle-subnav-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.oracle-subnav-container::-webkit-scrollbar {
+  display: none;
+}
+
+.oracle-subnav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.95rem 0.2rem 0.85rem 0.2rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #94A3B8;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.oracle-subnav-tab:hover {
+  color: #FFFFFF;
+}
+
+.oracle-subnav-tab.active {
+  color: #FFFFFF;
+  font-weight: 700;
+  border-bottom: 3px solid #F7A88B; /* Oracle coral/red active indicator underline */
+}
+
+.oracle-subnav-tab.active.teal-theme {
+  border-bottom-color: #2DD4BF;
+}
+
+/* Oracle Clean Enterprise Hero Banner */
+.oracle-hero-banner {
+  background: linear-gradient(180deg, #07101B 0%, #0B1928 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3.5rem 0 3rem 0;
+  position: relative;
+}
+
+.oracle-hero-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.oracle-hero-title {
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 0.85rem 0;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.oracle-hero-lead {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #94A3B8;
+  max-width: 860px;
+  margin: 0 0 1.75rem 0;
+}
+
+.oracle-meta-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  font-size: 0.84rem;
+  color: #64748B;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.oracle-meta-item strong {
+  color: #CBD5E1;
+}
+
+/* Oracle Clean Document Section */
+.oracle-doc-section {
+  background: var(--bg-ivory, #0B1622);
+  padding: 3.5rem 0 5.5rem 0;
+}
+
+.oracle-doc-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Oracle Legal Notice Callout Box */
+.oracle-notice-box {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 4px solid #F7A88B;
+  border-radius: 8px;
+  padding: 1.35rem 1.65rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.oracle-notice-box.teal-theme {
+  border-left-color: #2DD4BF;
+}
+
+.oracle-notice-title {
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.oracle-notice-title i {
+  color: #F7A88B;
+}
+
+.oracle-notice-title.teal-theme i {
+  color: #2DD4BF;
+}
+
+.oracle-notice-text {
+  color: #CBD5E1;
+  font-size: 0.93rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* Oracle Legal Article */
+.oracle-clause-item {
+  margin-bottom: 3rem;
+  scroll-margin-top: 140px;
+}
+
+.oracle-clause-heading {
+  font-size: 1.35rem;
+  font-weight: 750;
+  color: #FFFFFF;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.01em;
+}
+
+.oracle-clause-heading span.num {
+  color: #F7A88B;
+  margin-right: 0.5rem;
+  font-weight: 800;
+}
+
+.oracle-clause-heading.teal-theme span.num {
+  color: #2DD4BF;
+}
+
+.oracle-clause-p {
+  color: #CBD5E1;
+  font-size: 0.96rem;
+  line-height: 1.85;
+  margin-bottom: 1rem;
+}
+
+.oracle-clause-list {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.oracle-clause-list li {
+  color: #CBD5E1;
+  font-size: 0.95rem;
+  line-height: 1.85;
+  margin-bottom: 0.6rem;
+  list-style-type: disc;
+}
+
+.oracle-clause-list li::marker {
+  color: #F7A88B;
+}
+
+.oracle-clause-list.teal-theme li::marker {
+  color: #2DD4BF;
+}
+
+/* Oracle Clean Document Footer */
+.oracle-doc-footer {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
