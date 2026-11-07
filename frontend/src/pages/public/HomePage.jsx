@@ -521,9 +521,40 @@ export default function HomePage() {
             </div>
             <div className="reveal-init stagger-2">
               <div className="eyebrow-pill teal">{bs.eyebrow || 'Our Heritage & Commitment'}</div>
-              <h2>{bs.heading || 'Connecting Andhra Pradesh with the World'}</h2>
-              <p style={{ fontSize: '1.05rem', lineHeight: '1.65', margin: '1rem 0' }}>{bs.paragraph1}</p>
-              <p>{bs.paragraph2}</p>
+              <h2>{(!bs.heading || bs.heading.includes('Andhra Pradesh')) ? 'Connecting India with the World' : bs.heading}</h2>
+              <p style={{ fontSize: '1.05rem', lineHeight: '1.65', margin: '1rem 0' }}>
+                {(!bs.paragraph1 || bs.paragraph1.includes('across Kadapa, Nellore')) ? (
+                  "Founded with the mission to bridge families, NRI diaspora, and commercial exporters across India with 195+ countries globally, Sai International Couriers & Cargo delivers unmatched speed, reliability, and care. We provide seamless door-to-door international logistics across India's top metropolitan hubs including Mumbai, Delhi NCR, Bengaluru, Chennai, Kolkata, and Pune, alongside dedicated gateway hubs across Telangana (Hyderabad, Secunderabad, Warangal, Nizamabad) and comprehensive regional coverage throughout Andhra Pradesh (Visakhapatnam, Vijayawada, Guntur, Tirupati, Kadapa, Nellore, Kurnool, Rajahmundry, Kakinada, Proddatur, and Rayachoty)."
+                ) : bs.paragraph1}
+              </p>
+              <p>
+                {(!bs.paragraph2 || bs.paragraph2.includes('or beloved homemade delicacies, we manage')) ? (
+                  "Whether it's essential university academic transcripts, confidential corporate documents, heavy commercial air freight, or beloved homemade Andhra delicacies and NRI food parcels, our network ensures rapid dispatch with direct air cargo connections from Rajiv Gandhi International Airport (RGIA) Hyderabad, specialized multi-layer vacuum packaging, and seamless customs clearance."
+                ) : bs.paragraph2}
+              </p>
+
+              {/* City Hub Chips */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', margin: '1.25rem 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', fontSize: '0.84rem', color: 'var(--text-slate-muted)' }}>
+                  <span style={{ background: 'rgba(56, 189, 248, 0.12)', color: '#0284c7', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
+                    <i className="fa-solid fa-city"></i> Pan-India Metros:
+                  </span>
+                  <span>Mumbai • Delhi NCR • Bengaluru • Chennai • Kolkata • Pune • Ahmedabad</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', fontSize: '0.84rem', color: 'var(--text-slate-muted)' }}>
+                  <span style={{ background: 'rgba(13, 148, 136, 0.12)', color: '#0f766e', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
+                    <i className="fa-solid fa-plane-departure"></i> Telangana Gateway:
+                  </span>
+                  <span>Hyderabad (RGIA) • Secunderabad • Warangal • Nizamabad</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', fontSize: '0.84rem', color: 'var(--text-slate-muted)' }}>
+                  <span style={{ background: 'rgba(233, 120, 86, 0.12)', color: '#c2410c', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
+                    <i className="fa-solid fa-location-dot"></i> Andhra Pradesh Network:
+                  </span>
+                  <span>Visakhapatnam • Vijayawada • Guntur • Tirupati • Kadapa • Nellore • Kurnool • Rajahmundry • Proddatur • Rayachoty</span>
+                </div>
+              </div>
+
               <div className="story-features-list">
                 {(bs.features ? bs.features.map((f, i) => ({ icon: BRAND_FEATURES[i]?.icon || 'fa-check', text: f })) : BRAND_FEATURES).map((f, i) => (
                   <div key={f.text} className={`story-feature-item reveal-init stagger-${i + 1}`}>
@@ -532,9 +563,10 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
-                <a href="tel:+919059949365" className="btn btn-coral"><i className="fa-solid fa-phone"></i> Speak with Logistics Manager</a>
-                <a href="https://wa.me/919059949365" target="_blank" rel="noopener noreferrer" className="btn btn-soft-cream"><i className="fa-brands fa-whatsapp" style={{ color: '#25D366' }}></i> WhatsApp Inquiry</a>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+                <a href="tel:+919059949365" className="btn btn-coral"><i className="fa-solid fa-phone"></i> Call Dispatch: 90599 49365</a>
+                <a href="tel:+919000022821" className="btn btn-teal"><i className="fa-solid fa-phone"></i> 90000 22821</a>
+                <a href="https://wa.me/919059949365" target="_blank" rel="noopener noreferrer" className="btn btn-soft-cream"><i className="fa-brands fa-whatsapp" style={{ color: '#25D366' }}></i> WhatsApp</a>
               </div>
             </div>
           </div>

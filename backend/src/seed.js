@@ -109,9 +109,9 @@ const DEFAULT_PAGE_CONTENT = [
       },
       brandStory: {
         eyebrow: 'Our Heritage & Commitment',
-        heading: 'Connecting Andhra Pradesh with the World',
-        paragraph1: 'Founded with the mission to bridge families and businesses across Kadapa, Nellore, Tirupati, Proddutur, and Rayachoty with loved ones globally, Sai International Couriers & Cargo delivers unmatched speed, reliability, and care.',
-        paragraph2: 'Whether it\'s essential academic transcripts for overseas universities, confidential legal documents, heavy commercial air cargo, or beloved homemade delicacies, we manage the entire journey with specialized vacuum packaging and seamless customs clearance.',
+        heading: 'Connecting India with the World',
+        paragraph1: 'Founded with the mission to bridge families, NRI diaspora, and commercial exporters across India with 195+ countries globally, Sai International Couriers & Cargo delivers unmatched speed, reliability, and care. We provide seamless door-to-door international logistics across India\'s top metropolitan hubs including Mumbai, Delhi NCR, Bengaluru, Chennai, Kolkata, and Pune, alongside dedicated gateway hubs across Telangana (Hyderabad, Secunderabad, Warangal, Nizamabad) and comprehensive regional coverage throughout Andhra Pradesh (Visakhapatnam, Vijayawada, Guntur, Tirupati, Kadapa, Nellore, Kurnool, Rajahmundry, Kakinada, Proddatur, and Rayachoty).',
+        paragraph2: 'Whether it\'s essential university academic transcripts, confidential corporate documents, heavy commercial air freight, or beloved homemade Andhra delicacies and NRI food parcels, our network ensures rapid dispatch with direct air cargo connections from Rajiv Gandhi International Airport (RGIA) Hyderabad, specialized multi-layer vacuum packaging, and seamless customs clearance.',
         image: `/assets/images/express_doorstep_pickup.jpg`,
         features: [
           'Direct Air Cargo Flights',
@@ -281,7 +281,7 @@ const DEFAULT_PAGE_CONTENT = [
     sections: {
       hero: { heading: 'Contact Us & Book Pickup', lead: 'Get in touch with our team for parcel inquiries, pickup bookings, or any international shipping questions.', eyebrow: 'We\'re Here to Help' },
       contactInfo: {
-        phones: ['+91 90599 49365', '+91 96031 49365', '+91 96030 49365', '+91 99853 23365'],
+        phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874', '+91 96030 49365', '+91 99853 23365'],
         email: 'saiinternationalcouriers83@gmail.com',
         address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001',
         hours: '9:00 AM – 9:30 PM (All Days)',
@@ -325,7 +325,7 @@ const DEFAULT_PAGE_CONTENT = [
       hero: { heading: 'Our Branch Network Across Andhra Pradesh', lead: 'Find your nearest Sai International Couriers branch for doorstep pickup, parcel submission, and real-time tracking assistance.', eyebrow: 'Branch Locator' },
       branches: [
         { id: 'kadapa-main', name: 'Kadapa Head Office', address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001', phone: '+91 90599 49365', hours: '9 AM – 9:30 PM (All Days)', mapUrl: "https://maps.google.com/maps?q=14.4726874,78.8323784&t=&z=17&ie=UTF8&iwloc=B&output=embed" },
-        { id: 'kadapa-2', name: 'Kadapa Branch 2', address: 'Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.', phone: '+91 96031 49365', hours: '9 AM – 9 PM (All Days)', mapUrl: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed' },
+        { id: 'kadapa-2', name: 'Kadapa Branch 2', address: 'Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.', phone: '+91 90000 22821', hours: '9 AM – 9 PM (All Days)', mapUrl: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed' },
         { id: 'tirupati', name: 'Tirupati Regional Branch', address: 'Central Express Center, Tirupati, Andhra Pradesh', phone: '+91 96030 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Tirupati,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
         { id: 'nellore', name: 'Nellore Regional Branch', address: 'Main Road Commercial Center, Nellore, Andhra Pradesh', phone: '+91 99853 23365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Nellore,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
         { id: 'proddutur', name: 'Proddutur Regional Branch', address: 'Textile Commercial Hub, Proddatur, Andhra Pradesh', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Proddatur,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
@@ -398,7 +398,7 @@ const DEFAULT_PAGE_CONTENT = [
       },
       global: {
         email: 'saiinternationalcouriers83@gmail.com',
-        phones: ['+91 90599 49365', '+91 96031 49365', '+91 96030 49365', '+91 99853 23365'],
+        phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874', '+91 96030 49365', '+91 99853 23365'],
         hours: '09:00 AM – 09:30 PM (All 7 Days Open)'
       }
     }

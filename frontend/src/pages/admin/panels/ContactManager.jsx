@@ -129,7 +129,7 @@ export default function ContactManager() {
                 className="admin-input" 
                 value={(data.global.phones || []).join(', ')} 
                 onChange={(e) => handleGlobalChange('phones', e.target.value.split(',').map(s => s.trim()))} 
-                placeholder="+91 90599 49365, +91 96031 49365"
+                placeholder="+91 90599 49365, +91 90000 22821, +91 90008 67874"
               />
             </div>
           </div>

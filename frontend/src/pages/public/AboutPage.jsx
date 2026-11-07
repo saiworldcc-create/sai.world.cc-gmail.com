@@ -124,10 +124,10 @@ export default function AboutPage() {
               )}
             </div>
             <div className="reveal-init stagger-2">
-              <h2>{s.heading || 'Connecting Andhra Pradesh with the World Since Day One'}</h2>
+              <h2>{(!s.heading || s.heading.includes('Andhra Pradesh')) ? 'Connecting India with the World Since Day One' : s.heading}</h2>
               {(s.paragraphs && s.paragraphs.length > 0 ? s.paragraphs : [
-                "Sai International Couriers & Cargo was established with one clear mission — to provide Andhra Pradesh families, students, and businesses with a reliable, affordable, and transparent international courier solution.",
-                "Under the visionary leadership of Managing Directors S. Junaid Mohuddin and S. Chandra Vadu, we have grown from our founding office in Kadapa to a premier global shipping network serving thousands of satisfied NRI families and commercial exporters every month.",
+                "Sai International Couriers & Cargo was established with one clear mission — to provide families, students, and commercial exporters across India, Andhra Pradesh, and Telangana with a reliable, affordable, and transparent international courier solution.",
+                "Under the visionary leadership of Managing Directors S. Junaid Mohuddin and S. Chandra Vadu, we have grown from our founding office in Kadapa to a premier global shipping network serving thousands of satisfied NRI families and commercial exporters every month across major Indian metros and regional hubs.",
                 "Our specialization in NRI food shipping — particularly homemade pickles, sweets, and traditional snacks — sets us apart in the industry. We understand the emotional value of these packages and treat each one with extraordinary care."
               ]).map((p, i) => {
                 const formatted = p.replace(/(S\.\s*Junaid\s+Mohuddin|S\.\s*Chandra\s+Vadu|Managing\s+Directors?)/gi, '<strong>$1</strong>');

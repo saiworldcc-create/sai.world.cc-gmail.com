@@ -124,7 +124,7 @@ export default function Footer() {
                   </span>
                 )) : (
                   <>
-                    <a href="tel:+919059949365" style={{ color: '#F7A88B' }}>+91 90599 49365</a> | <a href="tel:+919603149365" style={{ color: '#F7A88B' }}>+91 96031 49365</a>
+                    <a href="tel:+919059949365" style={{ color: '#F7A88B' }}>+91 90599 49365</a> | <a href="tel:+919000022821" style={{ color: '#F7A88B' }}>+91 90000 22821</a> | <a href="tel:+919000867874" style={{ color: '#F7A88B' }}>+91 90008 67874</a>
                   </>
                 )}
               </div>

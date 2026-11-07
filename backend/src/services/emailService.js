@@ -182,7 +182,7 @@ async function sendContactAlert(contact) {
             
             <div style="background: #F8FAFC; border-left: 4px solid #0056B3; padding: 12px 16px; margin: 20px 0; border-radius: 0 8px 8px 0;">
               <strong>Immediate Assistance:</strong><br />
-              📞 Call: <a href="tel:+919059949365" style="color: #0056B3;">+91 90599 49365</a> | <a href="tel:+919603149365" style="color: #0056B3;">+91 96031 49365</a><br />
+              📞 Call: <a href="tel:+919059949365" style="color: #0056B3;">+91 90599 49365</a> | <a href="tel:+919000022821" style="color: #0056B3;">+91 90000 22821</a> | <a href="tel:+919000867874" style="color: #0056B3;">+91 90008 67874</a><br />
               💬 WhatsApp: <a href="https://wa.me/919059949365" style="color: #25D366;">+91 90599 49365</a><br />
               📍 Kadapa Main Hub: 41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP
             </div>

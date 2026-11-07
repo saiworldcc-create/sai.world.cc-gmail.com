@@ -26,7 +26,8 @@ export default function ServicesPage() {
       image: '/assets/images/sai_express_cargo_jet.jpg',
       reverse: true,
       perks: ['Airport-to-Airport & Door Delivery', 'Commercial Export Invoicing', 'Palletization & Strapping', 'Customs Clearance Assistance'],
-      primaryBtn: { text: 'Cargo Helpdesk: 96031 49365', href: 'tel:+919603149365', icon: 'fa-phone', isTeal: true }
+      primaryBtn: { text: 'Cargo Helpdesk: 90000 22821', href: 'tel:+919000022821', icon: 'fa-phone', isTeal: true },
+      secondaryBtn: { text: 'Helpline: 90008 67874', href: 'tel:+919000867874', icon: 'fa-phone' }
     },
     {
       id: 'food-special',
