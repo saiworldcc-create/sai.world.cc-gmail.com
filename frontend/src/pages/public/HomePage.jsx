@@ -728,10 +728,7 @@ export default function HomePage() {
       <section className="section leadership-section" id="executive-leadership">
         <div className="container">
           <div className="leadership-header">
-            <div className="eyebrow-pill teal">
-              <i className="fa-solid fa-crown" style={{ marginRight: '0.4rem', color: '#F7A88B' }}></i>
-              Executive Leadership
-            </div>
+            <div className="eyebrow-pill teal">Executive Leadership</div>
             <h2>Guided by Visionary Logistics Leadership</h2>
             <p>
               Under the dedicated governance of our Managing Directors, Sai International Couriers &amp; Cargo bridges families, NRI diaspora, and global exporters across India with direct air cargo connections to 195+ countries.
@@ -754,9 +751,6 @@ export default function HomePage() {
                   />
                   <div className="director-avatar-fallback junaid-fallback" style={{ display: 'none' }}>
                     JM
-                  </div>
-                  <div className="director-badge-ring" title="Global Air Cargo Operations">
-                    <i className="fa-solid fa-plane-up"></i>
                   </div>
                 </div>
 
@@ -795,9 +789,6 @@ export default function HomePage() {
                   />
                   <div className="director-avatar-fallback chandra-fallback" style={{ display: 'none' }}>
                     CV
-                  </div>
-                  <div className="director-badge-ring" title="Regional Logistics & NRI Care">
-                    <i className="fa-solid fa-boxes-packing"></i>
                   </div>
                 </div>
 
