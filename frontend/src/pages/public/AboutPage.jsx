@@ -261,21 +261,28 @@ export default function AboutPage() {
             >
               <div 
                 style={{ 
-                  width: '96px', 
-                  height: '96px', 
+                  width: '100px', 
+                  height: '100px', 
                   margin: '0 auto 1.5rem', 
                   borderRadius: '50%', 
-                  background: 'linear-gradient(135deg, #0284c7 0%, #1e40af 100%)', 
-                  color: '#ffffff', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  fontSize: '2.25rem', 
-                  fontWeight: 900,
-                  boxShadow: '0 10px 25px rgba(2, 132, 199, 0.35)'
+                  overflow: 'hidden',
+                  border: '3px solid rgba(2, 132, 199, 0.3)',
+                  boxShadow: '0 10px 25px rgba(2, 132, 199, 0.25)',
+                  background: '#f1f5f9'
                 }}
               >
-                CB
+                <img 
+                  src="/assets/images/director_chandra_vadu.jpg"
+                  alt="S. Chandra Babu - Managing Director"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
+                />
+                <div style={{ display: 'none', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #1e40af 100%)', color: '#fff', fontSize: '2.25rem', fontWeight: 900 }}>
+                  CB
+                </div>
               </div>
               <h3 
                 itemProp="name" 
@@ -329,21 +336,28 @@ export default function AboutPage() {
             >
               <div 
                 style={{ 
-                  width: '96px', 
-                  height: '96px', 
+                  width: '100px', 
+                  height: '100px', 
                   margin: '0 auto 1.5rem', 
                   borderRadius: '50%', 
-                  background: 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)', 
-                  color: '#ffffff', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  fontSize: '2.25rem', 
-                  fontWeight: 900,
-                  boxShadow: '0 10px 25px rgba(13, 148, 136, 0.35)'
+                  overflow: 'hidden',
+                  border: '3px solid rgba(13, 148, 136, 0.3)',
+                  boxShadow: '0 10px 25px rgba(13, 148, 136, 0.25)',
+                  background: '#f1f5f9'
                 }}
               >
-                JM
+                <img 
+                  src="/assets/images/director_junaid_mohuddin.jpg"
+                  alt="S. Junaid Mohuddin - Managing Director"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
+                />
+                <div style={{ display: 'none', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)', color: '#fff', fontSize: '2.25rem', fontWeight: 900 }}>
+                  JM
+                </div>
               </div>
               <h3 
                 itemProp="name" 
