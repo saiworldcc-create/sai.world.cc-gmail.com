@@ -5851,6 +5851,32 @@ video.page-hero-media {
     scroll-behavior: auto !important;
   }
 
+  /* Keep orbital tracking elements properly animated and positioned */
+  .orbital-container .orbit-ring-1 {
+    animation: ring-spin 40s linear infinite !important;
+  }
+  .orbital-container .orbit-ring-2 {
+    animation: ring-spin-reverse 50s linear infinite !important;
+  }
+  .orbital-container .orbital-center-node {
+    animation: glow-pulse 3s ease-in-out infinite !important;
+  }
+  .orbital-container .orbit-path-1 {
+    animation: orbit-revolve-1 20s linear infinite !important;
+  }
+  .orbital-container .orbit-path-2 {
+    animation: orbit-revolve-2 20s linear infinite !important;
+  }
+  .orbital-container .orbit-path-3 {
+    animation: orbit-revolve-3 20s linear infinite !important;
+  }
+  .orbital-container .orbit-path-4 {
+    animation: orbit-revolve-4 20s linear infinite !important;
+  }
+  .orbital-container .orbital-particle {
+    animation: particle-float 8s ease-in-out infinite !important;
+  }
+
   .reveal-init {
     opacity: 1 !important;
     transform: none !important;
@@ -6037,10 +6063,22 @@ video.page-hero-media {
 }
 
 /* Base orbit paths - keeping the node in place relative to center */
-.orbit-path-1 { animation: orbit-revolve-1 20s linear infinite; }
-.orbit-path-2 { animation: orbit-revolve-2 20s linear infinite; }
-.orbit-path-3 { animation: orbit-revolve-3 20s linear infinite; }
-.orbit-path-4 { animation: orbit-revolve-4 20s linear infinite; }
+.orbit-path-1 {
+  transform: rotate(0deg) translateX(140px) rotate(0deg);
+  animation: orbit-revolve-1 20s linear infinite;
+}
+.orbit-path-2 {
+  transform: rotate(90deg) translateX(190px) rotate(-90deg);
+  animation: orbit-revolve-2 20s linear infinite;
+}
+.orbit-path-3 {
+  transform: rotate(180deg) translateX(140px) rotate(-180deg);
+  animation: orbit-revolve-3 20s linear infinite;
+}
+.orbit-path-4 {
+  transform: rotate(270deg) translateX(190px) rotate(-270deg);
+  animation: orbit-revolve-4 20s linear infinite;
+}
 
 @keyframes orbit-revolve-1 { 0% { transform: rotate(0deg) translateX(140px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(140px) rotate(-360deg); } }
 @keyframes orbit-revolve-2 { 0% { transform: rotate(90deg) translateX(190px) rotate(-90deg); } 100% { transform: rotate(450deg) translateX(190px) rotate(-450deg); } }
@@ -6922,6 +6960,32 @@ video.page-hero-media {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Keep orbital tracking elements properly animated and positioned */
+  .orbital-container .orbit-ring-1 {
+    animation: ring-spin 40s linear infinite !important;
+  }
+  .orbital-container .orbit-ring-2 {
+    animation: ring-spin-reverse 50s linear infinite !important;
+  }
+  .orbital-container .orbital-center-node {
+    animation: glow-pulse 3s ease-in-out infinite !important;
+  }
+  .orbital-container .orbit-path-1 {
+    animation: orbit-revolve-1 20s linear infinite !important;
+  }
+  .orbital-container .orbit-path-2 {
+    animation: orbit-revolve-2 20s linear infinite !important;
+  }
+  .orbital-container .orbit-path-3 {
+    animation: orbit-revolve-3 20s linear infinite !important;
+  }
+  .orbital-container .orbit-path-4 {
+    animation: orbit-revolve-4 20s linear infinite !important;
+  }
+  .orbital-container .orbital-particle {
+    animation: particle-float 8s ease-in-out infinite !important;
   }
 
   .reveal-init {

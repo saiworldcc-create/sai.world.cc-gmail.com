@@ -175,7 +175,7 @@ export default function TermsPage() {
               Head Office: <strong>Kadapa, Andhra Pradesh, India</strong>
             </div>
             <div className="oracle-meta-item">
-              Executive Leadership: Managing Directors <strong>S. Junaid Mohuddin</strong> &amp; <strong>S. Chandra Vadu</strong>
+              Executive Leadership: Managing Directors <strong>S. Chandra Babu</strong> &amp; <strong>S. Junaid Mohuddin</strong>
             </div>
           </div>
         </div>

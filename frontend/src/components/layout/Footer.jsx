@@ -63,7 +63,7 @@ export default function Footer() {
               </div>
             </Link>
             <p style={{ fontSize: '0.88rem', color: '#C2D5E5', lineHeight: '1.6', marginTop: '0.25rem' }}>
-              Managing Directors: <strong style={{ color: '#FFFFFF' }}>S. Junaid Mohuddin</strong> &amp; <strong style={{ color: '#FFFFFF' }}>S. Chandra Vadu</strong><br />
+              Managing Directors: <strong style={{ color: '#FFFFFF' }}>S. Chandra Babu</strong> &amp; <strong style={{ color: '#FFFFFF' }}>S. Junaid Mohuddin</strong><br />
               Serving 195+ international destinations with door-to-door express parcel delivery, specialized food/pickle packaging, and air cargo solutions.
             </p>
             <div style={{ fontSize: '0.85rem', color: '#9FB8CC' }}>

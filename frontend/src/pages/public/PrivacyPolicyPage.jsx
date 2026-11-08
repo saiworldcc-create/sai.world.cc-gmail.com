@@ -176,7 +176,7 @@ export default function PrivacyPolicyPage() {
               Head Office: <strong>Kadapa, Andhra Pradesh, India</strong>
             </div>
             <div className="oracle-meta-item">
-              Executive Governance: Managing Directors <strong>S. Junaid Mohuddin</strong> &amp; <strong>S. Chandra Vadu</strong>
+              Executive Governance: Managing Directors <strong>S. Chandra Babu</strong> &amp; <strong>S. Junaid Mohuddin</strong>
             </div>
           </div>
         </div>
@@ -318,7 +318,7 @@ export default function PrivacyPolicyPage() {
               fontSize: '0.93rem'
             }}>
               <strong style={{ color: '#FFFFFF', fontSize: '1rem' }}>Data Protection &amp; Grievance Redressal Desk</strong><br />
-              Attn: <strong>S. Junaid Mohuddin &amp; S. Chandra Vadu (Managing Directors)</strong><br />
+              Attn: <strong>S. Chandra Babu &amp; S. Junaid Mohuddin (Managing Directors)</strong><br />
               Operating Entity: <strong>Sai International Couriers &amp; Cargo</strong><br />
               Registered Head Office: 41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP - 516001, India<br />
               Official Email: <strong>saiinternationalcouriers83@gmail.com</strong><br />

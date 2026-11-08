@@ -736,7 +736,45 @@ export default function HomePage() {
           </div>
 
           <div className="directors-executive-grid">
-            {/* Director 1: S. Junaid Mohuddin */}
+            {/* Director 1: S. Chandra Babu */}
+            <article className="director-executive-card">
+              <div className="director-header-row">
+                <div className="director-avatar-wrapper">
+                  <img 
+                    src="/assets/images/director_chandra_vadu.jpg" 
+                    alt="S. Chandra Babu - Managing Director" 
+                    className="director-portrait-img"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="director-avatar-fallback chandra-fallback" style={{ display: 'none' }}>
+                    CB
+                  </div>
+                </div>
+
+                <div className="director-title-lockup">
+                  <div className="director-tag-pill">
+                    <span className="live-dot"></span> Managing Director
+                  </div>
+                  <h3 className="director-name">S. Chandra Babu</h3>
+                  <div className="director-role-caption">Regional Hubs &amp; NRI Logistics Care</div>
+                </div>
+              </div>
+
+              <p className="director-desc">
+                Spearheading expansive regional doorstep logistics across Andhra Pradesh and Telangana, multi-tier domestic consolidation, and pioneering specialized certified vacuum packaging for NRI homemade food, traditional sweets, and fragile consignments.
+              </p>
+
+              <div className="director-specialties">
+                <span className="specialty-chip"><i className="fa-solid fa-truck-ramp-box"></i> Doorstep Pickup</span>
+                <span className="specialty-chip"><i className="fa-solid fa-box-open"></i> NRI Food Vacuum Packing</span>
+                <span className="specialty-chip"><i className="fa-solid fa-map-location-dot"></i> AP &amp; TG Network</span>
+              </div>
+            </article>
+
+            {/* Director 2: S. Junaid Mohuddin */}
             <article className="director-executive-card">
               <div className="director-header-row">
                 <div className="director-avatar-wrapper">
@@ -771,44 +809,6 @@ export default function HomePage() {
                 <span className="specialty-chip"><i className="fa-solid fa-plane"></i> Global Air Cargo</span>
                 <span className="specialty-chip"><i className="fa-solid fa-shield-halved"></i> Customs Compliance</span>
                 <span className="specialty-chip"><i className="fa-solid fa-globe"></i> 195+ Countries</span>
-              </div>
-            </article>
-
-            {/* Director 2: S. Chandra Vadu */}
-            <article className="director-executive-card">
-              <div className="director-header-row">
-                <div className="director-avatar-wrapper">
-                  <img 
-                    src="/assets/images/director_chandra_vadu.jpg" 
-                    alt="S. Chandra Vadu - Managing Director" 
-                    className="director-portrait-img"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
-                    }}
-                  />
-                  <div className="director-avatar-fallback chandra-fallback" style={{ display: 'none' }}>
-                    CV
-                  </div>
-                </div>
-
-                <div className="director-title-lockup">
-                  <div className="director-tag-pill">
-                    <span className="live-dot"></span> Managing Director
-                  </div>
-                  <h3 className="director-name">S. Chandra Vadu</h3>
-                  <div className="director-role-caption">Regional Hubs &amp; NRI Logistics Care</div>
-                </div>
-              </div>
-
-              <p className="director-desc">
-                Spearheading expansive regional doorstep logistics across Andhra Pradesh and Telangana, multi-tier domestic consolidation, and pioneering specialized certified vacuum packaging for NRI homemade food, traditional sweets, and fragile consignments.
-              </p>
-
-              <div className="director-specialties">
-                <span className="specialty-chip"><i className="fa-solid fa-truck-ramp-box"></i> Doorstep Pickup</span>
-                <span className="specialty-chip"><i className="fa-solid fa-box-open"></i> NRI Food Vacuum Packing</span>
-                <span className="specialty-chip"><i className="fa-solid fa-map-location-dot"></i> AP &amp; TG Network</span>
               </div>
             </article>
           </div>

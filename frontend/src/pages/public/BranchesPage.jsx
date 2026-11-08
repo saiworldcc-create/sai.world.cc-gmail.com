@@ -12,7 +12,7 @@ const DEFAULT_BRANCHES = [
     address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP - 516001',
     landmark: 'Opposite Cooperative Bank / Near Old Bus Stand',
     phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874'],
-    manager: 'S. Chandra Vadu (MD) / S. Junaid Mohuddin (MD)',
+    manager: 'S. Chandra Babu (MD) / S. Junaid Mohuddin (MD)',
     email: 'saiinternationalcouriers83@gmail.com',
     hours: 'Mon - Sun: 09:00 AM - 09:30 PM',
     mapEmbed: 'https://maps.google.com/maps?q=14.4726874,78.8323784+(SAI+INTERNATIONAL+COURIER)&t=&z=17&ie=UTF8&iwloc=B&output=embed',

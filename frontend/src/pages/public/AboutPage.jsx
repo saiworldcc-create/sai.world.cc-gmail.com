@@ -127,10 +127,10 @@ export default function AboutPage() {
               <h2>{(!s.heading || s.heading.includes('Andhra Pradesh')) ? 'Connecting India with the World Since Day One' : s.heading}</h2>
               {(s.paragraphs && s.paragraphs.length > 0 ? s.paragraphs : [
                 "Sai International Couriers & Cargo was established with one clear mission — to provide families, students, and commercial exporters across India, Andhra Pradesh, and Telangana with a reliable, affordable, and transparent international courier solution.",
-                "Under the visionary leadership of Managing Directors S. Junaid Mohuddin and S. Chandra Vadu, we have grown from our founding office in Kadapa to a premier global shipping network serving thousands of satisfied NRI families and commercial exporters every month across major Indian metros and regional hubs.",
+                "Under the visionary leadership of Managing Directors S. Chandra Babu and S. Junaid Mohuddin, we have grown from our founding office in Kadapa to a premier global shipping network serving thousands of satisfied NRI families and commercial exporters every month across major Indian metros and regional hubs.",
                 "Our specialization in NRI food shipping — particularly homemade pickles, sweets, and traditional snacks — sets us apart in the industry. We understand the emotional value of these packages and treat each one with extraordinary care."
               ]).map((p, i) => {
-                const formatted = p.replace(/(S\.\s*Junaid\s+Mohuddin|S\.\s*Chandra\s+Vadu|Managing\s+Directors?)/gi, '<strong>$1</strong>');
+                const formatted = p.replace(/(S\.\s*Chandra\s+Babu|S\.\s*Junaid\s+Mohuddin|Managing\s+Directors?)/gi, '<strong>$1</strong>');
                 return (
                   <p 
                     key={i} 
@@ -179,24 +179,24 @@ export default function AboutPage() {
               "founder": [
                 {
                   "@type": "Person",
-                  "name": "S. Junaid Mohuddin",
+                  "name": "S. Chandra Babu",
                   "jobTitle": "Managing Director"
                 },
                 {
                   "@type": "Person",
-                  "name": "S. Chandra Vadu",
+                  "name": "S. Junaid Mohuddin",
                   "jobTitle": "Managing Director"
                 }
               ],
               "employee": [
                 {
                   "@type": "Person",
-                  "name": "S. Junaid Mohuddin",
+                  "name": "S. Chandra Babu",
                   "jobTitle": "Managing Director"
                 },
                 {
                   "@type": "Person",
-                  "name": "S. Chandra Vadu",
+                  "name": "S. Junaid Mohuddin",
                   "jobTitle": "Managing Director"
                 }
               ]
@@ -243,7 +243,75 @@ export default function AboutPage() {
               margin: '0 auto' 
             }}
           >
-            {/* Director 1: S. Junaid Mohuddin */}
+            {/* Director 1: S. Chandra Babu */}
+            <article 
+              className="director-card" 
+              itemScope 
+              itemType="https://schema.org/Person" 
+              itemProp="employee"
+              style={{
+                background: '#ffffff',
+                borderRadius: '1.25rem',
+                padding: '2.75rem 2.25rem',
+                border: '2px solid rgba(2, 132, 199, 0.25)',
+                boxShadow: '0 20px 35px -10px rgba(2, 132, 199, 0.12), 0 10px 15px -5px rgba(15, 23, 42, 0.05)',
+                textAlign: 'center',
+                position: 'relative'
+              }}
+            >
+              <div 
+                style={{ 
+                  width: '96px', 
+                  height: '96px', 
+                  margin: '0 auto 1.5rem', 
+                  borderRadius: '50%', 
+                  background: 'linear-gradient(135deg, #0284c7 0%, #1e40af 100%)', 
+                  color: '#ffffff', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  fontSize: '2.25rem', 
+                  fontWeight: 900,
+                  boxShadow: '0 10px 25px rgba(2, 132, 199, 0.35)'
+                }}
+              >
+                CB
+              </div>
+              <h3 
+                itemProp="name" 
+                style={{ 
+                  fontSize: '2rem', 
+                  fontWeight: 900, 
+                  color: '#0f172a', 
+                  marginBottom: '0.5rem',
+                  letterSpacing: '-0.5px' 
+                }}
+              >
+                S. Chandra Babu
+              </h3>
+              <div 
+                itemProp="jobTitle" 
+                style={{ 
+                  display: 'inline-block',
+                  background: 'rgba(2, 132, 199, 0.12)',
+                  color: '#0369a1',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  padding: '0.4rem 1.35rem',
+                  borderRadius: '999px',
+                  marginBottom: '1.35rem',
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Managing Director
+              </div>
+              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, margin: 0 }}>
+                Directing regional logistics networks across Kadapa, Tirupati, Nellore, and Hyderabad, with specialized leadership in NRI homemade food and vacuum packaging care.
+              </p>
+            </article>
+
+            {/* Director 2: S. Junaid Mohuddin */}
             <article 
               className="director-card" 
               itemScope 
@@ -308,74 +376,6 @@ export default function AboutPage() {
               </div>
               <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, margin: 0 }}>
                 Leading international air freight operations, customs compliance, and commercial carrier partnerships across the USA, UK, Canada, Australia, and the Middle East.
-              </p>
-            </article>
-
-            {/* Director 2: S. Chandra Vadu */}
-            <article 
-              className="director-card" 
-              itemScope 
-              itemType="https://schema.org/Person" 
-              itemProp="employee"
-              style={{
-                background: '#ffffff',
-                borderRadius: '1.25rem',
-                padding: '2.75rem 2.25rem',
-                border: '2px solid rgba(2, 132, 199, 0.25)',
-                boxShadow: '0 20px 35px -10px rgba(2, 132, 199, 0.12), 0 10px 15px -5px rgba(15, 23, 42, 0.05)',
-                textAlign: 'center',
-                position: 'relative'
-              }}
-            >
-              <div 
-                style={{ 
-                  width: '96px', 
-                  height: '96px', 
-                  margin: '0 auto 1.5rem', 
-                  borderRadius: '50%', 
-                  background: 'linear-gradient(135deg, #0284c7 0%, #1e40af 100%)', 
-                  color: '#ffffff', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  fontSize: '2.25rem', 
-                  fontWeight: 900,
-                  boxShadow: '0 10px 25px rgba(2, 132, 199, 0.35)'
-                }}
-              >
-                CV
-              </div>
-              <h3 
-                itemProp="name" 
-                style={{ 
-                  fontSize: '2rem', 
-                  fontWeight: 900, 
-                  color: '#0f172a', 
-                  marginBottom: '0.5rem',
-                  letterSpacing: '-0.5px' 
-                }}
-              >
-                S. Chandra Vadu
-              </h3>
-              <div 
-                itemProp="jobTitle" 
-                style={{ 
-                  display: 'inline-block',
-                  background: 'rgba(2, 132, 199, 0.12)',
-                  color: '#0369a1',
-                  fontWeight: 800,
-                  fontSize: '1.1rem',
-                  padding: '0.4rem 1.35rem',
-                  borderRadius: '999px',
-                  marginBottom: '1.35rem',
-                  letterSpacing: '0.5px',
-                  textTransform: 'uppercase'
-                }}
-              >
-                Managing Director
-              </div>
-              <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.7, margin: 0 }}>
-                Directing regional logistics networks across Kadapa, Tirupati, Nellore, and Hyderabad, with specialized leadership in NRI homemade food and vacuum packaging care.
               </p>
             </article>
           </div>
