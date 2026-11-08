@@ -1182,6 +1182,68 @@ video.hero-backdrop-img {
   display: none !important;
 }
 
+/* Official Sai Logo Badge overlay - Replaces generic white 'Sai' text on hero cargo aircraft */
+.hero-fuselage-logo-anchor {
+  position: absolute;
+  top: 64.5%;
+  left: 37.4%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-fuselage-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(27, 68, 228, 0.32) 0%, rgba(8, 20, 32, 0.94) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  padding: 0.75rem 1.6rem;
+  transition: all 0.3s ease;
+}
+
+.hero-fuselage-logo-img {
+  height: clamp(56px, 7vw, 92px);
+  width: auto;
+  max-width: 280px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+}
+
+@media (max-width: 1024px) {
+  .hero-fuselage-logo-anchor {
+    top: 62%;
+    left: 40%;
+  }
+  .hero-fuselage-logo-badge {
+    padding: 0.6rem 1.3rem;
+  }
+  .hero-fuselage-logo-img {
+    height: clamp(48px, 6vw, 75px);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-fuselage-logo-anchor {
+    top: 54%;
+    left: 50%;
+  }
+  .hero-fuselage-logo-badge {
+    padding: 0.5rem 1.1rem;
+    border-radius: 14px;
+  }
+  .hero-fuselage-logo-img {
+    height: 48px;
+  }
+}
+
 /* --------------------------------------------------------------------------
    2. Main Container & 2-Column Balanced Layout
    -------------------------------------------------------------------------- */
