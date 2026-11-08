@@ -574,7 +574,15 @@ export default function HomePage() {
                 key={`hero-vid-${videoSrc}`}
                 autoPlay loop muted playsInline preload="auto"
                 className="hero-backdrop-img"
-                style={{ objectFit: 'cover', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
+                style={{
+                  objectFit: 'cover',
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  inset: 0,
+                  transform: 'scale(1.14)',
+                  transformOrigin: 'center top'
+                }}
               >
                 <source src={videoSrc} type="video/mp4" />
               </video>

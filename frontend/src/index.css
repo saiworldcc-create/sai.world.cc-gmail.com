@@ -1151,7 +1151,8 @@ p {
 video.hero-backdrop-img {
   filter: contrast(1.04) brightness(1.02);
   backface-visibility: hidden;
-  transform: translateZ(0);
+  transform: scale(1.14) !important;
+  transform-origin: center top !important;
 }
 
 /* Clear, Vivid Video View - Zero Dark Wash, 100% Crisp Video Playback */
@@ -1160,12 +1161,19 @@ video.hero-backdrop-img {
   inset: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
+  background:
+    radial-gradient(ellipse at bottom right, rgba(8, 21, 34, 0.95) 0%, rgba(8, 21, 34, 0.6) 14%, transparent 28%),
+    linear-gradient(180deg,
+      rgba(8, 20, 32, 0.45) 0%,
+      rgba(8, 20, 32, 0.12) 38%,
+      transparent 65%,
+      rgba(8, 21, 34, 0.85) 100%),
+    linear-gradient(90deg,
       rgba(8, 20, 32, 0.45) 0%,
       rgba(8, 20, 32, 0.12) 38%,
       transparent 65%);
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* Ambient Glowing Orbs - Disabled */
@@ -7275,6 +7283,7 @@ body {
     z-index: 1 !important;
   }
 
+  video.hero-backdrop-img,
   .hero-backdrop-img {
     position: absolute !important;
     inset: 0 !important;
@@ -7282,6 +7291,8 @@ body {
     height: 100% !important;
     object-fit: cover !important;
     object-position: center center !important;
+    transform: scale(1.14) !important;
+    transform-origin: center top !important;
     filter: brightness(1.1) contrast(1.05) !important;
     z-index: 1 !important;
   }
@@ -7291,7 +7302,9 @@ body {
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: linear-gradient(180deg, rgba(8, 20, 32, 0.65) 0%, rgba(8, 20, 32, 0.18) 45%, rgba(8, 20, 32, 0.8) 100%) !important;
+    background:
+      radial-gradient(ellipse at bottom right, rgba(8, 21, 34, 0.95) 0%, rgba(8, 21, 34, 0.6) 14%, transparent 28%),
+      linear-gradient(180deg, rgba(8, 20, 32, 0.65) 0%, rgba(8, 20, 32, 0.18) 45%, rgba(8, 20, 32, 0.8) 100%) !important;
     z-index: 2 !important;
   }
 
