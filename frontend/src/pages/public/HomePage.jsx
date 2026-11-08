@@ -589,16 +589,6 @@ export default function HomePage() {
             );
           })()}
 
-          {/* Official Sai Logo Badge replacing generic white 'Sai' letters on the hero aircraft */}
-          <div className="hero-fuselage-logo-anchor">
-            <div className="hero-fuselage-logo-badge">
-              <img
-                src="/assets/images/sai_logo_transparent.png"
-                alt="Sai International Couriers & Cargo Official Logo"
-                className="hero-fuselage-logo-img"
-              />
-            </div>
-          </div>
         </div>
         <div className="hero-main-container hero-sky-placement">
           <div className="hero-sky-copy-zone">
