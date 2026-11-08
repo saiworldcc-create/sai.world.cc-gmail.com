@@ -281,7 +281,7 @@ const DEFAULT_PAGE_CONTENT = [
     sections: {
       hero: { heading: 'Contact Us & Book Pickup', lead: 'Get in touch with our team for parcel inquiries, pickup bookings, or any international shipping questions.', eyebrow: 'We\'re Here to Help' },
       contactInfo: {
-        phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874', '+91 96030 49365', '+91 99853 23365'],
+        phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874', '+91 99853 23365'],
         email: 'saiinternationalcouriers83@gmail.com',
         address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001',
         hours: '9:00 AM – 9:30 PM (All Days)',
@@ -326,7 +326,7 @@ const DEFAULT_PAGE_CONTENT = [
       branches: [
         { id: 'kadapa-main', name: 'Kadapa Head Office', address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001', phone: '+91 90599 49365', hours: '9 AM – 9:30 PM (All Days)', mapUrl: "https://maps.google.com/maps?q=14.4726874,78.8323784&t=&z=17&ie=UTF8&iwloc=B&output=embed" },
         { id: 'kadapa-2', name: 'Kadapa Branch 2', address: 'Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.', phone: '+91 90000 22821', hours: '9 AM – 9 PM (All Days)', mapUrl: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed' },
-        { id: 'tirupati', name: 'Tirupati Regional Branch', address: 'Central Express Center, Tirupati, Andhra Pradesh', phone: '+91 96030 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Tirupati,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
+        { id: 'tirupati', name: 'Tirupati Regional Branch', address: 'Central Express Center, Tirupati, Andhra Pradesh', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Tirupati,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
         { id: 'nellore', name: 'Nellore Regional Branch', address: 'Main Road Commercial Center, Nellore, Andhra Pradesh', phone: '+91 99853 23365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Nellore,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
         { id: 'proddutur', name: 'Proddutur Regional Branch', address: 'Textile Commercial Hub, Proddatur, Andhra Pradesh', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Proddatur,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
         { id: 'rayachoty', name: 'Rayachoty Regional Branch', address: 'Main Bazar Express Hub, Rayachoty, Andhra Pradesh', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Rayachoty,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
@@ -398,7 +398,7 @@ const DEFAULT_PAGE_CONTENT = [
       },
       global: {
         email: 'saiinternationalcouriers83@gmail.com',
-        phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874', '+91 96030 49365', '+91 99853 23365'],
+        phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874', '+91 99853 23365'],
         hours: '09:00 AM – 09:30 PM (All 7 Days Open)'
       }
     }
