@@ -659,8 +659,8 @@ export default function HomePage() {
       <section className="section brand-story-section reveal-init" id="about-story" ref={storyRef}>
         <div className="container">
           <div className="brand-story-grid">
-            <div className="story-img-frame reveal-init stagger-1">
-              <img src={'/assets/images/brand_story_dark_ui.jpg'} alt="Sai Couriers Global Network" loading="lazy" />
+            <div className="story-img-frame story-logo-card reveal-init stagger-1">
+              <img src="/assets/images/sai_logo_transparent.png" alt="Sai International Couriers & Cargo Official Logo" loading="lazy" />
             </div>
             <div className="reveal-init stagger-2">
               <div className="eyebrow-pill teal">{bs.eyebrow || 'Our Heritage & Commitment'}</div>
