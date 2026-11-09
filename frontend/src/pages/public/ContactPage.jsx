@@ -224,10 +224,11 @@ export default function ContactPage() {
                       onChange={(e) => updateField('branch', e.target.value)}
                     >
                       <option value="Kadapa Main (Co-operative Colony)">Kadapa Main (Co-operative Colony)</option>
+                      <option value="Hyderabad Administrative Office (Kushaiguda)">Hyderabad Administrative Office (Kushaiguda)</option>
                       <option value="Kadapa Branch 2 (Visweswaraiah Circle)">Kadapa Branch 2 (Visweswaraiah Circle)</option>
                       <option value="Tirupati Central">Tirupati Central</option>
                       <option value="Nellore Commercial Hub">Nellore Commercial Hub</option>
-                      <option value="Proddatur Textile Center">Proddatur Textile Center</option>
+                      <option value="Proddatur Drop-off Center">Proddatur Drop-off Center</option>
                       <option value="Rayachoty Express Hub">Rayachoty Express Hub</option>
                       <option value="Other (Specify)">Other (Specify)</option>
                     </select>

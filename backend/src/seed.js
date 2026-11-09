@@ -325,6 +325,7 @@ const DEFAULT_PAGE_CONTENT = [
       hero: { heading: 'Our Branch Network Across Andhra Pradesh', lead: 'Find your nearest Sai International Couriers branch for doorstep pickup, parcel submission, and real-time tracking assistance.', eyebrow: 'Branch Locator' },
       branches: [
         { id: 'kadapa-main', name: 'Kadapa Head Office', address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001', phone: '+91 90599 49365', hours: '9 AM – 9:30 PM (All Days)', mapUrl: "https://maps.google.com/maps?q=14.4726874,78.8323784&t=&z=17&ie=UTF8&iwloc=B&output=embed" },
+        { id: 'admin-office', name: 'Administrative Office (Hyderabad)', address: 'Plot no: 1-9-202/29/15A, 2nd Floor, Hanuman Nagar Colony, E.C. Complex, Kushaiguda, Hyderabad - 500062', phone: '+91 90599 49365', hours: '9:30 AM – 8:30 PM (Mon-Sat)', mapUrl: 'https://maps.google.com/maps?q=Kushaiguda,+Hyderabad,+Telangana+500062&t=&z=16&ie=UTF8&iwloc=&output=embed' },
         { id: 'kadapa-2', name: 'Kadapa Branch 2', address: 'Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.', phone: '+91 90000 22821', hours: '9 AM – 9 PM (All Days)', mapUrl: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed' },
         { id: 'tirupati', name: 'Tirupati Regional Branch', address: 'paradise hotel back side, D. No. 19/12-640, near babanikethan school, Bairagi patteda, Tirupati, Andhra Pradesh 517501', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Bairagi+Patteda,+Tirupati,+Andhra+Pradesh+517501&t=&z=16&ie=UTF8&iwloc=&output=embed' },
         { id: 'nellore', name: 'Nellore Regional Branch', address: 'Main Road Commercial Center, Nellore, Andhra Pradesh', phone: '+91 99853 23365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Nellore,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
@@ -358,6 +359,14 @@ const DEFAULT_PAGE_CONTENT = [
           addr: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001',
           url: "https://maps.google.com/maps?q=14.4726874,78.8323784+(SAI+INTERNATIONAL+COURIER'S+SERVICE'S)&t=&z=17&ie=UTF8&iwloc=B&output=embed",
           externalUrl: "https://www.google.com/maps/place/SAI+INTERNATIONAL+COURIER'S+SERVICE'S/@14.4726874,78.8323784,17z",
+          phone: '+91 90599 49365',
+        },
+        'admin-office': {
+          title: 'Administrative Office (Hyderabad)',
+          district: 'Hyderabad',
+          addr: 'Plot no: 1-9-202/29/15A, 2nd Floor, Hanuman Nagar Colony, E.C. Complex, Kushaiguda, Hyderabad - 500062',
+          url: 'https://maps.google.com/maps?q=Kushaiguda,+Hyderabad,+Telangana+500062&t=&z=16&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.google.com/?q=Kushaiguda,+Hyderabad,+Telangana+500062',
           phone: '+91 90599 49365',
         },
         'kadapa-branch-2': {

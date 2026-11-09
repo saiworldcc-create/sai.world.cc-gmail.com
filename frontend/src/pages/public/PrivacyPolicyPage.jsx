@@ -321,6 +321,7 @@ export default function PrivacyPolicyPage() {
               Attn: <strong>S. Chandra Babu &amp; S. Junaid Mohuddin (Managing Directors)</strong><br />
               Operating Entity: <strong>Sai International Couriers &amp; Cargo</strong><br />
               Registered Head Office: 41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP - 516001, India<br />
+              Administrative Office: Plot no: 1-9-202/29/15A, 2nd Floor, Hanuman Nagar Colony, E.C. Complex, Kushaiguda, Hyderabad - 500062, India<br />
               Official Email: <strong>saiinternationalcouriers83@gmail.com</strong><br />
               Direct Privacy Desk: <strong>+91 90599 49365</strong> | <strong>+91 90000 22821</strong> | <strong>+91 90008 67874</strong>
             </div>

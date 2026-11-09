@@ -20,6 +20,22 @@ const DEFAULT_BRANCHES = [
     amenities: ['Commercial Vacuum Sealing', 'Calibrated Digital Scale', '5-Ply Export Box Center', 'Free Customer Parking', 'Doorstep Pickup Dispatch']
   },
   {
+    id: 'admin-office-hyd',
+    name: 'Administrative Office (Hyderabad)',
+    district: 'Hyderabad',
+    tag: 'Administrative & Corporate Office',
+    pincode: '500062',
+    address: 'Plot no: 1-9-202/29/15A, 2nd Floor, Hanuman Nagar Colony, E.C. Complex, Kushaiguda, Hyderabad - 500062',
+    landmark: 'E.C. Complex, Hanuman Nagar Colony, Kushaiguda',
+    phones: ['+91 90599 49365', '+91 90000 22821', '+91 90008 67874'],
+    manager: 'S. Junaid Mohuddin (MD Desk)',
+    email: 'saiinternationalcouriers83@gmail.com',
+    hours: 'Mon - Sat: 09:30 AM - 08:30 PM',
+    mapEmbed: 'https://maps.google.com/maps?q=Kushaiguda,+Hyderabad,+Telangana+500062&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.google.com/?q=Kushaiguda,+Hyderabad,+Telangana+500062',
+    amenities: ['Corporate Administration', 'Export Documentation Desk', 'Consignment Support', 'NRI Customer Helpdesk']
+  },
+  {
     id: 'kadapa-b2',
     name: 'Kadapa Branch 2 (Nagarajupeta)',
     district: 'Kadapa',

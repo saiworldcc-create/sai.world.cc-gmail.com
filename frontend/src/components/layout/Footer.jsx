@@ -7,8 +7,12 @@ export default function Footer() {
   const branches = contactData?.branches || {};
   const globalContact = contactData?.global || { email: '', phones: [] };
   
-  // Get first two branches for footer
-  const footerBranches = Object.values(branches).slice(0, 2);
+  // Get head office and administrative office (or first two branches) for footer
+  const headOffice = branches['kadapa-main'] || Object.values(branches)[0];
+  const adminOffice = branches['admin-office'];
+  const footerBranches = (headOffice && adminOffice)
+    ? [headOffice, adminOffice]
+    : Object.values(branches).slice(0, 2);
   const ctaRef = useScrollReveal();
   const footerRef = useScrollReveal();
 

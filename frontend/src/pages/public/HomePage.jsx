@@ -275,6 +275,14 @@ const HOME_MAP_BRANCHES = {
     externalUrl: "https://www.google.com/maps/place/SAI+INTERNATIONAL+COURIER'S+SERVICE'S/@14.4726874,78.8323784,17z",
     phone: "+91 90599 49365",
   },
+  'admin-office': {
+    title: "Administrative Office (Hyderabad)",
+    district: "Hyderabad",
+    addr: "Plot no: 1-9-202/29/15A, 2nd Floor, Hanuman Nagar Colony, E.C. Complex, Kushaiguda, Hyderabad - 500062",
+    url: "https://maps.google.com/maps?q=Kushaiguda,+Hyderabad,+Telangana+500062&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    externalUrl: "https://maps.google.com/?q=Kushaiguda,+Hyderabad,+Telangana+500062",
+    phone: "+91 90599 49365",
+  },
   'kadapa-branch-2': {
     title: "Kadapa Branch 2 (Nagarajupeta)",
     district: "Kadapa",
