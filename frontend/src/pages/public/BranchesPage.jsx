@@ -89,14 +89,14 @@ const DEFAULT_BRANCHES = [
     district: 'Tirupati',
     tag: 'Temple City Regional Hub',
     pincode: '517501',
-    address: 'Bhavani Nagar Main Road, Near RTC Central Bus Stand, Tirupati, AP - 517501',
-    landmark: 'Near RTC Central Bus Stand',
+    address: 'Paradise Hotel Back Side, D. No. 19/12-640, Near Babanikethan School, Bairagi Patteda, Tirupati, Andhra Pradesh 517501',
+    landmark: 'Paradise Hotel Back Side, Near Babanikethan School',
     phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
     manager: 'M. Venkat Reddy',
     email: 'tirupati@saiinternationalcouriers.com',
     hours: 'Mon - Sun: 09:00 AM - 09:30 PM',
-    mapEmbed: 'https://maps.google.com/maps?q=RTC+Central+Bus+Stand,+Tirupati,+Andhra+Pradesh+517501&t=&z=15&ie=UTF8&iwloc=&output=embed',
-    directionsUrl: 'https://maps.google.com/?q=RTC+Central+Bus+Stand,+Tirupati,+Andhra+Pradesh+517501',
+    mapEmbed: 'https://maps.google.com/maps?q=Bairagi+Patteda,+Tirupati,+Andhra+Pradesh+517501&t=&z=16&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.app.goo.gl/vj9nG6HzPm2STSeL7',
     amenities: ['NRI Prasadam Packaging', 'Industrial Vacuum Sealer', 'Student Visa Baggage Desk', 'Free Doorstep Collection']
   },
   {
@@ -233,14 +233,14 @@ const DEFAULT_BRANCHES = [
     district: 'Kadapa',
     tag: 'Commercial Gold City Counter',
     pincode: '516360',
-    address: 'Gandhi Road, Near Sivalayam Temple, Proddatur, YSR Kadapa Dist, AP - 516360',
-    landmark: 'Near Sivalayam Temple, Gandhi Road',
+    address: '3/151/1, Sastrynagar, Near Narayana EM School, Sastry Nagar, Bollavaram, Proddatur, Andhra Pradesh 516360',
+    landmark: 'Near Narayana EM School, Sastry Nagar, Bollavaram',
     phones: ['+91 90000 22821', '+91 90008 67874', '+91 90599 49365'],
     manager: 'V. Ramanjaneyulu',
     email: 'proddatur@saiinternationalcouriers.com',
     hours: 'Mon - Sat: 09:30 AM - 08:30 PM',
-    mapEmbed: 'https://maps.google.com/maps?q=Gandhi+Road,+Proddatur,+Andhra+Pradesh+516360&t=&z=15&ie=UTF8&iwloc=&output=embed',
-    directionsUrl: 'https://maps.google.com/?q=Gandhi+Road,+Proddatur,+Andhra+Pradesh+516360',
+    mapEmbed: 'https://maps.google.com/maps?q=3%2F151%2F1+Sastrynagar+Bollavaram+Proddatur+Andhra+Pradesh+516360&t=&z=16&ie=UTF8&iwloc=&output=embed',
+    directionsUrl: 'https://maps.app.goo.gl/voQ9NwLs5yQXzcDP8',
     amenities: ['Vacuum Sealing', 'Commercial Textile Samples', 'Door Pickup Team', 'Express Cargo']
   }
 ];

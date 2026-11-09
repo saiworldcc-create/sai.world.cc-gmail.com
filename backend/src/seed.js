@@ -326,9 +326,9 @@ const DEFAULT_PAGE_CONTENT = [
       branches: [
         { id: 'kadapa-main', name: 'Kadapa Head Office', address: '41/1248, Ratna Sabhapathi Building, Co-operative Colony, Kadapa, AP 516001', phone: '+91 90599 49365', hours: '9 AM – 9:30 PM (All Days)', mapUrl: "https://maps.google.com/maps?q=14.4726874,78.8323784&t=&z=17&ie=UTF8&iwloc=B&output=embed" },
         { id: 'kadapa-2', name: 'Kadapa Branch 2', address: 'Beside MedPlus, Near Visweswaraiah Circle, Kadapa - 516001, A.P.', phone: '+91 90000 22821', hours: '9 AM – 9 PM (All Days)', mapUrl: 'https://maps.google.com/maps?q=Visweswaraiah+Circle,+Kadapa,+Andhra+Pradesh+516001&t=&z=16&ie=UTF8&iwloc=&output=embed' },
-        { id: 'tirupati', name: 'Tirupati Regional Branch', address: 'Central Express Center, Tirupati, Andhra Pradesh', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Tirupati,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
+        { id: 'tirupati', name: 'Tirupati Regional Branch', address: 'paradise hotel back side, D. No. 19/12-640, near babanikethan school, Bairagi patteda, Tirupati, Andhra Pradesh 517501', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Bairagi+Patteda,+Tirupati,+Andhra+Pradesh+517501&t=&z=16&ie=UTF8&iwloc=&output=embed' },
         { id: 'nellore', name: 'Nellore Regional Branch', address: 'Main Road Commercial Center, Nellore, Andhra Pradesh', phone: '+91 99853 23365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Nellore,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
-        { id: 'proddutur', name: 'Proddutur Regional Branch', address: 'Textile Commercial Hub, Proddatur, Andhra Pradesh', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Proddatur,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
+        { id: 'proddutur', name: 'Proddutur Regional Branch', address: '3/151/1, Sastrynagar, Near Narayana EM School, Sastry Nagar, Bollavaram, Proddatur, Andhra Pradesh 516360', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=3%2F151%2F1+Sastrynagar+Bollavaram+Proddatur+Andhra+Pradesh+516360&t=&z=16&ie=UTF8&iwloc=&output=embed' },
         { id: 'rayachoty', name: 'Rayachoty Regional Branch', address: 'Main Bazar Express Hub, Rayachoty, Andhra Pradesh', phone: '+91 90599 49365', hours: '9 AM – 8 PM', mapUrl: 'https://maps.google.com/maps?q=Rayachoty,+Andhra+Pradesh&t=&z=14&ie=UTF8&iwloc=&output=embed' },
       ],
     },
@@ -369,9 +369,9 @@ const DEFAULT_PAGE_CONTENT = [
         },
         tirupati: {
           title: 'Tirupati Regional Branch',
-          addr: 'Tirupati, Andhra Pradesh',
-          url: 'https://maps.google.com/maps?q=13.6175501,79.4218504&t=&z=17&ie=UTF8&iwloc=&output=embed',
-          externalUrl: 'https://maps.app.goo.gl/WU9xbU97gPxXBBKG7',
+          addr: 'paradise hotel back side, D. No. 19/12-640, near babanikethan school, Bairagi patteda, Tirupati, Andhra Pradesh 517501',
+          url: 'https://maps.google.com/maps?q=Bairagi+Patteda,+Tirupati,+Andhra+Pradesh+517501&t=&z=16&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.app.goo.gl/vj9nG6HzPm2STSeL7',
           phone: '+91 90599 49365',
         },
         nellore: {
@@ -383,9 +383,9 @@ const DEFAULT_PAGE_CONTENT = [
         },
         proddutur: {
           title: 'Proddutur Drop-off Center',
-          addr: 'Proddutur, Andhra Pradesh',
-          url: 'https://maps.google.com/maps?q=14.7523,78.5539&t=&z=14&ie=UTF8&iwloc=&output=embed',
-          externalUrl: 'https://maps.google.com/?q=Proddutur,+Andhra+Pradesh',
+          addr: '3/151/1, Sastrynagar, Near Narayana EM School, Sastry Nagar, Bollavaram, Proddatur, AP 516360',
+          url: 'https://maps.google.com/maps?q=3%2F151%2F1+Sastrynagar+Bollavaram+Proddatur+Andhra+Pradesh+516360&t=&z=16&ie=UTF8&iwloc=&output=embed',
+          externalUrl: 'https://maps.app.goo.gl/voQ9NwLs5yQXzcDP8',
           phone: '+91 90599 49365',
         },
         rayachoty: {
