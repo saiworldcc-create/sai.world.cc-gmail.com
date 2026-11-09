@@ -19,6 +19,9 @@ dist-ssr
 !*.example
 !**/*.example
 
+# Allow production env (contains only public API URL, no secrets)
+!.env.production
+
 # Logs
 logs
 *.log
