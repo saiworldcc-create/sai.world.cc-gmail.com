@@ -126,8 +126,8 @@ export default function DeliveryDashboard() {
         {/* Top iOS Header */}
         <header style={styles.header}>
           <div style={styles.driverInfoRow}>
-            <AppleSquircleBadge palette="blue" size={44}>
-              <Truck size={22} color="#ffffff" strokeWidth={2.4} />
+            <AppleSquircleBadge palette="blue" size={52}>
+              <Truck size={26} color="#ffffff" strokeWidth={2.4} />
             </AppleSquircleBadge>
             <div>
               <div style={styles.driverNameRow}>
@@ -162,14 +162,14 @@ export default function DeliveryDashboard() {
               title="Sync Tasks"
               disabled={refreshing}
             >
-              <RefreshCw size={17} color="#94a3b8" className={refreshing ? 'fa-spin' : ''} />
+              <RefreshCw size={19} color="#94a3b8" className={refreshing ? 'fa-spin' : ''} />
             </button>
             <button
               onClick={handleLogout}
               style={{ ...styles.iconBtn, color: '#ef4444' }}
               title="Sign Out"
             >
-              <Power size={17} color="#f87171" />
+              <Power size={19} color="#f87171" />
             </button>
           </div>
         </header>
@@ -180,8 +180,8 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'all' ? '2px solid #38bdf8' : 'none' }}
             onClick={() => setActiveTab('all')}
           >
-            <AppleSquircleBadge palette="blue" size={28}>
-              <Package size={14} color="#ffffff" />
+            <AppleSquircleBadge palette="blue" size={36}>
+              <Package size={18} color="#ffffff" strokeWidth={2.2} />
             </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#38bdf8' }}>{totalTasks}</span>
             <span style={styles.statLabel}>ALL ORDERS</span>
@@ -191,8 +191,8 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'pending' ? '2px solid #f59e0b' : 'none' }}
             onClick={() => setActiveTab('pending')}
           >
-            <AppleSquircleBadge palette="orange" size={28}>
-              <Clock size={14} color="#ffffff" />
+            <AppleSquircleBadge palette="orange" size={36}>
+              <Clock size={18} color="#ffffff" strokeWidth={2.2} />
             </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#fbbf24' }}>{pendingTasks}</span>
             <span style={styles.statLabel}>PICKUPS</span>
@@ -202,8 +202,8 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'transit' ? '2px solid #0284c7' : 'none' }}
             onClick={() => setActiveTab('transit')}
           >
-            <AppleSquircleBadge palette="teal" size={28}>
-              <Truck size={14} color="#ffffff" />
+            <AppleSquircleBadge palette="teal" size={36}>
+              <Truck size={18} color="#ffffff" strokeWidth={2.2} />
             </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#38bdf8' }}>{transitTasks}</span>
             <span style={styles.statLabel}>IN TRANSIT</span>
@@ -213,8 +213,8 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'delivered' ? '2px solid #10b981' : 'none' }}
             onClick={() => setActiveTab('delivered')}
           >
-            <AppleSquircleBadge palette="green" size={28}>
-              <CheckCircle2 size={14} color="#ffffff" />
+            <AppleSquircleBadge palette="green" size={36}>
+              <CheckCircle2 size={18} color="#ffffff" strokeWidth={2.2} />
             </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#34d399' }}>{deliveredTasks}</span>
             <span style={styles.statLabel}>DELIVERED</span>

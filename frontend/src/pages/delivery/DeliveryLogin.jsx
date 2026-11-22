@@ -127,8 +127,8 @@ export default function DeliveryLogin() {
               style={styles.demoButton}
               title="Auto-fill Demo Driver Credentials"
             >
-              <AppleSquircleBadge palette="gold" size={24}>
-                <Sparkles size={13} color="#ffffff" />
+              <AppleSquircleBadge palette="gold" size={28}>
+                <Sparkles size={16} color="#ffffff" />
               </AppleSquircleBadge>
               <span>Auto-Fill Demo Credentials (driver@sai.com)</span>
             </button>
@@ -235,15 +235,15 @@ export default function DeliveryLogin() {
             >
               {biometricScanning ? (
                 <>
-                  <AppleSquircleBadge palette="teal" size={32}>
-                    <ScanLine size={18} color="#ffffff" className="fa-spin" />
+                  <AppleSquircleBadge palette="teal" size={38}>
+                    <ScanLine size={22} color="#ffffff" className="fa-spin" />
                   </AppleSquircleBadge>
                   <span style={{ color: '#38bdf8', fontWeight: '800' }}>Scanning Face ID / Biometrics...</span>
                 </>
               ) : (
                 <>
-                  <AppleSquircleBadge palette="teal" size={32}>
-                    <AppleFaceIDIcon size={18} color="#ffffff" />
+                  <AppleSquircleBadge palette="teal" size={38}>
+                    <AppleFaceIDIcon size={22} color="#ffffff" />
                   </AppleSquircleBadge>
                   <span>One-Tap Face ID Express Login</span>
                 </>

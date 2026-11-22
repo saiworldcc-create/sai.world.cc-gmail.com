@@ -316,10 +316,10 @@ export default function CustomerApp() {
           <div className="apple-notif-sheet" onClick={e => e.stopPropagation()}>
             <div className="notif-sheet-header">
               <div className="notif-title-row">
-                <AppleSquircleBadge palette="blue" size={32}>
-                  <Bell size={16} color="#ffffff" />
+                <AppleSquircleBadge palette="blue" size={42}>
+                  <Bell size={20} color="#ffffff" strokeWidth={2.4} />
                 </AppleSquircleBadge>
-                <h3 className="notif-title">Notifications</h3>
+                <h3 className="notif-title" style={{ fontSize: '1.05rem', fontWeight: '900' }}>Notifications</h3>
                 {unreadCount > 0 && <span className="notif-count-pill">{unreadCount} New</span>}
               </div>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -335,7 +335,7 @@ export default function CustomerApp() {
                   onClick={() => setShowNotifSheet(false)}
                   style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
                 >
-                  <X size={20} />
+                  <X size={22} />
                 </button>
               </div>
             </div>
@@ -343,8 +343,8 @@ export default function CustomerApp() {
             <div className="notif-items-list">
               {notifications.map(n => (
                 <div key={n.id} className={`notif-card-item ${n.unread ? 'unread' : ''}`}>
-                  <AppleSquircleBadge palette={n.palette || 'blue'} size={34}>
-                    <Plane size={16} color="#ffffff" />
+                  <AppleSquircleBadge palette={n.palette || 'blue'} size={44}>
+                    <Plane size={22} color="#ffffff" strokeWidth={2.4} />
                   </AppleSquircleBadge>
                   <div className="notif-card-content">
                     <div className="notif-card-top">
@@ -534,37 +534,37 @@ export default function CustomerApp() {
           <div 
             className="apple-brand-pill" 
             onClick={() => setActiveTab('home')}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}
             title="Sai International Home"
           >
             <img 
               src="/assets/images/sai_logo_transparent.png" 
               alt="Sai International Logo" 
               style={{ 
-                height: '42px', 
+                height: '52px', 
                 width: 'auto', 
                 objectFit: 'contain',
-                filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45))'
+                filter: 'drop-shadow(0 3px 10px rgba(0, 0, 0, 0.55))'
               }} 
             />
             <div>
-              <span className="apple-brand-name">SAI INTERNATIONAL</span>
-              <span className="apple-brand-sub">NRI Couriers &amp; Cargo Express</span>
+              <span className="apple-brand-name" style={{ fontSize: '1.08rem', fontWeight: '900', letterSpacing: '-0.01em', lineHeight: '1.15' }}>SAI INTERNATIONAL</span>
+              <span className="apple-brand-sub" style={{ fontSize: '0.74rem', fontWeight: '700', letterSpacing: '0.5px' }}>Worldwide Air Cargo &amp; NRI Logistics</span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {/* Notification Bell */}
             <button
               type="button"
               onClick={() => setShowNotifSheet(true)}
               style={{
                 position: 'relative',
-                background: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                width: '38px',
-                height: '38px',
-                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.16)',
+                width: '44px',
+                height: '44px',
+                borderRadius: '14px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -573,23 +573,23 @@ export default function CustomerApp() {
               }}
               title="Open Notifications"
             >
-              <Bell size={18} color="#ffffff" />
+              <Bell size={22} color="#ffffff" strokeWidth={2.2} />
               {unreadCount > 0 && (
                 <span style={{
                   position: 'absolute',
-                  top: '-3px',
-                  right: '-3px',
+                  top: '-4px',
+                  right: '-4px',
                   backgroundColor: '#ff3b30',
                   color: '#ffffff',
-                  fontSize: '0.62rem',
-                  fontWeight: '800',
-                  width: '16px',
-                  height: '16px',
+                  fontSize: '0.68rem',
+                  fontWeight: '900',
+                  width: '18px',
+                  height: '18px',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 0 6px #ff3b30'
+                  boxShadow: '0 0 8px #ff3b30'
                 }}>
                   {unreadCount}
                 </span>
@@ -603,19 +603,21 @@ export default function CustomerApp() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  backgroundColor: 'rgba(56, 189, 248, 0.14)',
-                  border: '1px solid rgba(56, 189, 248, 0.3)',
-                  padding: '5px 10px',
-                  borderRadius: '14px',
+                  gap: '8px',
+                  backgroundColor: 'rgba(56, 189, 248, 0.16)',
+                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                  padding: '7px 14px',
+                  borderRadius: '16px',
                   color: '#38bdf8',
-                  fontSize: '0.74rem',
-                  fontWeight: '700',
-                  cursor: 'pointer'
+                  fontSize: '0.82rem',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  height: '44px',
+                  boxSizing: 'border-box'
                 }}
                 title="Open My Account"
               >
-                <User size={14} />
+                <User size={18} strokeWidth={2.4} />
                 <span>{user.name?.split(' ')[0] || 'Customer'}</span>
                 <button
                   type="button"
@@ -626,7 +628,7 @@ export default function CustomerApp() {
                   style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', padding: 0 }}
                   title="Sign Out"
                 >
-                  <LogOut size={13} />
+                  <LogOut size={15} />
                 </button>
               </div>
             ) : (
@@ -636,18 +638,20 @@ export default function CustomerApp() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
-                  backgroundColor: 'rgba(2, 132, 199, 0.15)',
-                  border: '1px solid rgba(56, 189, 248, 0.35)',
-                  padding: '6px 12px',
-                  borderRadius: '14px',
+                  gap: '7px',
+                  backgroundColor: 'rgba(2, 132, 199, 0.22)',
+                  border: '1px solid rgba(56, 189, 248, 0.45)',
+                  padding: '7px 15px',
+                  borderRadius: '16px',
                   color: '#38bdf8',
-                  fontSize: '0.76rem',
+                  fontSize: '0.84rem',
                   fontWeight: '800',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  height: '44px',
+                  boxSizing: 'border-box'
                 }}
               >
-                <User size={14} />
+                <User size={18} strokeWidth={2.4} />
                 <span>Sign In</span>
               </button>
             )}
@@ -704,8 +708,8 @@ export default function CustomerApp() {
                       setBookingStep(1);
                     }}
                   >
-                    <AppleSquircleBadge palette="blue" size={44}>
-                      <Package size={22} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="blue" size={64}>
+                      <Package size={32} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">Book Pickup</span>
                     <span className="apple-quick-sub">At Doorstep</span>
@@ -717,8 +721,8 @@ export default function CustomerApp() {
                       setActiveTab('track');
                     }}
                   >
-                    <AppleSquircleBadge palette="teal" size={44}>
-                      <Navigation size={22} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="teal" size={64}>
+                      <Navigation size={32} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">Live Track</span>
                     <span className="apple-quick-sub">Flight Radar</span>
@@ -730,8 +734,8 @@ export default function CustomerApp() {
                       setActiveTab('rates');
                     }}
                   >
-                    <AppleSquircleBadge palette="gold" size={44}>
-                      <Calculator size={22} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="gold" size={64}>
+                      <Calculator size={32} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">Rates</span>
                     <span className="apple-quick-sub">195 Countries</span>
@@ -745,8 +749,8 @@ export default function CustomerApp() {
                       setBookingStep(3);
                     }}
                   >
-                    <AppleSquircleBadge palette="orange" size={44}>
-                      <Sparkles size={22} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="orange" size={64}>
+                      <Sparkles size={32} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">NRI Food</span>
                     <span className="apple-quick-sub">Vacuum Pack</span>
@@ -758,8 +762,8 @@ export default function CustomerApp() {
                       setActiveTab('account');
                     }}
                   >
-                    <AppleSquircleBadge palette="purple" size={44}>
-                      <User size={22} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="purple" size={64}>
+                      <User size={32} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">My Account</span>
                     <span className="apple-quick-sub">{isAuth ? 'Logged In' : 'Sign In'}</span>
@@ -772,8 +776,8 @@ export default function CustomerApp() {
                     className="apple-quick-card"
                     style={{ textDecoration: 'none' }}
                   >
-                    <AppleSquircleBadge palette="green" size={44}>
-                      <Phone size={22} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="green" size={64}>
+                      <Phone size={32} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">WhatsApp VIP</span>
                     <span className="apple-quick-sub">24/7 Hotline</span>
@@ -869,32 +873,32 @@ export default function CustomerApp() {
                 </h3>
                 <div className="apple-benefits-list">
                   <div className="apple-benefit-item">
-                    <AppleSquircleBadge palette="orange" size={38}>
-                      <Sparkles size={18} color="#ffffff" />
+                    <AppleSquircleBadge palette="orange" size={52}>
+                      <Sparkles size={26} color="#ffffff" strokeWidth={2.2} />
                     </AppleSquircleBadge>
                     <div className="apple-benefit-content">
-                      <div className="apple-benefit-title">Complimentary NRI Food Vacuum Sealing</div>
-                      <div className="apple-benefit-desc">5-layer heavy duty food-grade nitrogen vacuum pouching prevents leakage and odor on airlines.</div>
+                      <div className="apple-benefit-title" style={{ fontSize: '0.92rem' }}>Complimentary NRI Food Vacuum Sealing</div>
+                      <div className="apple-benefit-desc" style={{ fontSize: '0.76rem' }}>5-layer heavy duty food-grade nitrogen vacuum pouching prevents leakage and odor on airlines.</div>
                     </div>
                   </div>
 
                   <div className="apple-benefit-item">
-                    <AppleSquircleBadge palette="blue" size={38}>
-                      <ShieldCheck size={18} color="#ffffff" />
+                    <AppleSquircleBadge palette="blue" size={52}>
+                      <ShieldCheck size={26} color="#ffffff" strokeWidth={2.2} />
                     </AppleSquircleBadge>
                     <div className="apple-benefit-content">
-                      <div className="apple-benefit-title">Calibrated Scale at Doorstep</div>
-                      <div className="apple-benefit-desc">Our booking executive carries a certified electronic scale so you verify physical and volumetric weight before paying.</div>
+                      <div className="apple-benefit-title" style={{ fontSize: '0.92rem' }}>Calibrated Scale at Doorstep</div>
+                      <div className="apple-benefit-desc" style={{ fontSize: '0.76rem' }}>Our booking executive carries a certified electronic scale so you verify physical and volumetric weight before paying.</div>
                     </div>
                   </div>
 
                   <div className="apple-benefit-item">
-                    <AppleSquircleBadge palette="green" size={38}>
-                      <CheckCircle2 size={18} color="#ffffff" />
+                    <AppleSquircleBadge palette="green" size={52}>
+                      <CheckCircle2 size={26} color="#ffffff" strokeWidth={2.2} />
                     </AppleSquircleBadge>
                     <div className="apple-benefit-content">
-                      <div className="apple-benefit-title">100% Export Customs &amp; KYC Clearance</div>
-                      <div className="apple-benefit-desc">Complete legal clearance for USA FDA, UK HMRC, Australia Biosecurity and Canadian customs.</div>
+                      <div className="apple-benefit-title" style={{ fontSize: '0.92rem' }}>100% Export Customs &amp; KYC Clearance</div>
+                      <div className="apple-benefit-desc" style={{ fontSize: '0.76rem' }}>Complete legal clearance for USA FDA, UK HMRC, Australia Biosecurity and Canadian customs.</div>
                     </div>
                   </div>
                 </div>
@@ -954,8 +958,8 @@ export default function CustomerApp() {
               {bookingStep === 1 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <AppleSquircleBadge palette="blue" size={48}>
-                      <MapPin size={24} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="blue" size={56}>
+                      <MapPin size={28} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Doorstep Pickup Details</h2>
@@ -1056,8 +1060,8 @@ export default function CustomerApp() {
               {bookingStep === 2 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <AppleSquircleBadge palette="purple" size={48}>
-                      <Plane size={24} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="purple" size={56}>
+                      <Plane size={28} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Destination &amp; Consignee</h2>
@@ -1166,8 +1170,8 @@ export default function CustomerApp() {
               {bookingStep === 3 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <AppleSquircleBadge palette="orange" size={48}>
-                      <Box size={24} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="orange" size={56}>
+                      <Box size={28} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Parcel &amp; Weight Estimator</h2>
@@ -1192,8 +1196,8 @@ export default function CustomerApp() {
                           className={`category-item-card ${formData.category === cat.id ? 'cat-selected' : ''}`}
                           onClick={() => setFormData({ ...formData, category: cat.id })}
                         >
-                          <AppleSquircleBadge palette={paletteMap[cat.id] || 'blue'} size={40}>
-                            <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>{cat.icon}</span>
+                          <AppleSquircleBadge palette={paletteMap[cat.id] || 'blue'} size={52}>
+                            <span style={{ fontSize: '1.65rem', lineHeight: 1 }}>{cat.icon}</span>
                           </AppleSquircleBadge>
                           <div className="cat-info">
                             <strong>{cat.name}</strong>
@@ -1291,8 +1295,8 @@ export default function CustomerApp() {
               {bookingStep === 4 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <AppleSquircleBadge palette="green" size={48}>
-                      <CheckCircle2 size={24} color="#ffffff" strokeWidth={2.4} />
+                    <AppleSquircleBadge palette="green" size={56}>
+                      <CheckCircle2 size={28} color="#ffffff" strokeWidth={2.4} />
                     </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Review &amp; Instant Booking</h2>
@@ -1515,8 +1519,8 @@ export default function CustomerApp() {
             <div className="apple-view-content fade-in">
               <div className="apple-card-panel">
                 <div className="panel-title-row">
-                  <AppleSquircleBadge palette="teal" size={48}>
-                    <Navigation size={24} color="#ffffff" strokeWidth={2.4} />
+                  <AppleSquircleBadge palette="teal" size={56}>
+                    <Navigation size={28} color="#ffffff" strokeWidth={2.4} />
                   </AppleSquircleBadge>
                   <div>
                     <h2 className="panel-title">Autonomous Satellite Tracking</h2>
@@ -1638,8 +1642,8 @@ export default function CustomerApp() {
             <div className="apple-view-content fade-in">
               <div className="apple-card-panel">
                 <div className="panel-title-row">
-                  <AppleSquircleBadge palette="gold" size={48}>
-                    <Calculator size={24} color="#ffffff" strokeWidth={2.4} />
+                  <AppleSquircleBadge palette="gold" size={56}>
+                    <Calculator size={28} color="#ffffff" strokeWidth={2.4} />
                   </AppleSquircleBadge>
                   <div>
                     <h2 className="panel-title">Instant Air Freight Calculator</h2>
@@ -1735,8 +1739,8 @@ export default function CustomerApp() {
             <div className="apple-view-content fade-in">
               <div className="apple-card-panel">
                 <div className="panel-title-row">
-                  <AppleSquircleBadge palette="purple" size={48}>
-                    <ShieldCheck size={24} color="#ffffff" strokeWidth={2.4} />
+                  <AppleSquircleBadge palette="purple" size={56}>
+                    <ShieldCheck size={28} color="#ffffff" strokeWidth={2.4} />
                   </AppleSquircleBadge>
                   <div>
                     <h2 className="panel-title">Customer Care &amp; Hubs</h2>
@@ -2076,8 +2080,8 @@ export default function CustomerApp() {
             className={`dock-tab-btn ${activeTab === 'home' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('home')}
           >
-            <AppleSquircleBadge palette={activeTab === 'home' ? 'blue' : 'dark'} size={36}>
-              <Home size={19} color="#ffffff" strokeWidth={2.4} />
+            <AppleSquircleBadge palette={activeTab === 'home' ? 'blue' : 'dark'} size={48}>
+              <Home size={26} color="#ffffff" strokeWidth={2.4} />
             </AppleSquircleBadge>
             <span>Home</span>
             {activeTab === 'home' && <span className="dock-active-dot"></span>}
@@ -2087,8 +2091,8 @@ export default function CustomerApp() {
             className={`dock-tab-btn ${activeTab === 'book' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('book')}
           >
-            <AppleSquircleBadge palette={activeTab === 'book' ? 'blue' : 'dark'} size={36}>
-              <Package size={19} color="#ffffff" strokeWidth={2.4} />
+            <AppleSquircleBadge palette={activeTab === 'book' ? 'blue' : 'dark'} size={48}>
+              <Package size={26} color="#ffffff" strokeWidth={2.4} />
             </AppleSquircleBadge>
             <span>Book</span>
             {activeTab === 'book' && <span className="dock-active-dot"></span>}
@@ -2098,8 +2102,8 @@ export default function CustomerApp() {
             className={`dock-tab-btn ${activeTab === 'track' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('track')}
           >
-            <AppleSquircleBadge palette={activeTab === 'track' ? 'teal' : 'dark'} size={36}>
-              <Navigation size={19} color="#ffffff" strokeWidth={2.4} />
+            <AppleSquircleBadge palette={activeTab === 'track' ? 'teal' : 'dark'} size={48}>
+              <Navigation size={26} color="#ffffff" strokeWidth={2.4} />
             </AppleSquircleBadge>
             <span>Track</span>
             {activeTab === 'track' && <span className="dock-active-dot"></span>}
@@ -2109,8 +2113,8 @@ export default function CustomerApp() {
             className={`dock-tab-btn ${activeTab === 'rates' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('rates')}
           >
-            <AppleSquircleBadge palette={activeTab === 'rates' ? 'gold' : 'dark'} size={36}>
-              <Calculator size={19} color="#ffffff" strokeWidth={2.4} />
+            <AppleSquircleBadge palette={activeTab === 'rates' ? 'gold' : 'dark'} size={48}>
+              <Calculator size={26} color="#ffffff" strokeWidth={2.4} />
             </AppleSquircleBadge>
             <span>Rates</span>
             {activeTab === 'rates' && <span className="dock-active-dot"></span>}
@@ -2120,8 +2124,8 @@ export default function CustomerApp() {
             className={`dock-tab-btn ${activeTab === 'account' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('account')}
           >
-            <AppleSquircleBadge palette={activeTab === 'account' ? 'purple' : 'dark'} size={36}>
-              <User size={19} color="#ffffff" strokeWidth={2.4} />
+            <AppleSquircleBadge palette={activeTab === 'account' ? 'purple' : 'dark'} size={48}>
+              <User size={26} color="#ffffff" strokeWidth={2.4} />
             </AppleSquircleBadge>
             <span>Account</span>
             {activeTab === 'account' && <span className="dock-active-dot"></span>}
