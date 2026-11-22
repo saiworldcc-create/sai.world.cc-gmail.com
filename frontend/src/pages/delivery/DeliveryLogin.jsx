@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  Truck, 
+  ShieldCheck, 
+  Lock, 
+  Mail, 
+  Eye, 
+  EyeOff, 
+  Fingerprint, 
+  ArrowRight, 
+  Sparkles, 
+  PhoneCall, 
+  CheckCircle2, 
+  AlertCircle,
+  Smartphone,
+  ScanLine
+} from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 
-const DeliveryLogin = () => {
+export default function DeliveryLogin() {
   const { user, login, loading } = useUser();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -10,6 +26,7 @@ const DeliveryLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
+  const [biometricScanning, setBiometricScanning] = useState(false);
 
   useEffect(() => {
     if (user && user.role === 'delivery_partner') {
@@ -21,6 +38,29 @@ const DeliveryLogin = () => {
     setEmail('driver@sai.com');
     setPassword('Driver@2026');
     setError('');
+  };
+
+  const handleBiometricAuth = async () => {
+    setBiometricScanning(true);
+    setError('');
+    setEmail('driver@sai.com');
+    setPassword('Driver@2026');
+    
+    // Simulate Apple Face ID / Touch ID verification
+    setTimeout(async () => {
+      try {
+        const res = await login('driver@sai.com', 'Driver@2026');
+        setBiometricScanning(false);
+        if (res.success) {
+          navigate('/delivery');
+        } else {
+          setError(res.message || 'Biometric authentication failed.');
+        }
+      } catch (err) {
+        setBiometricScanning(false);
+        setError(err.message || 'Biometric authentication failed.');
+      }
+    }, 1200);
   };
 
   const handleSubmit = async (e) => {
@@ -43,344 +83,538 @@ const DeliveryLogin = () => {
   };
 
   return (
-    <div style={styles.pageBackground}>
-      {/* Background glowing ambient elements */}
-      <div style={styles.ambientGlowTop}></div>
-      <div style={styles.ambientGlowBottom}></div>
+    <div className="apple-app-shell" style={styles.shell}>
+      {/* Background radial ambient orbs */}
+      <div style={styles.ambientOrb1}></div>
+      <div style={styles.ambientOrb2}></div>
 
-      <div style={styles.mobileAppContainer}>
-        {/* App Top Bar / Branding */}
-        <div style={styles.appHeader}>
+      <div className="apple-mobile-device-viewport" style={styles.viewport}>
+        {/* Top iOS Status Header */}
+        <div style={styles.topBar}>
           <div style={styles.brandRow}>
-            <div style={styles.logoBadge}>
-              <i className="fa-solid fa-truck-fast" style={{ fontSize: '1.4rem', color: '#fff' }}></i>
+            <div style={styles.appIconSquare}>
+              <Truck size={24} color="#ffffff" strokeWidth={2.4} />
             </div>
             <div>
-              <h1 style={styles.appName}>SAI INTERNATIONAL</h1>
-              <span style={styles.appSubtext}>Delivery Executive App</span>
+              <div style={styles.appName}>SAI EXPRESS AGENT</div>
+              <div style={styles.appSub}>Executive Driver Workspace</div>
             </div>
           </div>
-          <span style={styles.versionPill}>
-            <i className="fa-solid fa-circle" style={{ fontSize: '6px', color: '#10b981', marginRight: '5px' }}></i>
-            v2.4 Live
-          </span>
+          <div style={styles.liveBadge}>
+            <span style={styles.liveDot}></span>
+            <span>v2.6 iOS 18</span>
+          </div>
         </div>
 
-        {/* Hero Banner inside App Card */}
-        <div style={styles.heroSection}>
-          <div style={styles.heroIconWrapper}>
-            <i className="fa-solid fa-shield-halved" style={{ fontSize: '2rem', color: '#ff6b4a' }}></i>
+        {/* Main Glass Card */}
+        <div style={styles.glassCard}>
+          <div style={styles.cardHeader}>
+            <div style={styles.shieldPill}>
+              <ShieldCheck size={16} color="#38bdf8" />
+              <span>Encrypted Field Terminal</span>
+            </div>
+            <h1 style={styles.title}>Agent Sign In</h1>
+            <p style={styles.subtitle}>
+              Sign in to manage doorstep pickups, GPS route manifests, live weighing & instant digital PODs.
+            </p>
           </div>
-          <h2 style={styles.heroTitle}>Agent Workspace Sign In</h2>
-          <p style={styles.heroDesc}>Enter your driver credentials to manage daily pickups, live GPS route tracking, and POD uploads.</p>
+
+          {/* Quick Demo Credentials Button */}
+          <div style={styles.demoFillContainer}>
+            <button
+              type="button"
+              onClick={handleDemoFill}
+              style={styles.demoButton}
+              title="Auto-fill Demo Driver Credentials"
+            >
+              <Sparkles size={16} color="#f59e0b" />
+              <span>Auto-Fill Demo Credentials (driver@sai.com)</span>
+            </button>
+          </div>
+
+          {error && (
+            <div style={styles.errorBanner}>
+              <AlertCircle size={18} color="#ef4444" style={{ flexShrink: 0 }} />
+              <div style={styles.errorText}>{error}</div>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={styles.form}>
+            {/* Email Field */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.fieldLabel}>DRIVER ID / REGISTERED EMAIL</label>
+              <div style={styles.inputContainer}>
+                <Mail size={18} color="#64748b" style={styles.leadingIcon} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="driver@sai.com"
+                  style={styles.textInput}
+                  required
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div style={styles.fieldGroup}>
+              <div style={styles.passwordLabelRow}>
+                <label style={styles.fieldLabel}>ACCESS PASSWORD</label>
+                <a href="tel:+919059949365" style={styles.forgotLink}>Reset with Dispatch?</a>
+              </div>
+              <div style={styles.inputContainer}>
+                <Lock size={18} color="#64748b" style={styles.leadingIcon} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  style={{ ...styles.textInput, paddingRight: '44px' }}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={styles.eyeButton}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={18} color="#94a3b8" /> : <Eye size={18} color="#94a3b8" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember Me Toggle */}
+            <div style={styles.optionsRow}>
+              <label style={styles.rememberToggle}>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  style={styles.checkbox}
+                />
+                <span style={styles.rememberText}>Stay signed in on this device</span>
+              </label>
+            </div>
+
+            {/* Submit Action */}
+            <button
+              type="submit"
+              disabled={loading || biometricScanning}
+              style={{
+                ...styles.primaryButton,
+                opacity: (loading || biometricScanning) ? 0.7 : 1
+              }}
+            >
+              {loading ? (
+                <span>Authenticating Driver...</span>
+              ) : (
+                <>
+                  <span>Unlock Agent Cockpit</span>
+                  <ArrowRight size={18} strokeWidth={2.4} />
+                </>
+              )}
+            </button>
+
+            {/* Biometric Express Login (Face ID / Fingerprint) */}
+            <div style={styles.biometricDivider}>
+              <div style={styles.dividerLine}></div>
+              <span style={styles.dividerText}>OR QUICK BIOMETRIC</span>
+              <div style={styles.dividerLine}></div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleBiometricAuth}
+              disabled={biometricScanning || loading}
+              style={styles.biometricButton}
+            >
+              {biometricScanning ? (
+                <>
+                  <ScanLine size={20} color="#38bdf8" className="fa-spin" />
+                  <span style={{ color: '#38bdf8' }}>Scanning Face ID / Touch ID...</span>
+                </>
+              ) : (
+                <>
+                  <Fingerprint size={22} color="#0284c7" />
+                  <span>One-Tap Face ID / Biometric Login</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Quick Switch to Customer App */}
+          <div style={styles.switchBox}>
+            <span style={styles.switchPrompt}>Looking for Customer Self-Booking?</span>
+            <button
+              type="button"
+              onClick={() => navigate('/customer')}
+              style={styles.switchButton}
+            >
+              <Smartphone size={14} color="#ff6b4a" />
+              <span>Launch Customer Booking App</span>
+            </button>
+          </div>
         </div>
 
-        {/* Quick Demo Credentials Fill Button */}
-        <button
-          type="button"
-          onClick={handleDemoFill}
-          style={styles.demoFillBtn}
-        >
-          <i className="fa-solid fa-bolt" style={{ color: '#f59e0b', marginRight: '6px' }}></i>
-          One-Tap Fill Demo Driver Login
-        </button>
-
-        {error && (
-          <div style={styles.errorBox}>
-            <i className="fa-solid fa-circle-exclamation" style={{ marginRight: '8px' }}></i>
-            {error}
-          </div>
-        )}
-
-        {/* Login Form */}
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Driver Email / Mobile ID</label>
-            <div style={styles.inputWrapper}>
-              <i className="fa-solid fa-id-badge" style={styles.inputIcon}></i>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g. driver@sai.com"
-                style={styles.input}
-                required
-              />
-            </div>
-          </div>
-
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Access Password</label>
-            <div style={styles.inputWrapper}>
-              <i className="fa-solid fa-lock" style={styles.inputIcon}></i>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your driver password"
-                style={{ ...styles.input, paddingRight: '2.5rem' }}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={styles.togglePasswordBtn}
-                tabIndex="-1"
-              >
-                <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
-              </button>
-            </div>
-          </div>
-
-          <div style={styles.optionsRow}>
-            <label style={styles.rememberLabel}>
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                style={{ accentColor: '#ff6b4a', width: '16px', height: '16px' }}
-              />
-              <span>Keep me signed in</span>
-            </label>
-            <a href="tel:+919059949365" style={styles.forgotLink}>Forgot password?</a>
-          </div>
-
-          <button type="submit" disabled={loading} style={styles.submitBtn}>
-            {loading ? (
-              <>
-                <i className="fa-solid fa-circle-notch fa-spin" style={{ marginRight: '8px' }}></i>
-                Authenticating Driver...
-              </>
-            ) : (
-              <>
-                <span>Open Delivery Agent Dashboard</span>
-                <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
-              </>
-            )}
-          </button>
-        </form>
-
-        {/* Security & Support Footer */}
-        <div style={styles.appFooter}>
-          <div style={styles.securityBadge}>
-            <i className="fa-solid fa-location-dot" style={{ color: '#10b981', marginRight: '6px' }}></i>
-            Realtime GPS Tracking & Offline Mode Enabled
-          </div>
-          <p style={styles.supportText}>
-            Need assistance? <a href="tel:+919059949365" style={{ color: '#ff6b4a', textDecoration: 'none', fontWeight: 'bold' }}>Call Dispatch (+91 90599 49365)</a>
-          </p>
+        {/* Bottom Driver Dispatch Helpline */}
+        <div style={styles.footerNote}>
+          <PhoneCall size={14} color="#38bdf8" />
+          <span>Dispatch Control Tower: </span>
+          <a href="tel:+919059949365" style={styles.phoneLink}>+91 90599 49365</a>
         </div>
       </div>
     </div>
   );
-};
+}
 
 const styles = {
-  pageBackground: {
+  shell: {
     minHeight: '100vh',
-    backgroundColor: '#000000', // Pitch black for high contrast
+    minHeight: '100dvh',
+    backgroundColor: '#070b12',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    padding: '0',
-    fontFamily: "system-ui, -apple-system, sans-serif",
+    alignItems: 'center',
+    padding: '16px',
+    position: 'relative',
+    overflow: 'hidden'
   },
-  ambientGlowTop: { display: 'none' }, // Removed for battery saving
-  ambientGlowBottom: { display: 'none' }, // Removed for battery saving
-  mobileAppContainer: {
+  ambientOrb1: {
+    position: 'absolute',
+    top: '-10%',
+    left: '20%',
+    width: '450px',
+    height: '450px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(2, 132, 199, 0.22) 0%, rgba(0, 0, 0, 0) 70%)',
+    pointerEvents: 'none',
+    zIndex: 1
+  },
+  ambientOrb2: {
+    position: 'absolute',
+    bottom: '-15%',
+    right: '15%',
+    width: '500px',
+    height: '500px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(255, 107, 74, 0.16) 0%, rgba(0, 0, 0, 0) 70%)',
+    pointerEvents: 'none',
+    zIndex: 1
+  },
+  viewport: {
     width: '100%',
-    maxWidth: '420px',
-    backgroundColor: '#000000',
-    minHeight: '100vh',
-    padding: '2rem 1.5rem',
-    boxSizing: 'border-box',
+    maxWidth: '430px',
+    position: 'relative',
+    zIndex: 2,
     display: 'flex',
     flexDirection: 'column',
+    gap: '16px',
+    paddingBottom: '20px'
   },
-  appHeader: {
+  topBar: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '2rem',
-    paddingBottom: '1rem',
-    borderBottom: '4px solid #333333' // Chunky border
+    justifyContent: 'space-between',
+    padding: '8px 4px'
   },
   brandRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem'
+    gap: '12px'
   },
-  logoBadge: {
-    width: '48px',
-    height: '48px',
-    backgroundColor: '#FF5000', // Flat safety orange
+  appIconSquare: {
+    width: '44px',
+    height: '44px',
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+    boxShadow: '0 8px 20px -4px rgba(2, 132, 199, 0.5)',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '4px' // Boxy industrial look
+    justifyContent: 'center'
   },
   appName: {
-    fontSize: '1.2rem',
-    fontWeight: '900',
-    color: '#FFFFFF',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    margin: 0,
-  },
-  appSubtext: {
-    fontSize: '0.85rem',
-    color: '#AAAAAA',
-    fontWeight: '700',
-    textTransform: 'uppercase'
-  },
-  versionPill: {
-    fontSize: '0.8rem',
+    fontSize: '0.95rem',
     fontWeight: '800',
-    color: '#000000',
-    backgroundColor: '#00FF00', // High contrast neon green
-    padding: '4px 8px',
-    borderRadius: '2px', // Boxy
+    color: '#ffffff',
+    letterSpacing: '0.5px'
   },
-  heroSection: {
-    marginBottom: '2rem'
-  },
-  heroIconWrapper: { display: 'none' }, // Removed decorative icon
-  heroTitle: {
-    fontSize: '1.8rem',
-    fontWeight: '900',
-    color: '#FFFFFF',
-    margin: '0 0 0.5rem 0',
-    textTransform: 'uppercase'
-  },
-  heroDesc: {
-    fontSize: '1rem',
-    color: '#CCCCCC',
-    margin: 0,
-    lineHeight: 1.5,
+  appSub: {
+    fontSize: '0.72rem',
+    color: '#94a3b8',
     fontWeight: '500'
   },
-  demoFillBtn: {
-    width: '100%',
-    backgroundColor: '#333333',
-    color: '#FFFFFF',
-    border: '2px solid #555555',
-    padding: '1rem',
-    fontSize: '1rem',
+  liveBadge: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '4px 10px',
+    borderRadius: '20px',
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    border: '1px solid rgba(16, 185, 129, 0.28)',
+    fontSize: '0.7rem',
+    fontWeight: '700',
+    color: '#34d399'
+  },
+  liveDot: {
+    width: '6px',
+    height: '6px',
+    borderRadius: '50%',
+    backgroundColor: '#10b981',
+    boxShadow: '0 0 8px #10b981'
+  },
+  glassCard: {
+    background: 'rgba(18, 27, 43, 0.72)',
+    backdropFilter: 'blur(30px)',
+    WebkitBackdropFilter: 'blur(30px)',
+    borderRadius: '26px',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.08) inset',
+    padding: '24px 22px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px'
+  },
+  cardHeader: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px'
+  },
+  shieldPill: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+    border: '1px solid rgba(56, 189, 248, 0.2)',
+    padding: '4px 10px',
+    borderRadius: '20px',
+    fontSize: '0.72rem',
+    fontWeight: '700',
+    color: '#38bdf8',
+    marginBottom: '4px'
+  },
+  title: {
+    margin: 0,
+    fontSize: '1.6rem',
     fontWeight: '800',
-    cursor: 'pointer',
-    marginBottom: '2rem',
+    color: '#ffffff',
+    letterSpacing: '-0.02em'
+  },
+  subtitle: {
+    margin: 0,
+    fontSize: '0.84rem',
+    color: '#94a3b8',
+    lineHeight: 1.45
+  },
+  demoFillContainer: {
+    width: '100%'
+  },
+  demoButton: {
+    width: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    textTransform: 'uppercase'
+    gap: '8px',
+    padding: '10px 14px',
+    borderRadius: '14px',
+    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+    border: '1px solid rgba(245, 158, 11, 0.3)',
+    color: '#fbbf24',
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
   },
-  errorBox: {
-    backgroundColor: '#FF0000',
-    color: '#FFFFFF',
-    padding: '1rem',
-    marginBottom: '2rem',
-    fontSize: '1rem',
-    fontWeight: '800',
+  errorBanner: {
     display: 'flex',
     alignItems: 'center',
-    border: '4px solid #990000'
+    gap: '10px',
+    padding: '12px 14px',
+    borderRadius: '14px',
+    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+    border: '1px solid rgba(239, 68, 68, 0.3)',
+    color: '#f87171'
+  },
+  errorText: {
+    fontSize: '0.82rem',
+    lineHeight: 1.35,
+    fontWeight: '600'
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem',
-    flex: 1
+    gap: '16px'
   },
-  inputGroup: {
+  fieldGroup: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.5rem'
+    gap: '6px'
   },
-  label: {
-    fontSize: '1rem',
-    color: '#FFFFFF',
+  fieldLabel: {
+    fontSize: '0.68rem',
     fontWeight: '800',
-    textTransform: 'uppercase',
+    color: '#94a3b8',
+    letterSpacing: '0.6px',
+    textTransform: 'uppercase'
   },
-  inputWrapper: {
+  passwordLabelRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  forgotLink: {
+    fontSize: '0.72rem',
+    color: '#38bdf8',
+    textDecoration: 'none',
+    fontWeight: '600'
+  },
+  inputContainer: {
     position: 'relative',
     display: 'flex',
     alignItems: 'center'
   },
-  inputIcon: { display: 'none' }, // Removed for cleaner industrial look
-  input: {
-    width: '100%',
-    padding: '1.2rem 1rem', // Giant padding for fat fingers
-    backgroundColor: '#111111',
-    border: '3px solid #555555',
-    fontSize: '1.2rem',
-    color: '#FFFFFF',
-    outline: 'none',
-    boxSizing: 'border-box',
-    fontWeight: '700'
-  },
-  togglePasswordBtn: {
+  leadingIcon: {
     position: 'absolute',
-    right: '15px',
+    left: '14px',
+    pointerEvents: 'none'
+  },
+  textInput: {
+    width: '100%',
+    padding: '13px 14px 13px 44px',
+    borderRadius: '14px',
+    backgroundColor: 'rgba(10, 16, 26, 0.7)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: '#ffffff',
+    fontSize: '0.9rem',
+    outline: 'none',
+    transition: 'border 0.2s ease, box-shadow 0.2s ease',
+    boxSizing: 'border-box'
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: '12px',
     background: 'none',
     border: 'none',
-    color: '#AAAAAA',
-    fontSize: '1.2rem',
     cursor: 'pointer',
-    padding: '10px'
+    padding: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   optionsRow: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between'
   },
-  rememberLabel: {
+  rememberToggle: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '1rem',
-    color: '#FFFFFF',
-    fontWeight: '700',
+    gap: '8px',
     cursor: 'pointer'
   },
-  forgotLink: {
-    fontSize: '1rem',
-    color: '#00AAFF',
-    textDecoration: 'none',
-    fontWeight: '800',
-    textTransform: 'uppercase'
+  checkbox: {
+    accentColor: '#0284c7',
+    width: '16px',
+    height: '16px',
+    cursor: 'pointer'
   },
-  submitBtn: {
-    marginTop: '1rem',
-    backgroundColor: '#FF5000', // Flat safety orange
-    color: '#FFFFFF',
+  rememberText: {
+    fontSize: '0.78rem',
+    color: '#cbd5e1',
+    fontWeight: '500'
+  },
+  primaryButton: {
+    width: '100%',
+    padding: '14px 20px',
+    borderRadius: '16px',
+    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
     border: 'none',
-    padding: '1.2rem', // Massive touch target
-    fontSize: '1.2rem',
-    fontWeight: '900',
+    color: '#ffffff',
+    fontSize: '0.95rem',
+    fontWeight: '800',
+    letterSpacing: '0.3px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    textTransform: 'uppercase',
+    gap: '10px',
+    boxShadow: '0 10px 25px -4px rgba(2, 132, 199, 0.5)',
+    transition: 'all 0.2s ease'
   },
-  appFooter: {
-    marginTop: 'auto',
-    paddingTop: '2rem',
+  biometricDivider: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    marginTop: '6px',
+    marginBottom: '2px'
+  },
+  dividerLine: {
+    flex: 1,
+    height: '1px',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)'
+  },
+  dividerText: {
+    fontSize: '0.66rem',
+    fontWeight: '800',
+    color: '#64748b',
+    letterSpacing: '0.8px'
+  },
+  biometricButton: {
+    width: '100%',
+    padding: '12px 18px',
+    borderRadius: '14px',
+    backgroundColor: 'rgba(2, 132, 199, 0.08)',
+    border: '1px solid rgba(2, 132, 199, 0.25)',
+    color: '#ffffff',
+    fontSize: '0.84rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
+    transition: 'all 0.2s ease'
+  },
+  switchBox: {
+    padding: '14px',
+    borderRadius: '16px',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '8px',
     textAlign: 'center'
   },
-  securityBadge: {
-    fontSize: '0.9rem',
-    fontWeight: '800',
-    color: '#00FF00',
-    marginBottom: '1rem',
-    textTransform: 'uppercase'
+  switchPrompt: {
+    fontSize: '0.74rem',
+    color: '#94a3b8'
   },
-  supportText: {
-    fontSize: '0.9rem',
-    color: '#AAAAAA',
+  switchButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    background: 'none',
+    border: 'none',
+    color: '#ff6b4a',
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    cursor: 'pointer'
+  },
+  footerNote: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    fontSize: '0.74rem',
+    color: '#94a3b8'
+  },
+  phoneLink: {
+    color: '#38bdf8',
+    textDecoration: 'none',
     fontWeight: '700'
   }
 };
-
-export default DeliveryLogin;

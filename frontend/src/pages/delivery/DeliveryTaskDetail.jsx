@@ -1,11 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  ChevronLeft, 
+  QrCode, 
+  Phone, 
+  MapPin, 
+  Navigation, 
+  Package, 
+  Scale, 
+  CreditCard, 
+  PenTool, 
+  Camera, 
+  CheckCircle2, 
+  AlertCircle, 
+  Clock, 
+  RotateCcw, 
+  Layers, 
+  ShieldCheck, 
+  Truck, 
+  ArrowRight,
+  ExternalLink,
+  DollarSign,
+  Eraser,
+  UploadCloud
+} from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useUser } from '../../context/UserContext';
 import { getDeliveryTasks, trackShipment, updateDeliveryStatus, updateLiveLocation, uploadPOD } from '../../services/api';
 import { useOfflineQueue } from '../../hooks/useOfflineQueue';
 import { extractAwbFromText } from '../../utils/awbExtractor';
 
-const DeliveryTaskDetail = () => {
+export default function DeliveryTaskDetail() {
   const params = useParams();
   const navigate = useNavigate();
   const { user } = useUser();
@@ -16,13 +41,33 @@ const DeliveryTaskDetail = () => {
   const [watchId, setWatchId] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Animated Success Modal State
+  // Physical Scale & Volumetric Check State
+  const [actualWeight, setActualWeight] = useState(5.0);
+  const [boxLength, setBoxLength] = useState(30);
+  const [boxWidth, setBoxWidth] = useState(25);
+  const [boxHeight, setBoxHeight] = useState(20);
+  const [ratePerKg, setRatePerKg] = useState(780);
+  const [paidAdvance, setPaidAdvance] = useState(0);
+
+  // Digital Signature Canvas
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+  const [signatureDataUrl, setSignatureDataUrl] = useState(null);
+
+  // Photo POD State
+  const [podPhotoFile, setPodPhotoFile] = useState(null);
+  const [podPhotoPreview, setPodPhotoPreview] = useState(null);
+
+  // Payment Collection State
+  const [paymentStatus, setPaymentStatus] = useState('Pending'); // 'Pending' | 'Paid UPI' | 'Paid Cash'
+
+  // Animated Success Modal
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successModalData, setSuccessModalData] = useState({ title: '', message: '', icon: 'fa-circle-check' });
+  const [successModalData, setSuccessModalData] = useState({ title: '', message: '', icon: 'check' });
 
   const { isOnline, queueCount, enqueueUpdate } = useOfflineQueue();
 
-  // Extract clean AWB from route params or pathname
   const rawParam = params.awb || params['*'] || window.location.pathname;
   const targetAwb = extractAwbFromText(rawParam);
 
@@ -43,24 +88,22 @@ const DeliveryTaskDetail = () => {
       setErrorMsg('');
 
       if (!targetAwb) {
-        setErrorMsg('Invalid or unreadable AWB barcode scanned.');
+        setErrorMsg('Invalid or unreadable AWB barcode.');
         setLoading(false);
         return;
       }
 
-      // 1. First search in assigned driver tasks
+      // 1. Search in assigned driver tasks
       let foundTask = null;
       try {
         const res = await getDeliveryTasks();
         const tasksList = res?.data?.data || [];
-        foundTask = tasksList.find(t =>
-          t.awb?.toLowerCase() === targetAwb.toLowerCase()
-        );
+        foundTask = tasksList.find(t => t.awb?.toLowerCase() === targetAwb.toLowerCase());
       } catch (e) {
         console.warn('Driver tasks fetch warning:', e);
       }
 
-      // 2. If not found in assigned tasks, query tracking API (supports any Shipment/Ecom/Booking AWB)
+      // 2. Query tracking API fallback
       if (!foundTask) {
         try {
           const trackRes = await trackShipment(targetAwb);
@@ -69,16 +112,15 @@ const DeliveryTaskDetail = () => {
             foundTask = {
               _id: data._id || targetAwb,
               awb: data.awb || targetAwb,
-              sender: data.sender || data.senderName || 'Sender (Store / Origin)',
+              sender: data.sender || data.senderName || 'Sai International Client',
               senderPhone: data.senderPhone || '',
-              senderAddress: data.senderAddress || data.origin || '',
+              senderAddress: data.senderAddress || data.origin || 'Hyderabad Central Hub',
               receiver: data.receiver || data.receiverName || 'Recipient',
               receiverPhone: data.receiverPhone || '',
-              destination: data.destination || data.receiverAddress || 'Destination',
+              destination: data.destination || data.receiverAddress || 'International Destination',
               status: data.status || 'In Transit',
               contents: data.contents || 'Express Parcel',
-              carrier: data.carrier || 'SAI Logistics',
-              eta: data.eta || 'N/A',
+              carrier: data.carrier || 'SAI Worldwide Cargo',
               history: data.history || []
             };
           }
@@ -93,7 +135,7 @@ const DeliveryTaskDetail = () => {
           startLiveTracking();
         }
       } else {
-        setErrorMsg(`Shipment with AWB "${targetAwb}" not found.`);
+        setErrorMsg(`Shipment with AWB "${targetAwb}" could not be located.`);
       }
     } catch (err) {
       console.error(err);
@@ -106,8 +148,8 @@ const DeliveryTaskDetail = () => {
   const handleStatusUpdate = async (newStatus, customLocation = '') => {
     try {
       setIsUpdating(true);
-      let locationString = customLocation || 'Local Hub';
-      
+      let locationString = customLocation || 'Local Hub Route';
+
       if (navigator.geolocation) {
         const pos = await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
@@ -125,29 +167,28 @@ const DeliveryTaskDetail = () => {
       } else {
         await updateDeliveryStatus(activeAwb, { status: newStatus, location: locationString });
       }
-      
+
       if (newStatus === 'Out for Delivery') {
         startLiveTracking();
       }
 
-      // Trigger Animated Success Popup for Pickup / Delivery
       if (newStatus.toLowerCase().includes('picked up')) {
         setSuccessModalData({
-          title: 'Order Picked Up Successfully',
-          message: `Shipment ${activeAwb} pickup confirmed. Admin & Super Admin have been notified in real-time.`,
-          icon: 'fa-box-check'
+          title: 'Order Picked Up Confirmed',
+          message: `AWB ${activeAwb} pickup logged with GPS timestamp. Notification dispatched to operations console.`,
+          icon: 'box'
         });
         setShowSuccessModal(true);
       } else if (newStatus.toLowerCase().includes('delivered')) {
         stopLiveTracking();
         setSuccessModalData({
-          title: 'Package Delivered Successfully',
-          message: `Shipment ${activeAwb} has been marked as Delivered. Proof of Delivery stored.`,
-          icon: 'fa-circle-check'
+          title: 'Package Successfully Delivered',
+          message: `AWB ${activeAwb} marked as Delivered. Proof of Delivery filed in cloud records.`,
+          icon: 'check'
         });
         setShowSuccessModal(true);
       }
-      
+
       fetchTask();
     } catch (err) {
       alert('Failed to update status.');
@@ -159,7 +200,6 @@ const DeliveryTaskDetail = () => {
 
   const startLiveTracking = () => {
     if (isTracking || !navigator.geolocation) return;
-    
     setIsTracking(true);
     const id = navigator.geolocation.watchPosition(
       (position) => {
@@ -180,337 +220,1029 @@ const DeliveryTaskDetail = () => {
     setIsTracking(false);
   };
 
-  const handlePODUpload = async (e) => {
+  // Volumetric & Balance Math
+  const volumetricWeight = Math.round(((boxLength * boxWidth * boxHeight) / 5000) * 10) / 10;
+  const chargeableWeight = Math.max(actualWeight, volumetricWeight);
+  const totalFreight = Math.round(chargeableWeight * ratePerKg);
+  const balanceDue = Math.max(0, totalFreight - paidAdvance);
+
+  // Digital Signature Canvas Methods
+  const startDrawing = (e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+    const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+    
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    setIsDrawing(true);
+  };
+
+  const draw = (e) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+    const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    setHasSignature(true);
+  };
+
+  const stopDrawing = () => {
+    if (isDrawing) {
+      setIsDrawing(false);
+      const canvas = canvasRef.current;
+      if (canvas) {
+        setSignatureDataUrl(canvas.toDataURL('image/png'));
+      }
+    }
+  };
+
+  const clearSignature = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasSignature(false);
+    setSignatureDataUrl(null);
+  };
+
+  // Photo POD Capture
+  const handlePhotoSelect = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (file) {
+      setPodPhotoFile(file);
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setPodPhotoPreview(ev.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFinalPODSubmit = async () => {
+    if (!podPhotoFile && !hasSignature) {
+      alert('Please capture a Proof of Delivery photo or collect the customer signature.');
+      return;
+    }
 
     try {
       setIsUpdating(true);
-      const formData = new FormData();
-      formData.append('image', file);
-      
       const activeAwb = task?.awb || targetAwb;
-      await uploadPOD(activeAwb, formData);
+      const formData = new FormData();
+      if (podPhotoFile) formData.append('image', podPhotoFile);
+      if (signatureDataUrl) formData.append('signature', signatureDataUrl);
+      formData.append('chargeableWeight', chargeableWeight);
+      formData.append('paymentStatus', paymentStatus);
 
-      if (task?.status !== 'Delivered') {
-        await handleStatusUpdate('Delivered');
-      } else {
-        setSuccessModalData({
-          title: 'Proof of Delivery Uploaded Successfully',
-          message: `Proof of delivery photo saved for shipment ${activeAwb}.`,
-          icon: 'fa-camera'
-        });
-        setShowSuccessModal(true);
-        fetchTask();
-      }
+      await uploadPOD(activeAwb, formData);
+      await handleStatusUpdate('Delivered');
     } catch (err) {
       console.error(err);
-      alert('Failed to upload POD image.');
+      alert('Failed to upload POD. You can re-try or update status directly.');
     } finally {
       setIsUpdating(false);
     }
   };
 
-  if (loading) return (
-    <div style={styles.appShell}>
-      <div style={{ ...styles.appContainer, justifyContent: 'center', alignItems: 'center' }}>
-        <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '2rem', color: '#ff6b4a' }}></i>
-        <p style={{ color: '#94a3b8', marginTop: '1rem', fontSize: '0.9rem' }}>Locating shipment details...</p>
-      </div>
-    </div>
-  );
-
-  if (errorMsg || !task) return (
-    <div style={styles.appShell}>
-      <div style={{ ...styles.appContainer, justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center' }}>
-        <i className="fa-solid fa-box-open" style={{ fontSize: '3.5rem', color: '#f87171', marginBottom: '1rem' }}></i>
-        <h3 style={{ color: '#f8fafc', margin: '0 0 0.5rem 0' }}>Shipment Not Found</h3>
-        <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-          {errorMsg || `Could not find order details for scanned code.`}
-        </p>
-        <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
-          <button onClick={() => navigate('/delivery/scan')} style={styles.btnSecondary}>
-            <i className="fa-solid fa-qrcode" style={{ marginRight: '6px' }}></i> Rescan Code
-          </button>
-          <button onClick={() => navigate('/delivery')} style={styles.btnPrimary}>
-            <i className="fa-solid fa-house" style={{ marginRight: '6px' }}></i> Dashboard
-          </button>
+  if (loading) {
+    return (
+      <div className="apple-app-shell" style={styles.shell}>
+        <div style={styles.centerLoading}>
+          <Truck size={36} color="#0284c7" className="fa-bounce" />
+          <div style={styles.loadingText}>Retrieving AWB Manifest...</div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 
-  const isPickedUp = task.status?.toLowerCase().includes('picked up');
-  const isDelivered = task.status?.toLowerCase().includes('delivered');
+  if (errorMsg || !task) {
+    return (
+      <div className="apple-app-shell" style={styles.shell}>
+        <div className="apple-mobile-device-viewport" style={styles.viewport}>
+          <div style={styles.errorCard}>
+            <AlertCircle size={48} color="#ef4444" />
+            <h2 style={styles.errorTitle}>Shipment Not Found</h2>
+            <p style={styles.errorDesc}>{errorMsg || 'Could not locate details for this AWB.'}</p>
+            <div style={styles.errorBtnRow}>
+              <button onClick={() => navigate('/delivery/scan')} style={styles.secondaryBtn}>
+                <QrCode size={16} /> Scan Other AWB
+              </button>
+              <button onClick={() => navigate('/delivery')} style={styles.primaryBtn}>
+                Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isPickedUp = (task.status || '').toLowerCase().includes('picked');
+  const isInTransit = (task.status || '').toLowerCase().includes('transit');
+  const isDelivered = (task.status || '').toLowerCase().includes('delivered');
 
   return (
-    <div style={styles.appShell}>
-      <style>{`
-        @keyframes popupBounce {
-          0% { transform: scale(0.5) translateY(30px); opacity: 0; }
-          70% { transform: scale(1.05) translateY(-5px); opacity: 1; }
-          100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        @keyframes iconPulse {
-          0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
-          70% { transform: scale(1.1); box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); }
-          100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-      `}</style>
-
-      {/* Animated Pickup Success Modal Overlay */}
+    <div className="apple-app-shell" style={styles.shell}>
+      {/* Animated Success Modal */}
       {showSuccessModal && (
         <div style={styles.modalOverlay} onClick={() => setShowSuccessModal(false)}>
-          <div style={styles.modalCard} onClick={e => e.stopPropagation()}>
-            <div style={styles.animatedIconWrapper}>
-              <i className={`fa-solid ${successModalData.icon}`} style={{ fontSize: '2.5rem', color: '#ffffff' }}></i>
+          <div style={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+            <div style={styles.modalIconCircle}>
+              <CheckCircle2 size={36} color="#ffffff" strokeWidth={2.4} />
             </div>
-
-            <h2 style={styles.modalTitle}>{successModalData.title}</h2>
-            <p style={styles.modalMessage}>{successModalData.message}</p>
-
-            <div style={styles.badgeRow}>
-              <span style={styles.notifTag}>
-                <i className="fa-solid fa-bell" style={{ marginRight: '5px', color: '#38bdf8' }}></i>
-                Admin & Super Admin Notified
-              </span>
-            </div>
-
+            <h3 style={styles.modalTitle}>{successModalData.title}</h3>
+            <p style={styles.modalMsg}>{successModalData.message}</p>
             <button
-              onClick={() => { setShowSuccessModal(false); navigate('/delivery'); }}
+              onClick={() => {
+                setShowSuccessModal(false);
+                navigate('/delivery');
+              }}
               style={styles.modalBtn}
             >
-              Back to Task List <i className="fa-solid fa-arrow-right" style={{ marginLeft: '6px' }}></i>
+              Return to Active Manifest
             </button>
           </div>
         </div>
       )}
 
-      <div style={styles.appContainer}>
-        {/* Header */}
+      <div className="apple-mobile-device-viewport" style={styles.viewport}>
+        {/* Sticky iOS Header */}
         <header style={styles.header}>
-          <button onClick={() => navigate('/delivery')} style={styles.iconBackBtn}>
-            <i className="fa-solid fa-chevron-left"></i>
+          <button onClick={() => navigate('/delivery')} style={styles.headerBackBtn}>
+            <ChevronLeft size={22} color="#ffffff" />
           </button>
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ fontSize: '0.68rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>SHIPMENT DETAILS</span>
-            <h3 style={{ margin: 0, color: '#38bdf8', fontSize: '1.05rem', fontWeight: '800', letterSpacing: '0.5px' }}>
-              {task.awb}
-            </h3>
+          <div style={styles.headerTitleBox}>
+            <span style={styles.headerSubtitle}>WAYBILL MANIFEST</span>
+            <span style={styles.headerAwb}>{task.awb}</span>
           </div>
-          <button onClick={() => navigate('/delivery/scan')} style={styles.iconBackBtn} title="Rescan">
-            <i className="fa-solid fa-qrcode"></i>
+          <button onClick={() => navigate('/delivery/scan')} style={styles.headerBackBtn} title="Scan Next">
+            <QrCode size={20} color="#38bdf8" />
           </button>
         </header>
 
-        {/* Offline Warning */}
+        {/* Offline Banner */}
         {!isOnline && (
-          <div style={styles.offlineBanner}>
-            <i className="fa-solid fa-plane-slash" style={{ marginRight: '8px' }}></i>
-            Offline Mode Active ({queueCount} pending syncs)
+          <div style={styles.offlineWarning}>
+            <AlertCircle size={15} color="#fbbf24" />
+            <span>Offline Mode Active • {queueCount} changes queued</span>
           </div>
         )}
 
-        <div style={styles.content}>
-          {isTracking && (
-            <div style={styles.trackingBanner}>
-              <i className="fa-solid fa-location-crosshairs fa-fade" style={{ marginRight: '8px', color: '#34d399' }}></i>
-              Live GPS Route Tracking Active
-            </div>
-          )}
+        {/* Live GPS Active Pill */}
+        {isTracking && (
+          <div style={styles.gpsActivePill}>
+            <Navigation size={14} color="#34d399" className="fa-spin" />
+            <span>Live Satellite Route Telemetry Streaming</span>
+          </div>
+        )}
 
-          {/* Status Badge Banner */}
-          <div style={styles.statusBox}>
-            <div>
-              <span style={styles.statusLabel}>Current Status</span>
-              <h2 style={{ ...styles.statusTitle, color: isDelivered ? '#34d399' : isPickedUp ? '#38bdf8' : '#fbbf24' }}>
-                {task.status}
-              </h2>
+        <div style={styles.contentScroll}>
+          {/* Status Progression Card */}
+          <div style={styles.glassCard}>
+            <div style={styles.statusRow}>
+              <div>
+                <span style={styles.cardMiniLabel}>CURRENT STATUS</span>
+                <div style={styles.statusBigText}>{task.status}</div>
+              </div>
+              <span
+                style={{
+                  ...styles.statusBadge,
+                  backgroundColor: isDelivered ? 'rgba(16, 185, 129, 0.15)' : 'rgba(2, 132, 199, 0.15)',
+                  color: isDelivered ? '#34d399' : '#38bdf8',
+                  borderColor: isDelivered ? 'rgba(16, 185, 129, 0.3)' : 'rgba(56, 189, 248, 0.3)'
+                }}
+              >
+                {isDelivered ? 'COMPLETED' : 'IN PROGRESS'}
+              </span>
             </div>
-            <span style={{
-              ...styles.statusBadgePill,
-              backgroundColor: isDelivered ? 'rgba(16, 185, 129, 0.2)' : isPickedUp ? 'rgba(56, 189, 248, 0.2)' : 'rgba(245, 158, 11, 0.2)',
-              color: isDelivered ? '#34d399' : isPickedUp ? '#38bdf8' : '#fbbf24'
-            }}>
-              <i className="fa-solid fa-circle" style={{ fontSize: '6px', marginRight: '5px' }}></i>
-              {isDelivered ? 'DELIVERED' : isPickedUp ? 'PICKED UP' : 'IN PROGRESS'}
-            </span>
+
+            {/* Stage Progress Pills */}
+            <div style={styles.stagesRow}>
+              <div style={{ ...styles.stageStep, backgroundColor: isPickedUp || isInTransit || isDelivered ? '#10b981' : '#334155' }}>
+                1. Picked Up
+              </div>
+              <div style={{ ...styles.stageStep, backgroundColor: isInTransit || isDelivered ? '#0284c7' : '#334155' }}>
+                2. In Transit
+              </div>
+              <div style={{ ...styles.stageStep, backgroundColor: isDelivered ? '#10b981' : '#334155' }}>
+                3. Delivered
+              </div>
+            </div>
           </div>
 
-          {/* Recipient Details Card */}
-          <div style={styles.card}>
-            <div style={styles.cardHeaderRow}>
-              <span style={styles.cardCategory}>
-                <i className="fa-solid fa-user-check" style={{ color: '#ff6b4a', marginRight: '6px' }}></i>
-                Consignee / Recipient
-              </span>
+          {/* Consignee / Recipient Card */}
+          <div style={styles.glassCard}>
+            <div style={styles.cardSectionHeader}>
+              <div style={styles.sectionTitleRow}>
+                <MapPin size={16} color="#ff6b4a" />
+                <span style={styles.sectionTitle}>Consignee / Destination</span>
+              </div>
               {task.receiverPhone && (
-                <a href={`tel:${task.receiverPhone}`} style={styles.callBtn}>
-                  <i className="fa-solid fa-phone" style={{ marginRight: '4px' }}></i> Call
+                <a href={`tel:${task.receiverPhone}`} style={styles.callBadge}>
+                  <Phone size={13} color="#34d399" />
+                  <span>Call</span>
                 </a>
               )}
             </div>
 
-            <div style={styles.detailBlock}>
-              <span style={styles.label}>Recipient Name</span>
-              <span style={styles.valueLarge}>{task.receiver || 'Recipient'}</span>
+            <div style={styles.dataGroup}>
+              <span style={styles.dataLabel}>Recipient Name</span>
+              <span style={styles.dataValueLarge}>{task.receiver || 'Recipient'}</span>
             </div>
 
             {task.receiverPhone && (
-              <div style={styles.detailBlock}>
-                <span style={styles.label}>Phone Number</span>
-                <span style={styles.valueText}>{task.receiverPhone}</span>
+              <div style={styles.dataGroup}>
+                <span style={styles.dataLabel}>Phone Number</span>
+                <span style={styles.dataValue}>{task.receiverPhone}</span>
               </div>
             )}
 
-            <div style={styles.detailBlock}>
-              <span style={styles.label}>Delivery Address / Destination</span>
-              <div style={styles.addressBox}>
-                <i className="fa-solid fa-location-dot" style={{ color: '#ff6b4a', marginTop: '3px' }}></i>
-                <span style={styles.valueText}>{task.destination}</span>
-              </div>
+            <div style={styles.dataGroup}>
+              <span style={styles.dataLabel}>Delivery Address</span>
+              <span style={styles.dataValue}>{task.destination}</span>
             </div>
+
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(task.destination || 'Destination')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={styles.navMapButton}
+            >
+              <Navigation size={15} color="#ffffff" />
+              <span>Launch Google Maps GPS Navigation</span>
+            </a>
           </div>
 
-          {/* Sender Details Card */}
-          <div style={styles.card}>
-            <div style={styles.cardHeaderRow}>
-              <span style={styles.cardCategory}>
-                <i className="fa-solid fa-warehouse" style={{ color: '#38bdf8', marginRight: '6px' }}></i>
-                Shipper / Sender Information
-              </span>
+          {/* Shipper Details */}
+          <div style={styles.glassCard}>
+            <div style={styles.cardSectionHeader}>
+              <div style={styles.sectionTitleRow}>
+                <Package size={16} color="#38bdf8" />
+                <span style={styles.sectionTitle}>Shipper & Goods Manifest</span>
+              </div>
               {task.senderPhone && (
-                <a href={`tel:${task.senderPhone}`} style={styles.callBtnSecondary}>
-                  <i className="fa-solid fa-phone" style={{ marginRight: '4px' }}></i> Call Sender
+                <a href={`tel:${task.senderPhone}`} style={styles.callBadgeSecondary}>
+                  <Phone size={13} color="#38bdf8" />
+                  <span>Call Shipper</span>
                 </a>
               )}
             </div>
 
-            <div style={styles.detailBlock}>
-              <span style={styles.label}>Sender / Store</span>
-              <span style={styles.valueMedium}>{task.sender || 'Sender'}</span>
+            <div style={styles.dataGroup}>
+              <span style={styles.dataLabel}>Sender / Booking Agent</span>
+              <span style={styles.dataValue}>{task.sender || 'Sender'}</span>
             </div>
 
             {task.senderAddress && (
-              <div style={styles.detailBlock}>
-                <span style={styles.label}>Origin Address</span>
-                <span style={styles.valueText}>{task.senderAddress}</span>
+              <div style={styles.dataGroup}>
+                <span style={styles.dataLabel}>Pickup Address</span>
+                <span style={styles.dataValue}>{task.senderAddress}</span>
               </div>
             )}
 
-            <div style={styles.detailBlock}>
-              <span style={styles.label}>Package Contents</span>
-              <span style={styles.valueText}>{task.contents || 'Express Parcel'}</span>
+            <div style={styles.dataGroup}>
+              <span style={styles.dataLabel}>Parcel Category</span>
+              <span style={styles.dataValue}>{task.contents || 'Express Air Courier'}</span>
             </div>
           </div>
 
-          {/* Tracking History Timeline */}
-          {task.history && task.history.length > 0 && (
-            <div style={styles.card}>
-              <span style={styles.cardCategory}>
-                <i className="fa-solid fa-clock-rotate-left" style={{ color: '#10b981', marginRight: '6px' }}></i>
-                Tracking History
-              </span>
-              <div style={styles.timelineList}>
-                {task.history.map((h, idx) => (
-                  <div key={idx} style={styles.timelineItem}>
-                    <div style={{ ...styles.timelineDot, backgroundColor: h.active ? '#ff6b4a' : '#64748b' }}></div>
-                    <div>
-                      <span style={{ ...styles.timelineStatus, color: h.active ? '#f8fafc' : '#cbd5e1' }}>
-                        {h.status}
-                      </span>
-                      <span style={styles.timelineMeta}>
-                        {h.time} • {h.location}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+          {/* Scale Weight & Volumetric Verification Module */}
+          <div style={styles.glassCard}>
+            <div style={styles.cardSectionHeader}>
+              <div style={styles.sectionTitleRow}>
+                <Scale size={16} color="#fbbf24" />
+                <span style={styles.sectionTitle}>Doorstep Weight & Scale Audit</span>
+              </div>
+              <span style={styles.iataBadge}>IATA / 5000 Rule</span>
+            </div>
+
+            <div style={styles.scaleGrid}>
+              <div style={styles.inputCell}>
+                <label style={styles.cellLabel}>ACTUAL SCALE (KG)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={actualWeight}
+                  onChange={(e) => setActualWeight(parseFloat(e.target.value) || 0)}
+                  style={styles.cellInput}
+                />
+              </div>
+
+              <div style={styles.inputCell}>
+                <label style={styles.cellLabel}>LENGTH (CM)</label>
+                <input
+                  type="number"
+                  value={boxLength}
+                  onChange={(e) => setBoxLength(parseFloat(e.target.value) || 0)}
+                  style={styles.cellInput}
+                />
+              </div>
+
+              <div style={styles.inputCell}>
+                <label style={styles.cellLabel}>WIDTH (CM)</label>
+                <input
+                  type="number"
+                  value={boxWidth}
+                  onChange={(e) => setBoxWidth(parseFloat(e.target.value) || 0)}
+                  style={styles.cellInput}
+                />
+              </div>
+
+              <div style={styles.inputCell}>
+                <label style={styles.cellLabel}>HEIGHT (CM)</label>
+                <input
+                  type="number"
+                  value={boxHeight}
+                  onChange={(e) => setBoxHeight(parseFloat(e.target.value) || 0)}
+                  style={styles.cellInput}
+                />
               </div>
             </div>
-          )}
 
-          {/* Action Buttons Suite */}
-          <div style={styles.actionGridContainer}>
-            <h4 style={styles.actionSectionTitle}>Driver Actions</h4>
+            <div style={styles.weightSummaryBox}>
+              <div style={styles.summaryItem}>
+                <span style={styles.summaryLabel}>Volumetric Weight:</span>
+                <span style={styles.summaryValue}>{volumetricWeight} kg</span>
+              </div>
+              <div style={styles.summaryItem}>
+                <span style={styles.summaryLabel}>Chargeable Weight:</span>
+                <span style={{ ...styles.summaryValue, color: '#38bdf8', fontWeight: '800' }}>
+                  {chargeableWeight} kg
+                </span>
+              </div>
+              <div style={styles.summaryItem}>
+                <span style={styles.summaryLabel}>Total Doorstep Tariff:</span>
+                <span style={{ ...styles.summaryValue, color: '#34d399', fontWeight: '800' }}>
+                  ₹{totalFreight.toLocaleString('en-IN')}
+                </span>
+              </div>
+            </div>
+          </div>
 
-            {/* Step 1: Confirm Order Picked Up (Full Width Prominent Action) */}
-            <button
-              style={{
-                ...styles.actionBtnFull,
-                backgroundColor: isPickedUp ? '#059669' : '#10b981',
-                boxShadow: isPickedUp ? 'none' : '0 8px 20px rgba(16, 185, 129, 0.3)'
-              }}
-              onClick={() => handleStatusUpdate('Order Picked Up Confirmed')}
-              disabled={isUpdating}
-            >
-              <i className="fa-solid fa-box-archive" style={{ fontSize: '1.4rem' }}></i>
-              <span>{isUpdating ? 'Updating Status...' : isPickedUp ? '✅ Pickup Confirmed' : '📦 Confirm Order Picked Up'}</span>
-            </button>
-
-            {/* Step 2 & 3: Transit & Route */}
-            <div style={styles.actionGridTwo}>
-              <button
-                style={{ ...styles.actionBtn, backgroundColor: '#d97706' }}
-                onClick={() => handleStatusUpdate('In Transit')}
-                disabled={isUpdating}
-              >
-                <i className="fa-solid fa-truck-fast" style={{ fontSize: '1.3rem' }}></i>
-                <span>Mark In Transit</span>
-              </button>
-
-              <button
-                style={{ ...styles.actionBtn, backgroundColor: '#2563eb' }}
-                onClick={() => handleStatusUpdate('Out for Delivery')}
-                disabled={isUpdating || isTracking}
-              >
-                <i className="fa-solid fa-route" style={{ fontSize: '1.3rem' }}></i>
-                <span>Start Delivery Route</span>
-              </button>
+          {/* Dynamic UPI Payment Collection on Screen */}
+          <div style={styles.glassCard}>
+            <div style={styles.cardSectionHeader}>
+              <div style={styles.sectionTitleRow}>
+                <CreditCard size={16} color="#34d399" />
+                <span style={styles.sectionTitle}>On-The-Spot UPI Payment QR</span>
+              </div>
+              <span style={styles.paymentStatusPill}>
+                {paymentStatus}
+              </span>
             </div>
 
-            {/* Step 4: Capture POD Photo */}
-            <label
-              htmlFor="pod-upload"
-              style={{ ...styles.actionBtnFull, backgroundColor: '#0284c7', cursor: 'pointer' }}
-            >
-              <i className="fa-solid fa-camera" style={{ fontSize: '1.4rem' }}></i>
-              <span>{isUpdating ? 'Uploading POD...' : '📸 Capture Proof of Delivery (POD Photo)'}</span>
-            </label>
+            <div style={styles.qrContainer}>
+              <div style={styles.qrWhiteBox}>
+                <QRCodeSVG
+                  value={`upi://pay?pa=saiinternationalcouriers@upi&pn=Sai%20International%20Couriers&am=${totalFreight}&cu=INR&tn=AWB-${task.awb}`}
+                  size={160}
+                  level="H"
+                />
+              </div>
+              <div style={styles.qrMetaBox}>
+                <div style={styles.qrAmount}>₹{totalFreight.toLocaleString('en-IN')}</div>
+                <div style={styles.qrScanPrompt}>Scan with Google Pay, PhonePe, Paytm, or BHIM</div>
+                
+                <div style={styles.payBtnRow}>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentStatus('Paid UPI')}
+                    style={{
+                      ...styles.payChoiceBtn,
+                      backgroundColor: paymentStatus === 'Paid UPI' ? '#10b981' : 'rgba(255,255,255,0.08)'
+                    }}
+                  >
+                    Paid via UPI
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentStatus('Paid Cash')}
+                    style={{
+                      ...styles.payChoiceBtn,
+                      backgroundColor: paymentStatus === 'Paid Cash' ? '#f59e0b' : 'rgba(255,255,255,0.08)'
+                    }}
+                  >
+                    Paid Cash
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Digital Signature On Glass (HTML5 Canvas) */}
+          <div style={styles.glassCard}>
+            <div style={styles.cardSectionHeader}>
+              <div style={styles.sectionTitleRow}>
+                <PenTool size={16} color="#38bdf8" />
+                <span style={styles.sectionTitle}>Sign on Glass (Customer / Agent)</span>
+              </div>
+              {hasSignature && (
+                <button type="button" onClick={clearSignature} style={styles.clearSignBtn}>
+                  <Eraser size={12} /> Clear
+                </button>
+              )}
+            </div>
+
+            <div style={styles.signaturePadWrapper}>
+              <canvas
+                ref={canvasRef}
+                width={360}
+                height={160}
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                onTouchStart={startDrawing}
+                onTouchMove={draw}
+                onTouchEnd={stopDrawing}
+                style={styles.signatureCanvas}
+              />
+              {!hasSignature && (
+                <div style={styles.signPromptOverlay}>
+                  <span>✍️ Sign finger here to verify handover</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Proof of Delivery Photo Studio */}
+          <div style={styles.glassCard}>
+            <div style={styles.cardSectionHeader}>
+              <div style={styles.sectionTitleRow}>
+                <Camera size={16} color="#ff6b4a" />
+                <span style={styles.sectionTitle}>Proof of Delivery Photo (POD)</span>
+              </div>
+              {podPhotoPreview && <span style={styles.photoReadyBadge}>Photo Ready</span>}
+            </div>
+
+            {podPhotoPreview ? (
+              <div style={styles.previewContainer}>
+                <img src={podPhotoPreview} alt="POD Preview" style={styles.previewImage} />
+                <div style={styles.previewWatermark}>
+                  <span>AWB: {task.awb}</span>
+                  <span>{new Date().toLocaleString('en-IN')}</span>
+                </div>
+                <label htmlFor="pod-camera-input" style={styles.retakeLabel}>
+                  <RotateCcw size={14} /> Retake Photo
+                </label>
+              </div>
+            ) : (
+              <label htmlFor="pod-camera-input" style={styles.cameraTriggerBox}>
+                <Camera size={32} color="#0284c7" />
+                <span style={styles.cameraTriggerTitle}>Tap to Launch Camera</span>
+                <span style={styles.cameraTriggerSub}>Photograph parcel with doorstep or recipient</span>
+              </label>
+            )}
+
             <input
-              id="pod-upload"
+              id="pod-camera-input"
               type="file"
               accept="image/*"
               capture="environment"
+              onChange={handlePhotoSelect}
               style={{ display: 'none' }}
-              onChange={handlePODUpload}
-              disabled={isUpdating}
             />
+          </div>
+
+          {/* Primary Action Buttons */}
+          <div style={styles.actionSection}>
+            {/* Step 1: Confirm Pickup */}
+            <button
+              type="button"
+              onClick={() => handleStatusUpdate('Order Picked Up Confirmed')}
+              disabled={isUpdating}
+              style={{
+                ...styles.actionBtnFull,
+                backgroundColor: isPickedUp ? '#059669' : '#10b981',
+                boxShadow: '0 8px 24px rgba(16, 185, 129, 0.4)'
+              }}
+            >
+              <CheckCircle2 size={18} />
+              <span>{isUpdating ? 'Saving Update...' : isPickedUp ? '✓ Pickup Already Confirmed' : 'Confirm Order Picked Up'}</span>
+            </button>
+
+            {/* In Transit & Route */}
+            <div style={styles.actionTwoCol}>
+              <button
+                type="button"
+                onClick={() => handleStatusUpdate('In Transit')}
+                disabled={isUpdating}
+                style={{ ...styles.actionBtnHalf, backgroundColor: '#d97706' }}
+              >
+                <Truck size={16} /> Mark In Transit
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleStatusUpdate('Out for Delivery')}
+                disabled={isUpdating}
+                style={{ ...styles.actionBtnHalf, backgroundColor: '#2563eb' }}
+              >
+                <Navigation size={16} /> Out for Delivery
+              </button>
+            </div>
+
+            {/* Final POD Submission */}
+            <button
+              type="button"
+              onClick={handleFinalPODSubmit}
+              disabled={isUpdating}
+              style={{
+                ...styles.actionBtnFull,
+                background: 'linear-gradient(135deg, #0284c7 0%, #ff6b4a 100%)',
+                boxShadow: '0 10px 28px rgba(2, 132, 199, 0.5)'
+              }}
+            >
+              <UploadCloud size={18} />
+              <span>{isUpdating ? 'Uploading POD & Closing...' : 'Submit POD & Complete Delivery'}</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 const styles = {
-  appShell: {
+  shell: {
     minHeight: '100vh',
-    backgroundColor: '#070f1e',
+    minHeight: '100dvh',
+    backgroundColor: '#070b12',
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    fontFamily: "'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+    justifyContent: 'center'
   },
-  appContainer: {
+  viewport: {
     width: '100%',
     maxWidth: '440px',
     minHeight: '100vh',
-    backgroundColor: '#0f172a',
     display: 'flex',
     flexDirection: 'column',
-    boxShadow: '0 0 40px rgba(0,0,0,0.8)',
-    paddingBottom: '2rem',
-    position: 'relative'
+    position: 'relative',
+    paddingBottom: '30px'
+  },
+  centerLoading: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    gap: '12px'
+  },
+  loadingText: {
+    fontSize: '0.86rem',
+    color: '#94a3b8'
+  },
+  header: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 40,
+    background: 'rgba(9, 14, 23, 0.9)',
+    backdropFilter: 'blur(25px)',
+    WebkitBackdropFilter: 'blur(25px)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    padding: '12px 16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  headerBackBtn: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '11px',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer'
+  },
+  headerTitleBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  headerSubtitle: {
+    fontSize: '0.64rem',
+    fontWeight: '800',
+    color: '#94a3b8',
+    letterSpacing: '0.6px'
+  },
+  headerAwb: {
+    fontSize: '0.96rem',
+    fontWeight: '800',
+    color: '#38bdf8',
+    letterSpacing: '0.4px'
+  },
+  offlineWarning: {
+    padding: '8px 16px',
+    backgroundColor: 'rgba(245, 158, 11, 0.12)',
+    borderBottom: '1px solid rgba(245, 158, 11, 0.25)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    fontSize: '0.74rem',
+    color: '#fbbf24',
+    fontWeight: '600'
+  },
+  gpsActivePill: {
+    padding: '8px 16px',
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    borderBottom: '1px solid rgba(16, 185, 129, 0.25)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    fontSize: '0.74rem',
+    color: '#34d399',
+    fontWeight: '600'
+  },
+  contentScroll: {
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '14px'
+  },
+  glassCard: {
+    backgroundColor: 'rgba(18, 27, 43, 0.72)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderRadius: '20px',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.4)',
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px'
+  },
+  statusRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  cardMiniLabel: {
+    fontSize: '0.62rem',
+    fontWeight: '800',
+    color: '#64748b',
+    letterSpacing: '0.6px'
+  },
+  statusBigText: {
+    fontSize: '1.25rem',
+    fontWeight: '800',
+    color: '#ffffff',
+    marginTop: '2px'
+  },
+  statusBadge: {
+    padding: '4px 10px',
+    borderRadius: '12px',
+    border: '1px solid',
+    fontSize: '0.72rem',
+    fontWeight: '800'
+  },
+  stagesRow: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '6px',
+    marginTop: '4px'
+  },
+  stageStep: {
+    padding: '6px 4px',
+    borderRadius: '8px',
+    textAlign: 'center',
+    fontSize: '0.68rem',
+    fontWeight: '700',
+    color: '#ffffff'
+  },
+  cardSectionHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  sectionTitleRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  sectionTitle: {
+    fontSize: '0.88rem',
+    fontWeight: '800',
+    color: '#ffffff'
+  },
+  callBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '4px 10px',
+    borderRadius: '12px',
+    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    border: '1px solid rgba(16, 185, 129, 0.3)',
+    color: '#34d399',
+    fontSize: '0.72rem',
+    fontWeight: '700',
+    textDecoration: 'none'
+  },
+  callBadgeSecondary: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '4px 10px',
+    borderRadius: '12px',
+    backgroundColor: 'rgba(2, 132, 199, 0.15)',
+    border: '1px solid rgba(56, 189, 248, 0.3)',
+    color: '#38bdf8',
+    fontSize: '0.72rem',
+    fontWeight: '700',
+    textDecoration: 'none'
+  },
+  dataGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px'
+  },
+  dataLabel: {
+    fontSize: '0.64rem',
+    fontWeight: '700',
+    color: '#64748b',
+    textTransform: 'uppercase'
+  },
+  dataValue: {
+    fontSize: '0.82rem',
+    color: '#cbd5e1',
+    lineHeight: 1.4
+  },
+  dataValueLarge: {
+    fontSize: '0.98rem',
+    fontWeight: '700',
+    color: '#ffffff'
+  },
+  navMapButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    padding: '11px 14px',
+    borderRadius: '14px',
+    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+    color: '#ffffff',
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    textDecoration: 'none',
+    boxShadow: '0 6px 18px rgba(2, 132, 199, 0.4)',
+    marginTop: '4px'
+  },
+  iataBadge: {
+    fontSize: '0.65rem',
+    fontWeight: '700',
+    color: '#fbbf24',
+    backgroundColor: 'rgba(245, 158, 11, 0.12)',
+    padding: '3px 8px',
+    borderRadius: '10px'
+  },
+  scaleGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '6px'
+  },
+  inputCell: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px'
+  },
+  cellLabel: {
+    fontSize: '0.58rem',
+    fontWeight: '800',
+    color: '#94a3b8'
+  },
+  cellInput: {
+    width: '100%',
+    padding: '8px 4px',
+    borderRadius: '10px',
+    backgroundColor: 'rgba(10, 16, 26, 0.8)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: '#ffffff',
+    fontSize: '0.88rem',
+    fontWeight: '700',
+    textAlign: 'center',
+    boxSizing: 'border-box'
+  },
+  weightSummaryBox: {
+    padding: '10px 12px',
+    borderRadius: '12px',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px'
+  },
+  summaryItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: '0.78rem'
+  },
+  summaryLabel: {
+    color: '#94a3b8'
+  },
+  summaryValue: {
+    color: '#ffffff'
+  },
+  paymentStatusPill: {
+    fontSize: '0.7rem',
+    fontWeight: '800',
+    color: '#34d399',
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    padding: '3px 8px',
+    borderRadius: '10px'
+  },
+  qrContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '8px 0'
+  },
+  qrWhiteBox: {
+    padding: '12px',
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)'
+  },
+  qrMetaBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '6px',
+    textAlign: 'center'
+  },
+  qrAmount: {
+    fontSize: '1.4rem',
+    fontWeight: '900',
+    color: '#ffffff'
+  },
+  qrScanPrompt: {
+    fontSize: '0.74rem',
+    color: '#94a3b8'
+  },
+  payBtnRow: {
+    display: 'flex',
+    gap: '8px',
+    marginTop: '6px'
+  },
+  payChoiceBtn: {
+    padding: '7px 14px',
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    color: '#ffffff',
+    fontSize: '0.74rem',
+    fontWeight: '700',
+    cursor: 'pointer'
+  },
+  signaturePadWrapper: {
+    position: 'relative',
+    width: '100%',
+    height: '160px',
+    backgroundColor: '#070f1e',
+    borderRadius: '14px',
+    border: '1px dashed rgba(56, 189, 248, 0.35)',
+    overflow: 'hidden'
+  },
+  signatureCanvas: {
+    width: '100%',
+    height: '100%',
+    touchAction: 'none'
+  },
+  signPromptOverlay: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    pointerEvents: 'none',
+    color: '#64748b',
+    fontSize: '0.78rem'
+  },
+  clearSignBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    background: 'none',
+    border: 'none',
+    color: '#ef4444',
+    fontSize: '0.74rem',
+    cursor: 'pointer',
+    fontWeight: '700'
+  },
+  photoReadyBadge: {
+    fontSize: '0.68rem',
+    color: '#10b981',
+    fontWeight: '700'
+  },
+  cameraTriggerBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    padding: '24px 16px',
+    borderRadius: '16px',
+    backgroundColor: 'rgba(2, 132, 199, 0.08)',
+    border: '2px dashed rgba(2, 132, 199, 0.3)',
+    cursor: 'pointer'
+  },
+  cameraTriggerTitle: {
+    fontSize: '0.88rem',
+    fontWeight: '700',
+    color: '#ffffff'
+  },
+  cameraTriggerSub: {
+    fontSize: '0.72rem',
+    color: '#94a3b8'
+  },
+  previewContainer: {
+    position: 'relative',
+    borderRadius: '14px',
+    overflow: 'hidden'
+  },
+  previewImage: {
+    width: '100%',
+    height: '200px',
+    objectFit: 'cover',
+    borderRadius: '14px'
+  },
+  previewWatermark: {
+    position: 'absolute',
+    bottom: '10px',
+    left: '10px',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backdropFilter: 'blur(8px)',
+    padding: '4px 8px',
+    borderRadius: '8px',
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: '0.65rem',
+    color: '#34d399',
+    fontWeight: '700'
+  },
+  retakeLabel: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    color: '#ffffff',
+    padding: '6px 10px',
+    borderRadius: '10px',
+    fontSize: '0.7rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px'
+  },
+  actionSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    marginTop: '6px'
+  },
+  actionBtnFull: {
+    width: '100%',
+    padding: '14px',
+    borderRadius: '16px',
+    border: 'none',
+    color: '#ffffff',
+    fontSize: '0.9rem',
+    fontWeight: '800',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    cursor: 'pointer'
+  },
+  actionTwoCol: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '8px'
+  },
+  actionBtnHalf: {
+    padding: '12px',
+    borderRadius: '14px',
+    border: 'none',
+    color: '#ffffff',
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    cursor: 'pointer'
   },
   modalOverlay: {
     position: 'fixed',
@@ -518,325 +1250,107 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(7, 15, 30, 0.85)',
-    backdropFilter: 'blur(8px)',
+    backgroundColor: 'rgba(7, 11, 18, 0.85)',
+    backdropFilter: 'blur(10px)',
+    zIndex: 999,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 999,
-    padding: '1.5rem'
+    padding: '20px'
   },
   modalCard: {
-    backgroundColor: '#0f172a',
-    borderRadius: '24px',
-    border: '1px solid rgba(16, 185, 129, 0.4)',
-    padding: '2rem 1.5rem',
-    textAlign: 'center',
-    maxWidth: '360px',
     width: '100%',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(16, 185, 129, 0.25)',
-    animation: 'popupBounce 0.4s ease forwards'
+    maxWidth: '340px',
+    backgroundColor: 'rgba(18, 27, 43, 0.95)',
+    border: '1px solid rgba(16, 185, 129, 0.3)',
+    borderRadius: '24px',
+    boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)',
+    padding: '24px',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '10px'
   },
-  animatedIconWrapper: {
-    width: '70px',
-    height: '70px',
+  modalIconCircle: {
+    width: '64px',
+    height: '64px',
     borderRadius: '50%',
-    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-    display: 'inline-flex',
+    backgroundColor: '#10b981',
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '1.25rem',
-    animation: 'iconPulse 2s infinite'
+    boxShadow: '0 8px 24px rgba(16, 185, 129, 0.5)'
   },
   modalTitle: {
-    margin: '0 0 0.5rem 0',
-    fontSize: '1.25rem',
+    margin: 0,
+    fontSize: '1.15rem',
     fontWeight: '800',
-    color: '#f8fafc'
+    color: '#ffffff'
   },
-  modalMessage: {
-    fontSize: '0.85rem',
-    color: '#cbd5e1',
-    lineHeight: 1.5,
-    margin: '0 0 1.25rem 0'
-  },
-  badgeRow: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '1.5rem'
-  },
-  notifTag: {
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    color: '#38bdf8',
-    backgroundColor: 'rgba(56, 189, 248, 0.12)',
-    padding: '0.35rem 0.85rem',
-    borderRadius: '20px',
-    border: '1px solid rgba(56, 189, 248, 0.25)'
+  modalMsg: {
+    margin: 0,
+    fontSize: '0.82rem',
+    color: '#94a3b8',
+    lineHeight: 1.4
   },
   modalBtn: {
     width: '100%',
+    padding: '12px',
+    borderRadius: '14px',
     backgroundColor: '#10b981',
-    color: '#ffffff',
     border: 'none',
-    padding: '0.9rem',
-    borderRadius: '12px',
+    color: '#ffffff',
+    fontSize: '0.86rem',
     fontWeight: '800',
-    fontSize: '0.9rem',
     cursor: 'pointer',
-    boxShadow: '0 8px 20px rgba(16, 185, 129, 0.3)'
+    marginTop: '6px'
   },
-  header: {
-    backgroundColor: '#1e293b',
-    padding: '1rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottom: '1px solid rgba(255,255,255,0.08)',
-    position: 'sticky',
-    top: 0,
-    zIndex: 20
-  },
-  iconBackBtn: {
-    width: '36px',
-    height: '36px',
-    borderRadius: '10px',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    border: 'none',
-    color: '#ffffff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer'
-  },
-  btnPrimary: {
-    flex: 1,
-    backgroundColor: '#ff6b4a',
-    color: '#ffffff',
-    border: 'none',
-    padding: '0.8rem',
-    borderRadius: '10px',
-    fontWeight: '700',
-    fontSize: '0.85rem',
-    cursor: 'pointer'
-  },
-  btnSecondary: {
-    flex: 1,
-    backgroundColor: '#1e293b',
-    color: '#38bdf8',
-    border: '1px solid rgba(56, 189, 248, 0.3)',
-    padding: '0.8rem',
-    borderRadius: '10px',
-    fontWeight: '700',
-    fontSize: '0.85rem',
-    cursor: 'pointer'
-  },
-  offlineBanner: {
-    backgroundColor: '#d97706',
-    color: '#ffffff',
-    padding: '0.6rem',
+  errorCard: {
+    padding: '40px 20px',
     textAlign: 'center',
-    fontSize: '0.8rem',
-    fontWeight: '700'
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '12px'
   },
-  trackingBanner: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-    color: '#34d399',
-    border: '1px solid rgba(16, 185, 129, 0.3)',
-    padding: '0.75rem',
+  errorTitle: {
+    fontSize: '1.2rem',
+    fontWeight: '800',
+    color: '#ffffff',
+    margin: 0
+  },
+  errorDesc: {
+    fontSize: '0.84rem',
+    color: '#94a3b8',
+    margin: 0
+  },
+  errorBtnRow: {
+    display: 'flex',
+    gap: '10px',
+    marginTop: '10px'
+  },
+  secondaryBtn: {
+    padding: '10px 16px',
     borderRadius: '12px',
-    textAlign: 'center',
-    fontWeight: '700',
-    fontSize: '0.85rem',
-    marginBottom: '1rem'
-  },
-  content: {
-    padding: '1.25rem'
-  },
-  statusBox: {
-    backgroundColor: '#1e293b',
-    borderRadius: '16px',
-    padding: '1.1rem 1.25rem',
-    border: '1px solid rgba(255,255,255,0.08)',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1.1rem'
-  },
-  statusLabel: {
-    fontSize: '0.7rem',
-    color: '#94a3b8',
-    fontWeight: '700',
-    textTransform: 'uppercase'
-  },
-  statusTitle: {
-    margin: '0.2rem 0 0 0',
-    fontSize: '1.15rem',
-    fontWeight: '800'
-  },
-  statusBadgePill: {
-    fontSize: '0.68rem',
-    fontWeight: '800',
-    padding: '0.3rem 0.65rem',
-    borderRadius: '20px',
-    letterSpacing: '0.5px'
-  },
-  card: {
-    backgroundColor: '#1e293b',
-    borderRadius: '16px',
-    padding: '1.25rem',
-    border: '1px solid rgba(255,255,255,0.08)',
-    marginBottom: '1.1rem'
-  },
-  cardHeaderRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '0.85rem',
-    paddingBottom: '0.65rem',
-    borderBottom: '1px solid rgba(255,255,255,0.06)'
-  },
-  cardCategory: {
-    fontSize: '0.78rem',
-    color: '#f8fafc',
-    fontWeight: '700',
-    display: 'flex',
-    alignItems: 'center'
-  },
-  callBtn: {
-    backgroundColor: 'rgba(255, 107, 74, 0.15)',
-    color: '#ff6b4a',
-    border: '1px solid rgba(255, 107, 74, 0.3)',
-    borderRadius: '20px',
-    padding: '0.3rem 0.75rem',
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    textDecoration: 'none'
-  },
-  callBtnSecondary: {
-    backgroundColor: 'rgba(56, 189, 248, 0.15)',
-    color: '#38bdf8',
-    border: '1px solid rgba(56, 189, 248, 0.3)',
-    borderRadius: '20px',
-    padding: '0.3rem 0.75rem',
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    textDecoration: 'none'
-  },
-  detailBlock: {
-    marginBottom: '0.85rem'
-  },
-  label: {
-    fontSize: '0.72rem',
-    color: '#64748b',
-    fontWeight: '600',
-    textTransform: 'uppercase'
-  },
-  valueLarge: {
-    display: 'block',
-    fontSize: '1.15rem',
-    fontWeight: '700',
-    color: '#f8fafc',
-    marginTop: '0.2rem'
-  },
-  valueMedium: {
-    display: 'block',
-    fontSize: '0.98rem',
-    fontWeight: '700',
-    color: '#f8fafc',
-    marginTop: '0.2rem'
-  },
-  addressBox: {
-    display: 'flex',
-    gap: '0.5rem',
-    backgroundColor: '#0f172a',
-    padding: '0.75rem',
-    borderRadius: '10px',
-    marginTop: '0.3rem',
-    border: '1px solid rgba(255,255,255,0.05)'
-  },
-  valueText: {
-    fontSize: '0.88rem',
-    color: '#cbd5e1',
-    lineHeight: 1.4
-  },
-  timelineList: {
-    marginTop: '0.85rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.85rem'
-  },
-  timelineItem: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '0.75rem'
-  },
-  timelineDot: {
-    width: '10px',
-    height: '10px',
-    borderRadius: '50%',
-    marginTop: '4px',
-    flexShrink: 0
-  },
-  timelineStatus: {
-    display: 'block',
-    fontSize: '0.85rem',
-    fontWeight: '700'
-  },
-  timelineMeta: {
-    fontSize: '0.72rem',
-    color: '#94a3b8'
-  },
-  actionGridContainer: {
-    marginTop: '1.25rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.85rem'
-  },
-  actionSectionTitle: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    color: '#ffffff',
     fontSize: '0.8rem',
-    color: '#94a3b8',
     fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    margin: '0 0 0.2rem 0'
-  },
-  actionBtnFull: {
-    width: '100%',
-    border: 'none',
-    color: '#ffffff',
-    padding: '1.1rem 1rem',
-    borderRadius: '14px',
-    fontSize: '0.95rem',
-    fontWeight: '800',
+    cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.75rem',
-    cursor: 'pointer',
-    transition: 'all 0.15s ease',
-    boxSizing: 'border-box'
+    gap: '6px'
   },
-  actionGridTwo: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '0.85rem'
-  },
-  actionBtn: {
+  primaryBtn: {
+    padding: '10px 18px',
+    borderRadius: '12px',
+    backgroundColor: '#0284c7',
     border: 'none',
     color: '#ffffff',
-    padding: '1rem 0.75rem',
-    borderRadius: '14px',
-    fontSize: '0.85rem',
+    fontSize: '0.8rem',
     fontWeight: '700',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.4rem',
-    cursor: 'pointer',
-    boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+    cursor: 'pointer'
   }
 };
-
-export default DeliveryTaskDetail;

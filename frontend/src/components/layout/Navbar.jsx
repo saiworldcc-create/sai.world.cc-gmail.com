@@ -209,6 +209,11 @@ export default function Navbar() {
                 Home
               </NavLink>
             </li>
+            <li className="nav-menu-item mobile-only-item">
+              <NavLink to="/customer" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={() => { setMenuOpen(false); setActiveDropdown(null); }} style={{ color: '#38bdf8' }}>
+                <i className="fa-solid fa-mobile-screen-button" style={{ marginRight: '8px' }}></i> Customer Mobile App
+              </NavLink>
+            </li>
 
             {MEGA_MENU_LINKS.map(menu => (
               <li 
@@ -264,7 +269,10 @@ export default function Navbar() {
 
           {/* Right Actions */}
           <div className="nav-actions">
-
+            <Link to="/customer" className="btn btn-outline-teal btn-sm btn-quote-hide" title="Launch Customer Self-Booking & Tracking App" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <i className="fa-solid fa-mobile-screen-button" style={{ color: '#38bdf8' }}></i>
+              <span>Mobile App</span>
+            </Link>
             <Link to="/tracking" className="btn btn-soft-cream btn-sm btn-track-hide">
                Track
             </Link>

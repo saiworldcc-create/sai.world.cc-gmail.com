@@ -30,6 +30,7 @@
     "imagekitio-react": "^4.3.0",
     "leaflet": "^1.9.4",
     "lottie-react": "^3.1.2",
+    "lucide-react": "^1.77.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

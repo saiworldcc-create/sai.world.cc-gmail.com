@@ -40,6 +40,9 @@ import ExpressCourierPage from './pages/services/ExpressCourierPage';
 import TermsPage from './pages/public/TermsPage';
 import PrivacyPolicyPage from './pages/public/PrivacyPolicyPage';
 
+// Customer Self-Booking & Tracking Mobile App (iOS 18 Native Experience)
+import CustomerApp from './pages/customer/CustomerApp';
+
 // Delivery Boy App Pages
 import DeliveryLogin from './pages/delivery/DeliveryLogin';
 import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
@@ -93,8 +96,9 @@ function AppLayout() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isDeliveryRoute = location.pathname.startsWith('/delivery');
+  const isCustomerRoute = location.pathname.startsWith('/customer');
   const isVendorRoute = location.pathname.startsWith('/vendor') && location.pathname !== '/vendor/login';
-  const hideNavbarFooter = isAdminRoute || isDeliveryRoute || isVendorRoute || location.pathname === '/vendor/login';
+  const hideNavbarFooter = isAdminRoute || isDeliveryRoute || isVendorRoute || isCustomerRoute || location.pathname === '/vendor/login';
 
   return (
     <>
@@ -102,6 +106,10 @@ function AppLayout() {
       {!hideNavbarFooter && <Navbar />}
       <PageTransition>
         <Routes>
+          {/* Customer Self-Booking & Tracking Mobile App */}
+          <Route path="/customer" element={<CustomerApp />} />
+          <Route path="/customer/app" element={<CustomerApp />} />
+
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
