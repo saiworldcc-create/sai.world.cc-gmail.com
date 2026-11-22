@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E97856'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/></svg>" />
+  <link rel="icon" type="image/png" href="/assets/images/sai_logo.png" />
+  <link rel="shortcut icon" href="/assets/images/sai_logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
     content="Sai International Couriers &amp; Cargo - Connecting India with 195+ countries worldwide with fast 4-5 day delivery, free doorstep pickup, and specialized food packaging across India, Telangana, and Andhra Pradesh." />
@@ -17,7 +17,19 @@
   <meta property="og:image" content="/assets/images/sai_global_3d_hero.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#0056B3" />
-  <title>Sai International Couriers &amp; Cargo | From India to the World</title>
+  <title>Sai International Couriers &amp; Cargo | Worldwide Air Cargo &amp; NRI Logistics</title>
+  <script>
+    // Enforce title immediately to prevent stale browser tab title caching
+    document.title = "Sai International Couriers & Cargo | Worldwide Air Cargo & NRI Logistics";
+    // Unregister legacy Service Workers from other localhost projects (e.g. MS Billings)
+    if ('serviceWorker' in navigator && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (var i = 0; i < registrations.length; i++) {
+          registrations[i].unregister();
+        }
+      });
+    }
+  </script>
 </head>
 
 <body>

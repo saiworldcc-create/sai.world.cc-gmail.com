@@ -61,6 +61,10 @@ function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { 
     window.scrollTo(0, 0); 
+    // Ensure correct title
+    if (pathname === '/') {
+      document.title = "Sai International Couriers & Cargo | Worldwide Air Cargo & NRI Logistics";
+    }
     // Send pageview to Google Analytics
     ReactGA.send({ hitType: "pageview", page: pathname, title: pathname });
   }, [pathname]);
