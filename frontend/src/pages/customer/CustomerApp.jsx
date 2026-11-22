@@ -38,7 +38,16 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { createBooking, trackShipment } from '../../services/api';
 import { COUNTRY_RATES } from '../../constants/appData';
-import { AppleSquircleBadge, AppleSaiAppIcon } from '../../components/common/AppleIcons';
+import { 
+  AppleSquircleBadge, 
+  AppleSaiAppIcon,
+  Apple3DParcelBox,
+  Apple3DFlightRadar,
+  Apple3DRateCalculator,
+  Apple3DNRIFoodJar,
+  Apple3DUserPass,
+  Apple3DWhatsAppVIP
+} from '../../components/common/AppleIcons';
 import { useUser } from '../../context/UserContext';
 
 const DESTINATION_COUNTRIES = [
@@ -709,7 +718,7 @@ export default function CustomerApp() {
                     }}
                   >
                     <AppleSquircleBadge palette="blue" size={64}>
-                      <Package size={32} color="#ffffff" strokeWidth={2.4} />
+                      <Apple3DParcelBox size={40} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">Book Pickup</span>
                     <span className="apple-quick-sub">At Doorstep</span>
@@ -722,7 +731,7 @@ export default function CustomerApp() {
                     }}
                   >
                     <AppleSquircleBadge palette="teal" size={64}>
-                      <Navigation size={32} color="#ffffff" strokeWidth={2.4} />
+                      <Apple3DFlightRadar size={40} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">Live Track</span>
                     <span className="apple-quick-sub">Flight Radar</span>
@@ -735,7 +744,7 @@ export default function CustomerApp() {
                     }}
                   >
                     <AppleSquircleBadge palette="gold" size={64}>
-                      <Calculator size={32} color="#ffffff" strokeWidth={2.4} />
+                      <Apple3DRateCalculator size={40} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">Rates</span>
                     <span className="apple-quick-sub">195 Countries</span>
@@ -750,7 +759,7 @@ export default function CustomerApp() {
                     }}
                   >
                     <AppleSquircleBadge palette="orange" size={64}>
-                      <Sparkles size={32} color="#ffffff" strokeWidth={2.4} />
+                      <Apple3DNRIFoodJar size={40} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">NRI Food</span>
                     <span className="apple-quick-sub">Vacuum Pack</span>
@@ -763,7 +772,7 @@ export default function CustomerApp() {
                     }}
                   >
                     <AppleSquircleBadge palette="purple" size={64}>
-                      <User size={32} color="#ffffff" strokeWidth={2.4} />
+                      <Apple3DUserPass size={40} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">My Account</span>
                     <span className="apple-quick-sub">{isAuth ? 'Logged In' : 'Sign In'}</span>
@@ -777,7 +786,7 @@ export default function CustomerApp() {
                     style={{ textDecoration: 'none' }}
                   >
                     <AppleSquircleBadge palette="green" size={64}>
-                      <Phone size={32} color="#ffffff" strokeWidth={2.4} />
+                      <Apple3DWhatsAppVIP size={40} />
                     </AppleSquircleBadge>
                     <span className="apple-quick-label">WhatsApp VIP</span>
                     <span className="apple-quick-sub">24/7 Hotline</span>
@@ -1197,7 +1206,13 @@ export default function CustomerApp() {
                           onClick={() => setFormData({ ...formData, category: cat.id })}
                         >
                           <AppleSquircleBadge palette={paletteMap[cat.id] || 'blue'} size={52}>
-                            <span style={{ fontSize: '1.65rem', lineHeight: 1 }}>{cat.icon}</span>
+                            {cat.id === 'nri_food' ? (
+                              <Apple3DNRIFoodJar size={32} />
+                            ) : cat.id === 'general_cargo' ? (
+                              <Apple3DParcelBox size={32} />
+                            ) : (
+                              <span style={{ fontSize: '1.65rem', lineHeight: 1 }}>{cat.icon}</span>
+                            )}
                           </AppleSquircleBadge>
                           <div className="cat-info">
                             <strong>{cat.name}</strong>
@@ -2092,7 +2107,7 @@ export default function CustomerApp() {
             onClick={() => setActiveTab('book')}
           >
             <AppleSquircleBadge palette={activeTab === 'book' ? 'blue' : 'dark'} size={48}>
-              <Package size={26} color="#ffffff" strokeWidth={2.4} />
+              <Apple3DParcelBox size={28} />
             </AppleSquircleBadge>
             <span>Book</span>
             {activeTab === 'book' && <span className="dock-active-dot"></span>}
@@ -2103,7 +2118,7 @@ export default function CustomerApp() {
             onClick={() => setActiveTab('track')}
           >
             <AppleSquircleBadge palette={activeTab === 'track' ? 'teal' : 'dark'} size={48}>
-              <Navigation size={26} color="#ffffff" strokeWidth={2.4} />
+              <Apple3DFlightRadar size={28} />
             </AppleSquircleBadge>
             <span>Track</span>
             {activeTab === 'track' && <span className="dock-active-dot"></span>}
@@ -2114,7 +2129,7 @@ export default function CustomerApp() {
             onClick={() => setActiveTab('rates')}
           >
             <AppleSquircleBadge palette={activeTab === 'rates' ? 'gold' : 'dark'} size={48}>
-              <Calculator size={26} color="#ffffff" strokeWidth={2.4} />
+              <Apple3DRateCalculator size={28} />
             </AppleSquircleBadge>
             <span>Rates</span>
             {activeTab === 'rates' && <span className="dock-active-dot"></span>}
@@ -2125,7 +2140,7 @@ export default function CustomerApp() {
             onClick={() => setActiveTab('account')}
           >
             <AppleSquircleBadge palette={activeTab === 'account' ? 'purple' : 'dark'} size={48}>
-              <User size={26} color="#ffffff" strokeWidth={2.4} />
+              <Apple3DUserPass size={28} />
             </AppleSquircleBadge>
             <span>Account</span>
             {activeTab === 'account' && <span className="dock-active-dot"></span>}
