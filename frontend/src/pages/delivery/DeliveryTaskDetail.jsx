@@ -29,6 +29,7 @@ import { useUser } from '../../context/UserContext';
 import { getDeliveryTasks, trackShipment, updateDeliveryStatus, updateLiveLocation, uploadPOD } from '../../services/api';
 import { useOfflineQueue } from '../../hooks/useOfflineQueue';
 import { extractAwbFromText } from '../../utils/awbExtractor';
+import { AppleSquircleBadge, AppleSaiAppIcon } from '../../components/common/AppleIcons';
 
 export default function DeliveryTaskDetail() {
   const params = useParams();
@@ -445,7 +446,9 @@ export default function DeliveryTaskDetail() {
           <div style={styles.glassCard}>
             <div style={styles.cardSectionHeader}>
               <div style={styles.sectionTitleRow}>
-                <MapPin size={16} color="#ff6b4a" />
+                <AppleSquircleBadge palette="orange" size={38}>
+                  <MapPin size={20} color="#ffffff" strokeWidth={2.4} />
+                </AppleSquircleBadge>
                 <span style={styles.sectionTitle}>Consignee / Destination</span>
               </div>
               {task.receiverPhone && (
@@ -488,7 +491,9 @@ export default function DeliveryTaskDetail() {
           <div style={styles.glassCard}>
             <div style={styles.cardSectionHeader}>
               <div style={styles.sectionTitleRow}>
-                <Package size={16} color="#38bdf8" />
+                <AppleSquircleBadge palette="blue" size={38}>
+                  <Package size={20} color="#ffffff" strokeWidth={2.4} />
+                </AppleSquircleBadge>
                 <span style={styles.sectionTitle}>Shipper & Goods Manifest</span>
               </div>
               {task.senderPhone && (
@@ -521,7 +526,9 @@ export default function DeliveryTaskDetail() {
           <div style={styles.glassCard}>
             <div style={styles.cardSectionHeader}>
               <div style={styles.sectionTitleRow}>
-                <Scale size={16} color="#fbbf24" />
+                <AppleSquircleBadge palette="gold" size={38}>
+                  <Scale size={20} color="#ffffff" strokeWidth={2.4} />
+                </AppleSquircleBadge>
                 <span style={styles.sectionTitle}>Doorstep Weight & Scale Audit</span>
               </div>
               <span style={styles.iataBadge}>IATA / 5000 Rule</span>
@@ -594,7 +601,9 @@ export default function DeliveryTaskDetail() {
           <div style={styles.glassCard}>
             <div style={styles.cardSectionHeader}>
               <div style={styles.sectionTitleRow}>
-                <CreditCard size={16} color="#34d399" />
+                <AppleSquircleBadge palette="green" size={38}>
+                  <CreditCard size={20} color="#ffffff" strokeWidth={2.4} />
+                </AppleSquircleBadge>
                 <span style={styles.sectionTitle}>On-The-Spot UPI Payment QR</span>
               </div>
               <span style={styles.paymentStatusPill}>
@@ -644,7 +653,9 @@ export default function DeliveryTaskDetail() {
           <div style={styles.glassCard}>
             <div style={styles.cardSectionHeader}>
               <div style={styles.sectionTitleRow}>
-                <PenTool size={16} color="#38bdf8" />
+                <AppleSquircleBadge palette="teal" size={38}>
+                  <PenTool size={20} color="#ffffff" strokeWidth={2.4} />
+                </AppleSquircleBadge>
                 <span style={styles.sectionTitle}>Sign on Glass (Customer / Agent)</span>
               </div>
               {hasSignature && (
@@ -680,7 +691,9 @@ export default function DeliveryTaskDetail() {
           <div style={styles.glassCard}>
             <div style={styles.cardSectionHeader}>
               <div style={styles.sectionTitleRow}>
-                <Camera size={16} color="#ff6b4a" />
+                <AppleSquircleBadge palette="red" size={38}>
+                  <Camera size={20} color="#ffffff" strokeWidth={2.4} />
+                </AppleSquircleBadge>
                 <span style={styles.sectionTitle}>Proof of Delivery Photo (POD)</span>
               </div>
               {podPhotoPreview && <span style={styles.photoReadyBadge}>Photo Ready</span>}

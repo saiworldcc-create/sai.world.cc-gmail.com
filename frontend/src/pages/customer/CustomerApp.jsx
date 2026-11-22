@@ -30,6 +30,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { createBooking, trackShipment } from '../../services/api';
 import { COUNTRY_RATES } from '../../constants/appData';
+import { AppleSquircleBadge, AppleSaiAppIcon } from '../../components/common/AppleIcons';
 
 const DESTINATION_COUNTRIES = [
   { code: 'USA', name: 'United States', flag: '🇺🇸', transit: '4–5 Days', minDays: 4, ratePerKg: 780 },
@@ -189,16 +190,16 @@ export default function CustomerApp() {
         {/* iOS Top Status Bar / Header */}
         <header className="apple-app-header">
           <div className="apple-brand-pill">
-            <img src="/assets/images/sai_logo_transparent.png" alt="Sai Couriers" className="apple-logo-img" />
+            <AppleSaiAppIcon size={42} />
             <div>
               <span className="apple-brand-name">SAI INTERNATIONAL</span>
-              <span className="apple-brand-sub">Worldwide Courier &amp; Cargo</span>
+              <span className="apple-brand-sub">NRI Courier &amp; Cargo Express</span>
             </div>
           </div>
 
           <div className="apple-status-badge">
             <span className="apple-live-indicator"></span>
-            <span>Live Express Desk</span>
+            <span>Live Express</span>
           </div>
         </header>
 
@@ -209,17 +210,26 @@ export default function CustomerApp() {
               ========================================================================= */}
           {activeTab === 'book' && (
             <div className="apple-view-content fade-in">
-              {/* Wizard Step Progress Tracker */}
+              {/* Wizard Step Progress Tracker (Apple Segmented Pills) */}
               {bookingStep <= 4 && (
                 <div className="apple-wizard-stepper">
-                  <div className="stepper-track">
-                    <div className="stepper-progress-fill" style={{ width: `${(bookingStep / 4) * 100}%` }}></div>
-                  </div>
-                  <div className="stepper-labels">
-                    <span className={bookingStep >= 1 ? 'step-active' : ''}>1. Pickup</span>
-                    <span className={bookingStep >= 2 ? 'step-active' : ''}>2. Destination</span>
-                    <span className={bookingStep >= 3 ? 'step-active' : ''}>3. Packaging</span>
-                    <span className={bookingStep >= 4 ? 'step-active' : ''}>4. Review</span>
+                  <div className="stepper-pills-row">
+                    <div className={`stepper-pill-item ${bookingStep === 1 ? 'active' : bookingStep > 1 ? 'completed' : ''}`}>
+                      <span className="stepper-num-circle">{bookingStep > 1 ? '✓' : '1'}</span>
+                      <span>Pickup</span>
+                    </div>
+                    <div className={`stepper-pill-item ${bookingStep === 2 ? 'active' : bookingStep > 2 ? 'completed' : ''}`}>
+                      <span className="stepper-num-circle">{bookingStep > 2 ? '✓' : '2'}</span>
+                      <span>Dest</span>
+                    </div>
+                    <div className={`stepper-pill-item ${bookingStep === 3 ? 'active' : bookingStep > 3 ? 'completed' : ''}`}>
+                      <span className="stepper-num-circle">{bookingStep > 3 ? '✓' : '3'}</span>
+                      <span>Packing</span>
+                    </div>
+                    <div className={`stepper-pill-item ${bookingStep === 4 ? 'active' : ''}`}>
+                      <span className="stepper-num-circle">4</span>
+                      <span>Review</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -228,7 +238,9 @@ export default function CustomerApp() {
               {bookingStep === 1 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <div className="panel-icon-circle blue"><MapPin size={20} /></div>
+                    <AppleSquircleBadge palette="blue" size={48}>
+                      <MapPin size={24} color="#ffffff" strokeWidth={2.4} />
+                    </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Doorstep Pickup Details</h2>
                       <p className="panel-subtitle">Our executive will arrive with calibrated scale &amp; packing kit.</p>
@@ -328,7 +340,9 @@ export default function CustomerApp() {
               {bookingStep === 2 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <div className="panel-icon-circle purple"><Plane size={20} /></div>
+                    <AppleSquircleBadge palette="purple" size={48}>
+                      <Plane size={24} color="#ffffff" strokeWidth={2.4} />
+                    </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Destination &amp; Consignee</h2>
                       <p className="panel-subtitle">Select target country and recipient contact information.</p>
@@ -436,7 +450,9 @@ export default function CustomerApp() {
               {bookingStep === 3 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <div className="panel-icon-circle amber"><Box size={20} /></div>
+                    <AppleSquircleBadge palette="orange" size={48}>
+                      <Box size={24} color="#ffffff" strokeWidth={2.4} />
+                    </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Parcel &amp; Weight Estimator</h2>
                       <p className="panel-subtitle">Specialized vacuum packaging and live weight calculation.</p>
@@ -445,20 +461,32 @@ export default function CustomerApp() {
 
                   <label className="apple-field-label">Shipment Category *</label>
                   <div className="apple-category-list">
-                    {PARCEL_CATEGORIES.map(cat => (
-                      <div 
-                        key={cat.id}
-                        className={`category-item-card ${formData.category === cat.id ? 'cat-selected' : ''}`}
-                        onClick={() => setFormData({ ...formData, category: cat.id })}
-                      >
-                        <span className="cat-icon">{cat.icon}</span>
-                        <div className="cat-info">
-                          <strong>{cat.name}</strong>
-                          <p>{cat.desc}</p>
+                    {PARCEL_CATEGORIES.map(cat => {
+                      const paletteMap = {
+                        nri_food: 'orange',
+                        sweets: 'gold',
+                        documents: 'blue',
+                        garments: 'purple',
+                        medicines: 'red',
+                        general_cargo: 'teal'
+                      };
+                      return (
+                        <div 
+                          key={cat.id}
+                          className={`category-item-card ${formData.category === cat.id ? 'cat-selected' : ''}`}
+                          onClick={() => setFormData({ ...formData, category: cat.id })}
+                        >
+                          <AppleSquircleBadge palette={paletteMap[cat.id] || 'blue'} size={40}>
+                            <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>{cat.icon}</span>
+                          </AppleSquircleBadge>
+                          <div className="cat-info">
+                            <strong>{cat.name}</strong>
+                            <p>{cat.desc}</p>
+                          </div>
+                          {formData.category === cat.id && <CheckCircle2 size={18} className="cat-check" />}
                         </div>
-                        {formData.category === cat.id && <CheckCircle2 size={18} className="cat-check" />}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   <div className="apple-weight-slider-box">
@@ -544,7 +572,9 @@ export default function CustomerApp() {
               {bookingStep === 4 && (
                 <div className="apple-card-panel">
                   <div className="panel-title-row">
-                    <div className="panel-icon-circle green"><CheckCircle2 size={20} /></div>
+                    <AppleSquircleBadge palette="green" size={48}>
+                      <CheckCircle2 size={24} color="#ffffff" strokeWidth={2.4} />
+                    </AppleSquircleBadge>
                     <div>
                       <h2 className="panel-title">Review &amp; Instant Booking</h2>
                       <p className="panel-subtitle">Transparent billing with zero hidden customs charges.</p>
@@ -754,7 +784,9 @@ export default function CustomerApp() {
             <div className="apple-view-content fade-in">
               <div className="apple-card-panel">
                 <div className="panel-title-row">
-                  <div className="panel-icon-circle blue"><Navigation size={20} /></div>
+                  <AppleSquircleBadge palette="teal" size={48}>
+                    <Navigation size={24} color="#ffffff" strokeWidth={2.4} />
+                  </AppleSquircleBadge>
                   <div>
                     <h2 className="panel-title">Autonomous Satellite Tracking</h2>
                     <p className="panel-subtitle">Enter your 12-digit Air Waybill for live flight &amp; courier telemetry.</p>
@@ -862,7 +894,9 @@ export default function CustomerApp() {
             <div className="apple-view-content fade-in">
               <div className="apple-card-panel">
                 <div className="panel-title-row">
-                  <div className="panel-icon-circle amber"><Calculator size={20} /></div>
+                  <AppleSquircleBadge palette="gold" size={48}>
+                    <Calculator size={24} color="#ffffff" strokeWidth={2.4} />
+                  </AppleSquircleBadge>
                   <div>
                     <h2 className="panel-title">Instant Air Freight Calculator</h2>
                     <p className="panel-subtitle">Transparent door-to-door overseas rates from Andhra Pradesh.</p>
@@ -966,7 +1000,9 @@ export default function CustomerApp() {
             <div className="apple-view-content fade-in">
               <div className="apple-card-panel">
                 <div className="panel-title-row">
-                  <div className="panel-icon-circle purple"><ShieldCheck size={20} /></div>
+                  <AppleSquircleBadge palette="purple" size={48}>
+                    <ShieldCheck size={24} color="#ffffff" strokeWidth={2.4} />
+                  </AppleSquircleBadge>
                   <div>
                     <h2 className="panel-title">Customer Care &amp; Hubs</h2>
                     <p className="panel-subtitle">Managing Director desks and 24/7 dispatch hotlines.</p>
@@ -1022,32 +1058,44 @@ export default function CustomerApp() {
             className={`dock-tab-btn ${activeTab === 'book' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('book')}
           >
-            <Package size={22} />
-            <span>Book Pickup</span>
+            <AppleSquircleBadge palette={activeTab === 'book' ? 'blue' : 'dark'} size={36}>
+              <Package size={19} color="#ffffff" strokeWidth={2.4} />
+            </AppleSquircleBadge>
+            <span>Book</span>
+            {activeTab === 'book' && <span className="dock-active-dot"></span>}
           </button>
 
           <button 
             className={`dock-tab-btn ${activeTab === 'track' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('track')}
           >
-            <Navigation size={22} />
-            <span>Live Tracking</span>
+            <AppleSquircleBadge palette={activeTab === 'track' ? 'teal' : 'dark'} size={36}>
+              <Navigation size={19} color="#ffffff" strokeWidth={2.4} />
+            </AppleSquircleBadge>
+            <span>Track</span>
+            {activeTab === 'track' && <span className="dock-active-dot"></span>}
           </button>
 
           <button 
             className={`dock-tab-btn ${activeTab === 'rates' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('rates')}
           >
-            <Calculator size={22} />
+            <AppleSquircleBadge palette={activeTab === 'rates' ? 'gold' : 'dark'} size={36}>
+              <Calculator size={19} color="#ffffff" strokeWidth={2.4} />
+            </AppleSquircleBadge>
             <span>Rates</span>
+            {activeTab === 'rates' && <span className="dock-active-dot"></span>}
           </button>
 
           <button 
             className={`dock-tab-btn ${activeTab === 'passes' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('passes')}
           >
-            <ShieldCheck size={22} />
+            <AppleSquircleBadge palette={activeTab === 'passes' ? 'purple' : 'dark'} size={36}>
+              <ShieldCheck size={19} color="#ffffff" strokeWidth={2.4} />
+            </AppleSquircleBadge>
             <span>Support</span>
+            {activeTab === 'passes' && <span className="dock-active-dot"></span>}
           </button>
         </nav>
       </div>

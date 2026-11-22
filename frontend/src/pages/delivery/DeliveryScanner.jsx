@@ -11,6 +11,7 @@ import {
   HelpCircle,
   Sparkles
 } from 'lucide-react';
+import { AppleSquircleBadge, AppleSaiAppIcon } from '../../components/common/AppleIcons';
 
 export default function DeliveryScanner() {
   const navigate = useNavigate();
@@ -100,7 +101,9 @@ export default function DeliveryScanner() {
         {/* Bottom Manual Option Card */}
         <div style={styles.bottomCard}>
           <div style={styles.laserPromptRow}>
-            <ScanLine size={20} color="#ff6b4a" />
+            <AppleSquircleBadge palette="orange" size={32}>
+              <ScanLine size={18} color="#ffffff" strokeWidth={2.4} />
+            </AppleSquircleBadge>
             <span style={styles.laserPromptText}>Point camera steadily at the shipping label or QR pass</span>
           </div>
 
@@ -299,12 +302,13 @@ const styles = {
     width: '100%',
     padding: '12px 14px 12px 36px',
     borderRadius: '14px',
-    backgroundColor: 'rgba(10, 16, 26, 0.8)',
-    border: '1px solid rgba(255, 255, 255, 0.12)',
+    backgroundColor: '#0c1524',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
     color: '#ffffff',
     fontSize: '0.84rem',
     outline: 'none',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    WebkitTextFillColor: '#ffffff'
   },
   manualSubmitBtn: {
     width: '46px',

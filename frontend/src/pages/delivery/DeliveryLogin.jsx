@@ -7,7 +7,6 @@ import {
   Mail, 
   Eye, 
   EyeOff, 
-  Fingerprint, 
   ArrowRight, 
   Sparkles, 
   PhoneCall, 
@@ -17,6 +16,7 @@ import {
   ScanLine
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
+import { AppleSquircleBadge, AppleFaceIDIcon, AppleSaiAppIcon } from '../../components/common/AppleIcons';
 
 export default function DeliveryLogin() {
   const { user, login, loading } = useUser();
@@ -60,7 +60,7 @@ export default function DeliveryLogin() {
         setBiometricScanning(false);
         setError(err.message || 'Biometric authentication failed.');
       }
-    }, 1200);
+    }, 1100);
   };
 
   const handleSubmit = async (e) => {
@@ -92,9 +92,7 @@ export default function DeliveryLogin() {
         {/* Top iOS Status Header */}
         <div style={styles.topBar}>
           <div style={styles.brandRow}>
-            <div style={styles.appIconSquare}>
-              <Truck size={24} color="#ffffff" strokeWidth={2.4} />
-            </div>
+            <AppleSaiAppIcon size={46} />
             <div>
               <div style={styles.appName}>SAI EXPRESS AGENT</div>
               <div style={styles.appSub}>Executive Driver Workspace</div>
@@ -110,12 +108,14 @@ export default function DeliveryLogin() {
         <div style={styles.glassCard}>
           <div style={styles.cardHeader}>
             <div style={styles.shieldPill}>
-              <ShieldCheck size={16} color="#38bdf8" />
+              <AppleSquircleBadge palette="blue" size={20}>
+                <ShieldCheck size={12} color="#ffffff" />
+              </AppleSquircleBadge>
               <span>Encrypted Field Terminal</span>
             </div>
             <h1 style={styles.title}>Agent Sign In</h1>
             <p style={styles.subtitle}>
-              Sign in to manage doorstep pickups, GPS route manifests, live weighing & instant digital PODs.
+              Sign in to manage doorstep pickups, GPS route manifests, live scale weighing & instant digital PODs.
             </p>
           </div>
 
@@ -127,7 +127,9 @@ export default function DeliveryLogin() {
               style={styles.demoButton}
               title="Auto-fill Demo Driver Credentials"
             >
-              <Sparkles size={16} color="#f59e0b" />
+              <AppleSquircleBadge palette="gold" size={24}>
+                <Sparkles size={13} color="#ffffff" />
+              </AppleSquircleBadge>
               <span>Auto-Fill Demo Credentials (driver@sai.com)</span>
             </button>
           </div>
@@ -218,7 +220,7 @@ export default function DeliveryLogin() {
               )}
             </button>
 
-            {/* Biometric Express Login (Face ID / Fingerprint) */}
+            {/* Biometric Express Login (Face ID) */}
             <div style={styles.biometricDivider}>
               <div style={styles.dividerLine}></div>
               <span style={styles.dividerText}>OR QUICK BIOMETRIC</span>
@@ -233,13 +235,17 @@ export default function DeliveryLogin() {
             >
               {biometricScanning ? (
                 <>
-                  <ScanLine size={20} color="#38bdf8" className="fa-spin" />
-                  <span style={{ color: '#38bdf8' }}>Scanning Face ID / Touch ID...</span>
+                  <AppleSquircleBadge palette="teal" size={32}>
+                    <ScanLine size={18} color="#ffffff" className="fa-spin" />
+                  </AppleSquircleBadge>
+                  <span style={{ color: '#38bdf8', fontWeight: '800' }}>Scanning Face ID / Biometrics...</span>
                 </>
               ) : (
                 <>
-                  <Fingerprint size={22} color="#0284c7" />
-                  <span>One-Tap Face ID / Biometric Login</span>
+                  <AppleSquircleBadge palette="teal" size={32}>
+                    <AppleFaceIDIcon size={18} color="#ffffff" />
+                  </AppleSquircleBadge>
+                  <span>One-Tap Face ID Express Login</span>
                 </>
               )}
             </button>
@@ -312,7 +318,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
-    paddingBottom: '20px'
+    paddingBottom: '30px'
   },
   topBar: {
     display: 'flex',
@@ -325,21 +331,11 @@ const styles = {
     alignItems: 'center',
     gap: '12px'
   },
-  appIconSquare: {
-    width: '44px',
-    height: '44px',
-    borderRadius: '12px',
-    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-    boxShadow: '0 8px 20px -4px rgba(2, 132, 199, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   appName: {
-    fontSize: '0.95rem',
+    fontSize: '0.98rem',
     fontWeight: '800',
     color: '#ffffff',
-    letterSpacing: '0.5px'
+    letterSpacing: '0.4px'
   },
   appSub: {
     fontSize: '0.72rem',
@@ -352,8 +348,8 @@ const styles = {
     gap: '6px',
     padding: '4px 10px',
     borderRadius: '20px',
-    backgroundColor: 'rgba(16, 185, 129, 0.12)',
-    border: '1px solid rgba(16, 185, 129, 0.28)',
+    backgroundColor: 'rgba(16, 185, 129, 0.14)',
+    border: '1px solid rgba(16, 185, 129, 0.35)',
     fontSize: '0.7rem',
     fontWeight: '700',
     color: '#34d399'
@@ -366,12 +362,12 @@ const styles = {
     boxShadow: '0 0 8px #10b981'
   },
   glassCard: {
-    background: 'rgba(18, 27, 43, 0.72)',
-    backdropFilter: 'blur(30px)',
-    WebkitBackdropFilter: 'blur(30px)',
+    background: 'rgba(18, 27, 43, 0.8)',
+    backdropFilter: 'blur(35px)',
+    WebkitBackdropFilter: 'blur(35px)',
     borderRadius: '26px',
-    border: '1px solid rgba(255, 255, 255, 0.12)',
-    boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.08) inset',
+    border: '1px solid rgba(255, 255, 255, 0.14)',
+    boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.75), 0 0 1px 1px rgba(255, 255, 255, 0.1) inset',
     padding: '24px 22px',
     display: 'flex',
     flexDirection: 'column',
@@ -387,8 +383,8 @@ const styles = {
     alignItems: 'center',
     gap: '6px',
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(56, 189, 248, 0.1)',
-    border: '1px solid rgba(56, 189, 248, 0.2)',
+    backgroundColor: 'rgba(56, 189, 248, 0.12)',
+    border: '1px solid rgba(56, 189, 248, 0.25)',
     padding: '4px 10px',
     borderRadius: '20px',
     fontSize: '0.72rem',
@@ -398,7 +394,7 @@ const styles = {
   },
   title: {
     margin: 0,
-    fontSize: '1.6rem',
+    fontSize: '1.65rem',
     fontWeight: '800',
     color: '#ffffff',
     letterSpacing: '-0.02em'
@@ -419,9 +415,9 @@ const styles = {
     justifyContent: 'center',
     gap: '8px',
     padding: '10px 14px',
-    borderRadius: '14px',
-    backgroundColor: 'rgba(245, 158, 11, 0.1)',
-    border: '1px solid rgba(245, 158, 11, 0.3)',
+    borderRadius: '16px',
+    backgroundColor: 'rgba(245, 158, 11, 0.12)',
+    border: '1px solid rgba(245, 158, 11, 0.35)',
     color: '#fbbf24',
     fontSize: '0.8rem',
     fontWeight: '700',
@@ -434,8 +430,8 @@ const styles = {
     gap: '10px',
     padding: '12px 14px',
     borderRadius: '14px',
-    backgroundColor: 'rgba(239, 68, 68, 0.12)',
-    border: '1px solid rgba(239, 68, 68, 0.3)',
+    backgroundColor: 'rgba(239, 68, 68, 0.14)',
+    border: '1px solid rgba(239, 68, 68, 0.35)',
     color: '#f87171'
   },
   errorText: {
@@ -483,15 +479,16 @@ const styles = {
   },
   textInput: {
     width: '100%',
-    padding: '13px 14px 13px 44px',
+    padding: '14px 14px 14px 44px',
     borderRadius: '14px',
-    backgroundColor: 'rgba(10, 16, 26, 0.7)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#0c1524',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
     color: '#ffffff',
-    fontSize: '0.9rem',
+    fontSize: '0.92rem',
     outline: 'none',
     transition: 'border 0.2s ease, box-shadow 0.2s ease',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    WebkitTextFillColor: '#ffffff'
   },
   eyeButton: {
     position: 'absolute',
@@ -516,7 +513,7 @@ const styles = {
     cursor: 'pointer'
   },
   checkbox: {
-    accentColor: '#0284c7',
+    accentColor: '#0071E3',
     width: '16px',
     height: '16px',
     cursor: 'pointer'
@@ -530,10 +527,10 @@ const styles = {
     width: '100%',
     padding: '14px 20px',
     borderRadius: '16px',
-    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-    border: 'none',
+    background: 'linear-gradient(180deg, #2997FF 0%, #0071E3 100%)',
+    border: '1px solid rgba(255, 255, 255, 0.35)',
     color: '#ffffff',
-    fontSize: '0.95rem',
+    fontSize: '0.96rem',
     fontWeight: '800',
     letterSpacing: '0.3px',
     cursor: 'pointer',
@@ -541,7 +538,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: '10px',
-    boxShadow: '0 10px 25px -4px rgba(2, 132, 199, 0.5)',
+    boxShadow: '0 10px 25px -4px rgba(0, 113, 227, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.4)',
     transition: 'all 0.2s ease'
   },
   biometricDivider: {
@@ -564,12 +561,12 @@ const styles = {
   },
   biometricButton: {
     width: '100%',
-    padding: '12px 18px',
-    borderRadius: '14px',
-    backgroundColor: 'rgba(2, 132, 199, 0.08)',
-    border: '1px solid rgba(2, 132, 199, 0.25)',
+    padding: '10px 16px',
+    borderRadius: '16px',
+    backgroundColor: 'rgba(90, 200, 250, 0.1)',
+    border: '1px solid rgba(90, 200, 250, 0.3)',
     color: '#ffffff',
-    fontSize: '0.84rem',
+    fontSize: '0.86rem',
     fontWeight: '700',
     cursor: 'pointer',
     display: 'flex',
@@ -600,7 +597,7 @@ const styles = {
     background: 'none',
     border: 'none',
     color: '#ff6b4a',
-    fontSize: '0.8rem',
+    fontSize: '0.82rem',
     fontWeight: '700',
     cursor: 'pointer'
   },

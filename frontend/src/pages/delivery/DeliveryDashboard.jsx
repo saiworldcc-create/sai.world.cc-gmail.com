@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { getDeliveryTasks } from '../../services/api';
+import { AppleSquircleBadge, AppleSaiAppIcon } from '../../components/common/AppleIcons';
 
 export default function DeliveryDashboard() {
   const { user, logout } = useUser();
@@ -125,9 +126,9 @@ export default function DeliveryDashboard() {
         {/* Top iOS Header */}
         <header style={styles.header}>
           <div style={styles.driverInfoRow}>
-            <div style={styles.avatar}>
-              <Truck size={20} color="#ffffff" strokeWidth={2.4} />
-            </div>
+            <AppleSquircleBadge palette="blue" size={44}>
+              <Truck size={22} color="#ffffff" strokeWidth={2.4} />
+            </AppleSquircleBadge>
             <div>
               <div style={styles.driverNameRow}>
                 <span style={styles.driverName}>{user?.name || 'Driver Executive'}</span>
@@ -179,6 +180,9 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'all' ? '2px solid #38bdf8' : 'none' }}
             onClick={() => setActiveTab('all')}
           >
+            <AppleSquircleBadge palette="blue" size={28}>
+              <Package size={14} color="#ffffff" />
+            </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#38bdf8' }}>{totalTasks}</span>
             <span style={styles.statLabel}>ALL ORDERS</span>
           </div>
@@ -187,6 +191,9 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'pending' ? '2px solid #f59e0b' : 'none' }}
             onClick={() => setActiveTab('pending')}
           >
+            <AppleSquircleBadge palette="orange" size={28}>
+              <Clock size={14} color="#ffffff" />
+            </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#fbbf24' }}>{pendingTasks}</span>
             <span style={styles.statLabel}>PICKUPS</span>
           </div>
@@ -195,6 +202,9 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'transit' ? '2px solid #0284c7' : 'none' }}
             onClick={() => setActiveTab('transit')}
           >
+            <AppleSquircleBadge palette="teal" size={28}>
+              <Truck size={14} color="#ffffff" />
+            </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#38bdf8' }}>{transitTasks}</span>
             <span style={styles.statLabel}>IN TRANSIT</span>
           </div>
@@ -203,6 +213,9 @@ export default function DeliveryDashboard() {
             style={{ ...styles.statCard, borderBottom: activeTab === 'delivered' ? '2px solid #10b981' : 'none' }}
             onClick={() => setActiveTab('delivered')}
           >
+            <AppleSquircleBadge palette="green" size={28}>
+              <CheckCircle2 size={14} color="#ffffff" />
+            </AppleSquircleBadge>
             <span style={{ ...styles.statNum, color: '#34d399' }}>{deliveredTasks}</span>
             <span style={styles.statLabel}>DELIVERED</span>
           </div>
@@ -335,17 +348,32 @@ export default function DeliveryDashboard() {
                     </span>
                   </div>
 
-                  {/* Customer & Location */}
-                  <div style={styles.partyRow}>
-                    <div style={styles.partyBlock}>
-                      <span style={styles.partyRole}>CONSIGNEE / RECIPIENT</span>
-                      <span style={styles.partyName}>{task.receiver || 'Recipient'}</span>
-                      {task.destination && (
-                        <div style={styles.addressLine}>
-                          <MapPin size={13} color="#ff6b4a" style={{ flexShrink: 0 }} />
-                          <span style={styles.addressText}>{task.destination}</span>
-                        </div>
+                  {/* Customer & Location with Apple Squircle Icon */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                    <AppleSquircleBadge 
+                      palette={isDone ? 'green' : isInTransit ? 'teal' : 'orange'} 
+                      size={40}
+                    >
+                      {isDone ? (
+                        <CheckCircle2 size={20} color="#ffffff" strokeWidth={2.4} />
+                      ) : isInTransit ? (
+                        <Truck size={20} color="#ffffff" strokeWidth={2.4} />
+                      ) : (
+                        <Package size={20} color="#ffffff" strokeWidth={2.4} />
                       )}
+                    </AppleSquircleBadge>
+
+                    <div style={styles.partyRow}>
+                      <div style={styles.partyBlock}>
+                        <span style={styles.partyRole}>CONSIGNEE / RECIPIENT</span>
+                        <span style={styles.partyName}>{task.receiver || 'Recipient'}</span>
+                        {task.destination && (
+                          <div style={styles.addressLine}>
+                            <MapPin size={13} color="#ff6b4a" style={{ flexShrink: 0 }} />
+                            <span style={styles.addressText}>{task.destination}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -416,7 +444,9 @@ export default function DeliveryDashboard() {
             onClick={() => navigate('/delivery/scan')}
             style={styles.dockScannerBtn}
           >
-            <QrCode size={20} color="#ffffff" />
+            <AppleSquircleBadge palette="blue" size={30} style={{ border: 'none', boxShadow: 'none' }}>
+              <QrCode size={18} color="#ffffff" />
+            </AppleSquircleBadge>
             <span>SCAN AWB BARCODE</span>
           </button>
         </div>
