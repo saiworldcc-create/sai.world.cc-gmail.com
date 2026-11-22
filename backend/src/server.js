@@ -130,8 +130,38 @@ app.use((err, req, res, _next) => {
 // ── Start ─────────────────────────────────────────────────────────────────
 const { verifySMTP } = require('./services/emailService');
 
-connectDB().then(() => {
+connectDB().then(async () => {
   verifySMTP();
+  
+  // Auto-seed demo customer & driver accounts if not present
+  try {
+    const User = require('./models/User');
+    let cust = await User.findOne({ email: 'customer@sai.com' });
+    if (!cust) {
+      await User.create({
+        name: 'S. Venkata Raman',
+        email: 'customer@sai.com',
+        password: 'Customer@2026',
+        phone: '+91 90599 49365',
+        role: 'customer'
+      });
+      console.log('✅ Auto-seeded demo customer account: customer@sai.com');
+    }
+    let drv = await User.findOne({ email: 'driver@sai.com' });
+    if (!drv) {
+      await User.create({
+        name: 'Ramesh Naidu (Express Executive)',
+        email: 'driver@sai.com',
+        password: 'Driver@2026',
+        phone: '+91 90008 67874',
+        role: 'delivery'
+      });
+      console.log('✅ Auto-seeded demo driver account: driver@sai.com');
+    }
+  } catch (seedErr) {
+    console.error('Demo account seed check note:', seedErr.message);
+  }
+
   server.listen(PORT, () => {
     console.log(`\n🚀 Sai Couriers API v2.0 running on http://localhost:${PORT}`);
     console.log(`   Health:   http://localhost:${PORT}/api/health`);
